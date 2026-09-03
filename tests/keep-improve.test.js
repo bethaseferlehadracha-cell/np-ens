@@ -118,7 +118,7 @@ ok('HTML מכיל ks-report', html.includes('ks-report'));
 ok('HTML מכיל שיפור ושימור', html.includes('שיפור')&&html.includes('שימור'));
 bk.improve.concat(bk.keep).forEach(x=>ok('HTML מכיל את שם הנושא: '+x.name.slice(0,28), html.includes(G.esc(x.name))));
 G.S=G.BLANK();
-ok('ריכוז ריק כשאין ציונים', G.ksReportHTML().includes('טרם הוזנו ציונים'));
+ok('ריכוז ריק כשאין בחירות', G.ksReportHTML().includes('טרם נבחרו אפשרויות'));
 
 console.log('\n=== 9. רגרסיה — מנוע הציונים לא נפגע ===');
 G.S=G.BLANK();

@@ -23,11 +23,15 @@ const APP=require('url').pathToFileURL(path.join(__dirname,'..','ביקורות-
   await pg.evaluate(()=>{ go('brigade'); });
   await pg.waitForTimeout(400);
   await pg.evaluate(()=>{ toggleTopic('gph',0); });
-  const chip = await pg.locator('#tp_gph_0 .crit .schip').first();
-  await chip.click();  // ציון 0
+  // בחירת האפשרות בעלת הציון הנמוך ביותר בקריטריון הראשון
+  const lowIdx = await pg.evaluate(()=>{ const o=DATA.gph[0].crits[0].opts.filter(x=>x.s!=null);
+    const min=o.reduce((a,b)=>a.s<=b.s?a:b); return DATA.gph[0].crits[0].opts.indexOf(min); });
+  await pg.locator('#tp_gph_0 .crit .opt').nth(lowIdx).click();
   await pg.waitForTimeout(200);
-  ok('לחיצה על צ׳יפ ציון שומרת', await pg.evaluate(()=>gphCell(0,0)&&gphCell(0,0).score===0));
-  ok('תגית "שיפור" מופיעה אחרי ציון 0', await pg.locator('#tp_gph_0 .ks-tag.improve').count()>0);
+  ok('בחירת אפשרות גוזרת ציון ושומרת', await pg.evaluate(()=>{const c=gphCell(0,0);
+    const o=DATA.gph[0].crits[0].opts.find(x=>x.k===c.opt); return !!c && c.opt!=null && c.score===o.s;}));
+  ok('תגית "שיפור" מופיעה אחרי ציון נמוך', await pg.locator('#tp_gph_0 .ks-tag.improve').count()>0);
+  ok('אין צ׳יפי ציון ידניים', await pg.locator('.schip').count()===0);
   ok('אין כפתורי בחירה ידנית (ks-btn)', await pg.locator('.ks-btn').count()===0);
   ok('אין כפתורי בחירה ידנית לקריטריון (cks-btn)', await pg.locator('.cks-btn').count()===0);
   ok('אין כפתורי pin (tt-btn.keep/.improve)', await pg.locator('.tt-btn.keep, .tt-btn.improve').count()===0);
@@ -66,7 +70,7 @@ const APP=require('url').pathToFileURL(path.join(__dirname,'..','ביקורות-
 
   // עדכון חי: שינוי ציון 69 -> 70 מעביר לשימור
   await pg.evaluate((n)=>{ const sc=DATA.gph.map((t,i)=>({t,i})).filter(x=>x.t.scored);
-    const x=sc[1]; x.t.crits.forEach((c,ci)=>{ if(c.w!=null) setGph(x.i,ci,{score:70}); }); save(); render(); }, null);
+    const x=sc[1]; x.t.crits.forEach((c,ci)=>{ if(c.w!=null) setGph(x.i,ci,{score:70,opt:'א'}); }); save(); render(); }, null);
   await pg.waitForTimeout(400);
   ok('שינוי 69→70 מעביר לשימור', (await pg.locator('#paper .ks-col.keep').innerText()).includes(names[1]));
   ok('ומוסר משיפור', !(await pg.locator('#paper .ks-col.improve').innerText()).includes(names[1]));
@@ -96,6 +100,13 @@ const APP=require('url').pathToFileURL(path.join(__dirname,'..','ביקורות-
   await pg.evaluate(()=>{ genAll(); });
   await pg.waitForTimeout(500);
   ok('genAll רץ ללא שגיאה', errs.length===0, errs.join(' | '));
+
+  // ממד סביבת הכשרה הוסר
+  await pg.evaluate(()=>go('fw')); await pg.waitForTimeout(400);
+  const dimBar=await pg.locator('.dimbar').innerText();
+  ok('אין ממד "סביבת הכשרה" בסרגל הממדים', !dimBar.includes('סביבת'));
+  ok('שלושה ממדים בסרגל', (await pg.locator('.dimbar button').count())===3);
+  ok('בנק התשובות מוצג במסגרת', (await pg.locator('.crit .opt').count())>0);
 
   // ייצוא / ייבוא JSON
   errs.length=0;
