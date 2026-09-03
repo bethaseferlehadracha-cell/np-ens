@@ -214,5 +214,57 @@ const ph=G.renderTopic('gph',D.gph,pti,G.gphCell,'pickGph','naGph','gph');
 ok('סעיף לתיעוד בלבד מסומן', ph.includes('אינו משוקלל בציון'));
 ok('  ועדיין מציג את האפשרויות מה-PDF', ph.includes(G.esc(pt.crits[0].opts[0].t)));
 
+console.log('\n=== 12. הדוח: נושא כללי + תתי-נושאים מתחתיו ===');
+G.S=G.BLANK(); G.S.frameworks=[{id:'f1',label:'גדוד א',kind:'גדוד',inspectorId:''}]; G.S.ui={activeFw:'f1',dim:'prog'};
+const rt=D.gph[1], rti=1;                       // אבחון הדרכה — 4 קריטריונים
+const chosen=[];
+rt.crits.forEach((c,ci)=>{ const o=c.opts.find(x=>x.s!=null); G.pickGph('gph',rti,ci,o.k); chosen.push({t:c.t,o}); });
+const entry=G.scanKS().find(x=>x.name===rt.name);
+ok('הנושא מופיע בריכוז', !!entry);
+eq('מספר תתי-הנושאים תחתיו', entry.crits.length, rt.crits.length);
+ok('לכל תת-נושא שם קריטריון', entry.crits.every(c=>c.t&&c.t.length>0));
+ok('לכל תת-נושא נוסח התשובה שנבחרה', entry.crits.every(c=>c.optText&&c.optText.length>0));
+ok('לכל תת-נושא ציון האפשרות', entry.crits.every((c,i)=>c.score===chosen[i].o.s));
+ok('אין יותר שדות טקסט חופשי בכרטיס', entry.keepTxt===undefined&&entry.improveTxt===undefined);
+const eh=G.ksReportHTML();
+ok('הדוח מציג את שם הנושא הכללי', eh.includes(G.esc(rt.name)));
+ok('הדוח מציג את ציון הנושא', eh.includes('class="sc '));
+ok('הדוח מציג את תתי-הנושאים', eh.includes('ks-crits'));
+chosen.forEach(c=>{
+  ok('  שם תת-הנושא בדוח: '+c.t.slice(0,34), eh.includes(G.esc(c.t)));
+  ok('  התשובה שנבחרה בדוח: '+c.o.t.slice(0,34), eh.includes(G.esc(c.o.t)));
+});
+// קריטריון שלא נבחרה בו אפשרות אינו מופיע כתת-נושא
+G.S=G.BLANK();
+const o0=rt.crits[0].opts.find(x=>x.s!=null);
+G.pickGph('gph',rti,0,o0.k);
+const e2=G.scanKS().find(x=>x.name===rt.name);
+eq('רק תתי-נושאים שנבחרה בהם אפשרות', e2.crits.length, 1);
+
+console.log('\n=== 13. אין יותר כתיבה ברמת הקריטריון ===');
+const ch=G.renderTopic('gph',D.gph,rti,G.gphCell,'pickGph','naGph','gph');
+ok('אין שדות שימור/שיפור', !ch.includes('kifield')&&!ch.includes('kifields'));
+ok('אין textarea בקריטריון', !ch.includes('<textarea'));
+ok('אין תגית שיפור/שימור לקריטריון', !ch.includes('critks'));
+ok('הבחירה באפשרות נשארה', ch.includes('class="opt '));
+ok('critKsHTML הוסרה', typeof G.critKsHTML==='undefined');
+ok('keepGph/improveGph הוסרו', typeof G.keepGph==='undefined'&&typeof G.improveGph==='undefined');
+ok('keepFw/improveFw הוסרו', typeof G.keepFw==='undefined'&&typeof G.improveFw==='undefined');
+ok('ksReasonFor הוסרה', typeof G.ksReasonFor==='undefined');
+
+console.log('\n=== 14. טבלת סעיף 5 בדוח ===');
+G.S=G.BLANK(); G.S.frameworks=[{id:'f1',label:'גדוד א',kind:'גדוד',inspectorId:''}]; G.S.ui={activeFw:'f1',dim:'prog'};
+rt.crits.forEach((c,ci)=>{ const o=c.opts.find(x=>x.s!=null); G.pickGph('gph',rti,ci,o.k); });
+const ft=G.findingsTable('gph',D.gph,G.gphCell);
+ok('הטבלה נבנית', ft.includes('<table'));
+ok('כותרות: נושא / תת-נושא, התשובה שנבחרה, ציון',
+   ft.includes('נושא / תת-נושא')&&ft.includes('התשובה שנבחרה')&&ft.includes('ציון'));
+ok('שורת הנושא הכללי מודגשת', ft.includes('class="ftopic"'));
+ok('שורות תתי-הנושאים מוזחות', ft.includes('class="fsub"'));
+ok('שם הנושא הכללי בטבלה', ft.includes(G.esc(rt.name)));
+ok('שם תת-הנושא בטבלה', ft.includes(G.esc(rt.crits[0].t)));
+ok('נוסח התשובה בטבלה', ft.includes(G.esc(rt.crits[0].opts.find(x=>x.s!=null).t)));
+ok('הדוח המלא נבנה', G.reportHTML().includes('<table'));
+
 console.log(`\n============================\nPASS ${pass}   FAIL ${fail}\n============================`);
 process.exit(fail?1:0);

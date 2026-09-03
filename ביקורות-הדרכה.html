@@ -194,11 +194,6 @@ textarea.inp{resize:vertical;min-height:64px;line-height:1.55}
 .score-na{font-size:12.5px;font-weight:600;color:var(--muted);padding:7px 11px;border-radius:8px;border:1.5px dashed var(--line2);transition:.13s}
 .score-na.on{background:var(--bg2);color:var(--ink2);border-style:solid}
 .crit textarea{min-height:50px}
-.kifields{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:2px}
-.kifield label.f{font-size:11.5px;margin-bottom:4px}
-.kifield.keep label.f{color:var(--good)} .kifield.improve label.f{color:var(--low)}
-.kifield textarea{min-height:50px}
-@media(max-width:680px){.kifields{grid-template-columns:1fr}}
 
 .flow-foot{display:flex;align-items:center;gap:12px;margin-top:26px;padding-top:22px;border-top:1px solid var(--line)}
 .flow-foot .spacer{flex:1}
@@ -292,17 +287,15 @@ textarea.inp{resize:vertical;min-height:64px;line-height:1.55}
 .ks-entry .kh b{font-size:13px;font-weight:800;color:var(--ink)}
 .ks-entry .kh .area{font-size:11px;color:var(--muted);font-weight:600}
 .ks-entry .kh .sc{font-size:11px;font-weight:800;padding:1px 7px;border-radius:6px;margin-inline-start:auto}
-.ks-entry .kr{font-size:12px;line-height:1.55;color:var(--ink2)}
-.ks-entry .kr .lbl{font-weight:700;color:var(--olive-d)}
-/* פירוט קריטריונים בתוך כרטיס הנושא בדוח */
+/* פירוט תתי-הנושאים (הקריטריונים) מתחת לנושא הכללי */
 .ks-crits{margin-top:7px;border-top:1px dashed var(--line2);padding-top:6px}
-.ks-crit{display:flex;gap:7px;align-items:baseline;font-size:11.5px;line-height:1.5;padding:3px 0}
-.cbadge{flex-shrink:0;font-size:9.5px;font-weight:800;padding:1px 7px;border-radius:20px;min-width:42px;text-align:center}
-.cbadge.keep{background:var(--good-bg);color:var(--good)}
-.cbadge.improve{background:var(--low-bg);color:var(--low)}
-.ks-crit .ctxt{color:var(--ink2)}
-.ks-crit .ctxt .cscore{font-weight:800;color:var(--muted);font-size:10.5px}
-.ks-crit .ctxt .crsn{color:var(--muted)}
+.ks-crit{display:flex;gap:8px;align-items:flex-start;font-size:11.5px;line-height:1.5;padding:4px 0}
+.ks-crit+.ks-crit{border-top:1px solid var(--line)}
+.ks-crit .cscore{flex-shrink:0;font-size:10.5px;font-weight:800;padding:1px 7px;border-radius:6px;
+  min-width:34px;text-align:center;background:var(--bg2);color:var(--muted);margin-top:1px}
+.ks-crit .ctxt{flex:1;color:var(--ink2)}
+.ks-crit .ctxt b{display:block;font-weight:700;color:var(--ink);font-size:12px}
+.ks-crit .ctxt .cans{display:block;color:var(--muted);font-size:11.5px;margin-top:1px}
 .ks-empty{font-size:12.5px;color:var(--muted);padding:8px 2px}
 @media print{.ks-report{grid-template-columns:1fr 1fr}}
 @media(max-width:680px){.ks-report{grid-template-columns:1fr}}
@@ -361,13 +354,6 @@ textarea.inp{resize:vertical;min-height:64px;line-height:1.55}
 .tt-btn:hover{border-color:var(--olive-l);color:var(--olive-d)}
 .tt-btn.on{background:var(--gold-soft);border-color:var(--gold-l);color:#215a7d}
 .topic.topic-na .topic-head{opacity:.55}
-/* ---- סיווג שיפור/שימור אוטומטי ברמת קריטריון (תצוגה בלבד) ---- */
-.critks{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:2px 0 10px}
-.critks .cks-lbl{font-size:11.5px;font-weight:700;color:var(--ink2);display:inline-flex;align-items:center;gap:5px}
-.critks .cks-lbl svg{width:13px;height:13px;color:var(--olive);opacity:.8}
-.critks .cks-auto{font-size:11px;color:var(--muted);font-weight:600}
-.critks .cks-auto b{font-weight:800}
-.critks .cks-auto b.keep{color:var(--good)} .critks .cks-auto b.improve{color:var(--low)}
 /* ---- סיכום ציונים במסגרת ---- */
 .fw-summary{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;margin:0 0 18px;box-shadow:var(--sh-l)}
 .fws-h{display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:800;color:var(--olive-d);margin-bottom:11px}
@@ -3277,25 +3263,6 @@ function ksAuto(score){
 /* ---------- נושא כ"לא רלוונטי / לא נבדק" — יוצא לגמרי מחישוב הציון ---------- */
 function isTopicNA(scope,dim,ti){ return !!S.topicNA[ksKey(scope,dim,ti)]; }
 function toggleTopicNA(scope,dim,ti){ const k=ksKey(scope,dim,ti); if(S.topicNA[k])delete S.topicNA[k]; else S.topicNA[k]=true; save(); render(); }
-/* ---------- איסוף הטקסט שנכתב בנושא ----------
-   משמש את ריכוז השיפור/שימור האוטומטי בדו"ח. אין כאן שום סימון ידני. */
-/* אוסף את שורות הטקסט (שימור או שיפור) שנכתבו בקריטריוני נושא נתון */
-function topicSideLines(scope,dim,ti,side){
-  const getter = (dim==='gph') ? gphCell : (a,b)=>fwCell(scope,dim,a,b);
-  const t=(dim==='gph'?DATA.gph:DATA[dim])[ti];
-  const seen=new Set(), lines=[];
-  t.crits.forEach((c,ci)=>{ const cell=getter(ti,ci); if(!cell)return;
-    const v=side==='keep'?cell.keep:cell.improve;
-    if(!v||!v.trim())return;
-    // טקסט מרובה-שורות מפוצל לשורות נפרדות, כך שכל שורה מקבלת נקודה משלה
-    v.split('\n').forEach(part=>{ const pp=part.trim();
-      if(pp&&!seen.has(pp)){ seen.add(pp); lines.push(pp); } });
-  });
-  return lines;
-}
-const repField = side => side==='keep'?'trendsKeep':'trendsImprove';
-/* שם הנושא לפי scope/dim/ti — משמש ככותרת הגוש בשדה */
-function topicName(dim,ti){ const t=(dim==='gph'?DATA.gph:DATA[dim])[ti]; return t?t.name:''; }
 /* ממוצע ציוני כלל הנושאים בקטגוריה (ממד) בהינתן getter לתא, וסיווגה */
 function dimTopicAvg(scope, dim, getter){
   const topics=DATA[dim]||[];
@@ -3303,9 +3270,6 @@ function dimTopicAvg(scope, dim, getter){
   return vals.length? vals.reduce((a,b)=>a+b,0)/vals.length : null;
 }
 
-/* ---------- סיווג שיפור/שימור ברמת קריטריון בודד ----------
-   נגזר אך ורק מציון התא. תא ללא ציון (כולל "לא רלוונטי") אינו מסווג. */
-function critKsClass(cell){ return (cell && !cell.naMark) ? ksAuto(cell.score) : null; }
 
 /* progress */
 function dimProgress(getter, topics){
@@ -3499,11 +3463,7 @@ function renderCrit(dimKey,ti,ci,c,cell,onPick,onNA){
   const cur = cell?cell.score:null;
   const curOpt = cell&&cell.opt!=null ? cell.opt : null;
   const na = cell&&cell.score===null&&cell.naMark;
-  const keep = cell&&cell.keep?cell.keep:'';
-  const improve = cell&&cell.improve?cell.improve:'';
-  const onKeep = onPick.replace('pick','keep');
-  const onImprove = onPick.replace('pick','improve');
-  const filled = (curOpt!=null)||(keep&&keep.trim())||(improve&&improve.trim());
+  const filled = curOpt!=null;
   const optsHTML = `<div class="opts">${opts.map((o,oi)=>{
       const on = curOpt===o.k;
       const vc = o.s==null?'v-none':o.s>=80?'v-good':o.s>=60?'v-mid':'v-low';
@@ -3511,7 +3471,6 @@ function renderCrit(dimKey,ti,ci,c,cell,onPick,onNA){
       return `<button class="opt ${on?'on '+vc:''}" onclick="${onPick}('${dimKey}',${ti},${ci},'${o.k}')">
         <span class="ok">${o.k}</span><span class="otx">${esc(o.t)}</span>${badge}</button>`;}).join('')}</div>
     <button class="score-na ${na?'on':''}" onclick="${onNA}('${dimKey}',${ti},${ci})">לא רלוונטי</button>`;
-  const critKsBox = scored? critKsHTML(dimKey,ti,ci,cell) : '';
   const tag = c.bonus ? `<span class="crit-bonus">${svg(SPARK)}שאלת בונוס</span>`
             : !scored ? `<span class="crit-doconly">${svg(ICONS.note)}לתיעוד בלבד — אינו משוקלל בציון</span>` : '';
   return `<div class="crit ${filled?'filled':''}">
@@ -3521,32 +3480,10 @@ function renderCrit(dimKey,ti,ci,c,cell,onPick,onNA){
       ${c.note?`<span class="note">${svg(ICONS.note)}${esc(c.note)}</span>`:''}
     </div>
     <div class="score-row">${optsHTML}</div>
-    ${critKsBox}
-    <div class="kifields">
-      <div class="kifield keep">
-        <label class="f">שימור</label>
-        <textarea class="inp" oninput="${onKeep}('${dimKey}',${ti},${ci},this.value)" placeholder="מה ראוי לשימור בסעיף זה...">${esc(keep)}</textarea>
-      </div>
-      <div class="kifield improve">
-        <label class="f">שיפור</label>
-        <textarea class="inp" oninput="${onImprove}('${dimKey}',${ti},${ci},this.value)" placeholder="מה דורש שיפור בסעיף זה...">${esc(improve)}</textarea>
-      </div>
-    </div>
   </div>`;
 }
 /* חיפוש אפשרות לפי אות; מחזיר את האפשרות או null */
 function critOpt(c,k){ return (c&&c.opts||[]).find(o=>o.k===k)||null; }
-/* סיווג שיפור/שימור לקריטריון בודד — תצוגה בלבד, נגזר מציון הקריטריון */
-function critKsHTML(dimKey,ti,ci,cell){
-  const cls=critKsClass(cell);
-  const lbl=`<span class="cks-lbl">${svg('<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>')}שיפור/שימור</span>`;
-  if(cls==null){
-    return `<div class="critks" data-cks="${ci}">${lbl}
-      <span class="cks-auto">יש לבחור אפשרות מבנק התשובות</span></div>`;
-  }
-  return `<div class="critks" data-cks="${ci}">${lbl}
-    <span class="cks-auto">לפי הציון (${Math.round(cell.score)}): <b class="${cls}">${ksLabel(cls)}</b></span></div>`;
-}
 function toggleTopic(dimKey,ti){
   const topics = dimKey==='gph'?DATA.gph:DATA[dimKey];
   topics[ti]._open=!topics[ti]._open;
@@ -3584,8 +3521,6 @@ function pickGph(_,ti,ci,k){ const c=DATA.gph[ti].crits[ci]; const cur=gphCell(t
   if(cur&&cur.opt===k){ setGph(ti,ci,{opt:null,score:null,naMark:false}); }
   else { const o=critOpt(c,k); setGph(ti,ci,{opt:k,score:o?o.s:null,naMark:false}); }
   refreshTopic('gph',ti); }
-function keepGph(_,ti,ci,val){ setGph(ti,ci,{keep:val}); }
-function improveGph(_,ti,ci,val){ setGph(ti,ci,{improve:val}); }
 function naGph(_,ti,ci){ const cur=gphCell(ti,ci); setGph(ti,ci,{opt:null,score:null,naMark:!(cur&&cur.naMark)}); refreshTopic('gph',ti); }
 
 /* ============ FRAMEWORK VIEW ============ */
@@ -3635,8 +3570,6 @@ function pickFw(dim,ti,ci,k){ const c=DATA[dim][ti].crits[ci]; const fid=S.ui.ac
   if(cur&&cur.opt===k){ setFw(fid,dim,ti,ci,{opt:null,score:null,naMark:false}); }
   else { const o=critOpt(c,k); setFw(fid,dim,ti,ci,{opt:k,score:o?o.s:null,naMark:false}); }
   refreshTopic(dim,ti); }
-function keepFw(dim,ti,ci,val){ setFw(S.ui.activeFw,dim,ti,ci,{keep:val}); }
-function improveFw(dim,ti,ci,val){ setFw(S.ui.activeFw,dim,ti,ci,{improve:val}); }
 function naFw(dim,ti,ci){ const fid=S.ui.activeFw; const cur=fwCell(fid,dim,ti,ci); setFw(fid,dim,ti,ci,{opt:null,score:null,naMark:!(cur&&cur.naMark)}); refreshTopic(dim,ti); }
 
 /* refresh just topic header score + dim bar without full rerender (keeps textareas focused) */
@@ -3659,15 +3592,12 @@ function refreshTopic(dimKey,ti){
     // refresh crit chip states in this topic
     t.crits.forEach((c,ci)=>{ const cell=getter(ti,ci); const cur=cell?cell.score:null;
       const crit=el.querySelectorAll('.crit')[ci]; if(!crit)return;
-      crit.classList.toggle('filled',(cur!=null)||(cell&&cell.keep&&cell.keep.trim())||(cell&&cell.improve&&cell.improve.trim()));
+      crit.classList.toggle('filled',cell&&cell.opt!=null);
       const curOpt=cell&&cell.opt!=null?cell.opt:null;
       crit.querySelectorAll('.opt').forEach((btn,k)=>{ const o=(c.opts||[])[k]; if(!o)return;
         const on=curOpt===o.k; const vc=o.s==null?'v-none':o.s>=80?'v-good':o.s>=60?'v-mid':'v-low';
         btn.className='opt'+(on?(' on '+vc):''); });
       const na=crit.querySelector('.score-na'); if(na)na.classList.toggle('on',cell&&cell.score===null&&cell.naMark);
-      const kta=crit.querySelector('.kifield.keep textarea'); if(kta && document.activeElement!==kta) kta.value=cell&&cell.keep?cell.keep:'';
-      const ita=crit.querySelector('.kifield.improve textarea'); if(ita && document.activeElement!==ita) ita.value=cell&&cell.improve?cell.improve:'';
-      if(c.w!=null){ const cks=crit.querySelector('.critks'); if(cks){ const nb=document.createElement('div'); nb.innerHTML=critKsHTML(dimKey,ti,ci,cell); if(nb.firstChild)cks.replaceWith(nb.firstChild); } }
     });
   }
   // refresh nav badge + dimbar
@@ -3905,16 +3835,22 @@ function reportHTML(){
   </div>`;
 }
 function findingsTable(dimKey,topics,getter){
+  const dim = dimKey==='gph'?'gph':dimKey;
   const rows=topics.map((t,ti)=>{
-    const ts=t.scored?topicScore(t,(ci)=>getter(ti,ci)):null;
-    const keeps=t.crits.map((c,ci)=>{const cell=getter(ti,ci);return cell&&cell.keep&&cell.keep.trim()?cell.keep.trim():'';}).filter(Boolean);
-    const improves=t.crits.map((c,ci)=>{const cell=getter(ti,ci);return cell&&cell.improve&&cell.improve.trim()?cell.improve.trim():'';}).filter(Boolean);
-    if(ts==null&&!keeps.length&&!improves.length) return ''; // skip empty rows
-    return `<tr><td><b>${esc(t.name)}</b>${ts!=null?` <span class="muted">(${Math.round(ts)})</span>`:''}</td>
-      <td>${esc(keeps.join(' • '))}</td><td>${esc(improves.join(' • '))}</td></tr>`;
+    if(!t.scored) return '';
+    const ts=topicScore(t,(ci)=>getter(ti,ci));
+    const crits=topicCrits(dim,ti,getter);
+    if(ts==null&&!crits.length) return '';
+    // שורת הנושא הכללי, ומתחתיה שורה לכל תת-נושא עם התשובה שנבחרה
+    const head=`<tr class="ftopic"><td><b>${esc(t.name)}</b></td><td class="c">—</td>
+      <td class="c"><b>${ts==null?'—':Math.round(ts)}</b></td></tr>`;
+    const sub=crits.map(c=>`<tr><td class="fsub">${esc(c.t)}</td>
+      <td>${esc(c.optText)}</td><td class="c">${c.score==null?'—':c.score}</td></tr>`).join('');
+    return head+sub;
   }).filter(Boolean).join('');
   if(!rows) return '';
-  return `<table class="rtable"><thead><tr><th style="width:28%">נושא</th><th>שימור</th><th>שיפור</th></tr></thead><tbody>${rows}</tbody></table>`;
+  return `<table class="rtable"><thead><tr><th style="width:34%">נושא / תת-נושא</th>
+    <th>התשובה שנבחרה</th><th style="width:9%" class="c">ציון</th></tr></thead><tbody>${rows}</tbody></table>`;
 }
 function brigadeFindings(){
   const tbl=findingsTable('gph',DATA.gph,gphCell);
@@ -3962,6 +3898,8 @@ div,p,td,th,li{direction:rtl;text-align:right}
 .rtable th,.rtable td{border:0.75pt solid #999;padding:4pt 6pt;text-align:right;vertical-align:top}
 .rtable th{background:#e8eff8;font-weight:bold;color:#1e3f68}
 .rtable td.c,.rtable th.c{text-align:center}
+.rtable tr.ftopic td{background:var(--olive-soft);font-weight:800}
+.rtable td.fsub{padding-inline-start:22px;color:var(--ink2)}
 .subhead{font-size:11.5pt;font-weight:bold;color:#1e3f68;margin:10pt 0 4pt}
 /* ממצאים מרכזיים — כותרת נושא ורשימת נקודות תקנית ל-Word */
 .find-topic{font-size:11.5pt;font-weight:bold;color:#1e3f68;margin:9pt 0 3pt;
@@ -3980,10 +3918,13 @@ div,p,td,th,li{direction:rtl;text-align:right}
 .ks-entry .kh b{font-size:11pt}
 .ks-entry .kh .area{font-size:9.5pt;color:#555;margin-right:6pt}
 .ks-entry .kh .sc{font-size:9.5pt;font-weight:bold;margin-right:6pt}
-.ks-entry .kr{font-size:10.5pt;line-height:1.45;margin-top:2pt}
-.ks-crits{margin-top:3pt}
-.ks-crit{margin-bottom:2pt;font-size:10.5pt}
-.ks-crit .cscore{font-weight:bold;font-size:9.5pt;color:#555;margin-left:4pt}
+.ks-crits{margin-top:3pt;border-top:0.5pt solid #ccc;padding-top:3pt}
+.ks-crit{margin-bottom:3pt;font-size:10pt}
+.ks-crit .cscore{font-weight:bold;font-size:9.5pt;color:#1e3f68;margin-left:6pt}
+.ks-crit .ctxt b{font-weight:bold;font-size:10pt}
+.ks-crit .ctxt .cans{color:#444;font-size:10pt}
+.rtable tr.ftopic td{background:#e8eff8;font-weight:bold}
+.rtable td.fsub{padding-right:16pt;color:#333}
 .ks-empty{font-size:10.5pt;color:#555}
 .cbadge{font-weight:bold;font-size:9pt;border:0.5pt solid #777;padding:0 4pt;margin-left:4pt}
 .muted{color:#555}`;
@@ -4063,7 +4004,7 @@ function scanFindings(){
   const out=[];
   DATA.gph.forEach((t,ti)=>{ if(!t.scored||isTopicNA('gph','gph',ti))return;
     const sc=topicScore(t,(ci)=>gphCell(ti,ci));
-    const finds=[...new Set(t.crits.map((c,ci)=>{const cell=gphCell(ti,ci);return cell&&(cell.improve||cell.keep)?(cell.improve||cell.keep).trim():'';}).filter(Boolean))];
+    const finds=topicCrits('gph',ti,gphCell).filter(c=>c.score!=null&&c.score<70).map(c=>c.optText);
     if(sc==null&&!finds.length)return;
     out.push({dim:'gph',name:t.name,scope:'רמת החטיבה (גפ"ה)',score:sc,find:finds.join('; ')});
   });
@@ -4071,7 +4012,7 @@ function scanFindings(){
     FW_DIMS.forEach(dim=>{
       DATA[dim].forEach((t,ti)=>{ if(!t.scored||isTopicNA(f.id,dim,ti))return;
         const sc=topicScore(t,(ci)=>fwCell(f.id,dim,ti,ci));
-        const finds=[...new Set(t.crits.map((c,ci)=>{const cell=fwCell(f.id,dim,ti,ci);return cell&&(cell.improve||cell.keep)?(cell.improve||cell.keep).trim():'';}).filter(Boolean))];
+        const finds=topicCrits(dim,ti,(a,b)=>fwCell(f.id,dim,a,b)).filter(c=>c.score!=null&&c.score<70).map(c=>c.optText);
         if(sc==null&&!finds.length)return;
         out.push({dim,name:t.name,scope:(f.label||'מסגרת')+' · '+DIM_META[dim].short,score:sc,find:finds.join('; ')});
       });
@@ -4081,26 +4022,17 @@ function scanFindings(){
 }
 
 /* ====== איסוף סיווג שיפור/שימור לדוח ======
-   scanKS(): כל נושא שדורג — עם סיווגו, ציונו, מקורו, נימוקו, ופירוט הקריטריונים שבו
-   (כל קריטריון עם הסיווג העצמאי שלו). */
-function ksReasonFor(dim,ti,getter){
-  // מאחד את תוכן השימור/השיפור שהוזן בקריטריוני הנושא לטקסט אחד
-  const t=(dim==='gph'?DATA.gph:DATA[dim])[ti];
-  const keeps=[...new Set(t.crits.map((c,ci)=>{const cell=getter(ti,ci);return cell&&cell.keep?cell.keep.trim():'';}).filter(Boolean))];
-  const improves=[...new Set(t.crits.map((c,ci)=>{const cell=getter(ti,ci);return cell&&cell.improve?cell.improve.trim():'';}).filter(Boolean))];
-  return {keep:keeps.join(' '), improve:improves.join(' ')};
-}
-/* פירוט הקריטריונים בנושא, כל אחד עם הסיווג העצמאי שלו */
+   scanKS(): כל נושא שדורג — שמו, ציונו הסופי, סיווגו, ופירוט תתי-הנושאים
+   (הקריטריונים) שבו, כל אחד עם התשובה שנבחרה מבנק התשובות והציון שלה. */
+/* פירוט הקריטריונים בנושא — שם הקריטריון, התשובה שנבחרה וציונה */
 function topicCrits(dim,ti,getter){
   const t=(dim==='gph'?DATA.gph:DATA[dim])[ti];
   const out=[];
   t.crits.forEach((c,ci)=>{
-    if(c.w==null)return; // דילוג על סעיפים איכותיים
-    const cell=getter(ti,ci); if(!cell)return;
-    const keep=cell.keep?cell.keep.trim():'';
-    const improve=cell.improve?cell.improve.trim():'';
-    if(cell.score==null && !keep && !improve)return;
-    out.push({ci,score:cell.score,cls:critKsClass(cell),keep,improve});
+    if(c.w==null)return;                       // סעיף שאינו משוקלל בציון
+    const cell=getter(ti,ci); if(!cell||cell.opt==null)return;
+    const o=critOpt(c,cell.opt); if(!o)return;
+    out.push({ci,t:c.t,optK:o.k,optText:o.t,score:o.s});
   });
   return out;
 }
@@ -4110,9 +4042,8 @@ function scanKS(){
   DATA.gph.forEach((t,ti)=>{ if(!t.scored||isTopicNA('gph','gph',ti))return;
     const sc=topicScore(t,(ci)=>gphCell(ti,ci)); if(sc==null)return;
     const cls=ksAuto(sc); if(!cls)return;
-    const r=ksReasonFor('gph',ti,gphCell);
     out.push({scope:'gph',dim:'gph',ti,name:t.name,area:'רמת החטיבה (גפ"ה)',score:sc,cls,
-      keepTxt:r.keep,improveTxt:r.improve,crits:topicCrits('gph',ti,gphCell)});
+      crits:topicCrits('gph',ti,gphCell)});
   });
   // רמת המסגרות × ממדים
   S.frameworks.forEach(f=>{
@@ -4120,15 +4051,14 @@ function scanKS(){
       DATA[dim].forEach((t,ti)=>{ if(!t.scored||isTopicNA(f.id,dim,ti))return;
         const sc=topicScore(t,(ci)=>fwCell(f.id,dim,ti,ci)); if(sc==null)return;
         const cls=ksAuto(sc); if(!cls)return;
-        const r=ksReasonFor(dim,ti,(a,b)=>fwCell(f.id,dim,a,b));
         out.push({scope:f.id,dim,ti,name:t.name,area:(f.label||'מסגרת')+' · '+DIM_META[dim].short,
-          score:sc,cls,keepTxt:r.keep,improveTxt:r.improve,
-          crits:topicCrits(dim,ti,(a,b)=>fwCell(f.id,dim,a,b))});
+          score:sc,cls,crits:topicCrits(dim,ti,(a,b)=>fwCell(f.id,dim,a,b))});
       });
     });
   });
   return out;
 }
+
 /* ====== ריכוז שיפור/שימור אוטומטי לדו"ח ======
    מקור יחיד לאמת: הציון הסופי של כל נושא (topicScore).
      ציון <  KS_THRESHOLD  =>  שיפור
@@ -4142,19 +4072,16 @@ function ksBuckets(){
 }
 function ksEntryHTML(x){
   const b=band(x.score);
-  const side=x.cls;                       // 'keep' | 'improve'
-  // פירוט הקריטריונים שנכתב להם טקסט בצד המתאים, ללא כפילויות
-  const seen=new Set(), crits=[];
-  (x.crits||[]).forEach(c=>{ const txt=(side==='keep'?c.keep:c.improve); if(!txt) return;
-    const t=txt.trim(); if(!t||seen.has(t))return; seen.add(t); crits.push({score:c.score,t}); });
-  // אם לא נכתב פירוט ברמת הקריטריון — מוצג הטקסט המאוחד של הנושא
-  const fallback = crits.length ? '' : (side==='keep' ? x.keepTxt : x.improveTxt);
+  const crits=x.crits||[];
   return `<div class="ks-entry">
     <div class="kh"><b>${esc(x.name)}</b><span class="area">${esc(x.area)}</span>
       <span class="sc ${b.k?'bg-'+b.k:''}">${Math.round(x.score)}</span></div>
-    ${fallback?`<div class="kr">${esc(fallback)}</div>`:''}
-    ${crits.length?`<div class="ks-crits">${crits.map(c=>`<div class="ks-crit"><span class="ctxt">${
-      c.score!=null?`<span class="cscore">${Math.round(c.score)}</span> `:''}${esc(c.t)}</span></div>`).join('')}</div>`:''}
+    ${crits.length?`<div class="ks-crits">${crits.map(c=>{
+      const cb=c.score==null?'':band(c.score).k;
+      return `<div class="ks-crit">
+        <span class="cscore ${cb?'bg-'+cb:''}">${c.score==null?'—':c.score}</span>
+        <span class="ctxt"><b>${esc(c.t)}</b><span class="cans">${esc(c.optText)}</span></span>
+      </div>`;}).join('')}</div>`:''}
   </div>`;
 }
 function ksColHTML(cls,items){

@@ -9,10 +9,10 @@
 node tests/extract.js
 
 # 2. בדיקות לוגיקה — ללא דפדפן
-node tests/keep-improve.test.js     # 112 assertions — סיווג שיפור/שימור
-node tests/criteria-bank.test.js    # 94  assertions — בנק התשובות וגזירת הציון
+node tests/keep-improve.test.js     # 114 assertions — סיווג שיפור/שימור
+node tests/criteria-bank.test.js    # 128 assertions — בנק התשובות, גזירת הציון ומבנה הדוח
 
-# 3. בדיקות קצה-לקצה בדפדפן (46 assertions) — דורש playwright
+# 3. בדיקות קצה-לקצה בדפדפן (54 assertions) — דורש playwright
 npm i playwright
 CHROMIUM_PATH=/path/to/chromium node tests/report.e2e.js   # CHROMIUM_PATH אופציונלי
 ```
@@ -28,7 +28,7 @@ CHROMIUM_PATH=/path/to/chromium node tests/report.e2e.js   # CHROMIUM_PATH או�
 **`criteria-bank.test.js`** — שלמות 93 הקריטריונים ו-362 אפשרויות התשובה מהמסמך,
 סכום משקלי הנושאים בכל ממד, תקינות כל ציון, גזירת הציון מהאפשרות הנבחרת,
 אפשרויות "ללא ציון" / "לא מחושב בציון", שאלת הבונוס, הסרת ממד סביבת הכשרה,
-שימור מנגנון הניקוד של "פיתוח הדרכה", ותאימות לגיבויים ישנים.
+שימור מנגנון הניקוד של "פיתוח הדרכה", מבנה הדוח (נושא כללי + תתי-נושאים), ותאימות לגיבויים ישנים.
 
 **`report.e2e.js`** — טעינת האפליקציה בדפדפן, הזנת ציונים דרך ה-UI,
 בדיקת הריכוז בדוח הסופי, עדכון חי בשינוי ציון, מעבר בין כל המסכים,

@@ -37,18 +37,10 @@ eq('label keep', G.ksLabel('keep'), 'שימור');
 eq('label improve', G.ksLabel('improve'), 'שיפור');
 
 console.log('\n=== 2. הישן הוסר ===');
-['ksOverride','setKs','ksClass','toggleKs','critKsOverride','togglePin','isPinned','pinKey','rebuildFindings','ksGph','ksFw']
+['ksOverride','setKs','ksClass','toggleKs','critKsOverride','togglePin','isPinned','pinKey','rebuildFindings','ksGph','ksFw','critKsClass','critKsHTML','ksReasonFor','topicSideLines','keepGph','improveGph','keepFw','improveFw']
  .forEach(n=>ok('אין '+n+'()', typeof G[n]==='undefined'));
 ok('אין S.ks', G.S.ks===undefined);
 ok('אין S.pinned', G.S.pinned===undefined);
-
-console.log('\n=== 3. critKsClass ===');
-eq('תא ריק', G.critKsClass(null), null);
-eq('תא ללא ציון', G.critKsClass({score:null}), null);
-eq('תא N/A (score 60 + naMark)', G.critKsClass({score:60,naMark:true}), null);
-eq('תא 0', G.critKsClass({score:0}), 'improve');
-eq('תא 70', G.critKsClass({score:70}), 'keep');
-ok('cell.ks ישן מתעלמים ממנו', G.critKsClass({score:50,ks:'keep'})==='improve');
 
 console.log('\n=== 4. טבלת המקרים המבוקשת (scanKS דרך גפ"ה) ===');
 // בונים ביקורת סינתטית: לכל נושא בגפ"ה נותנים ציון אחיד לכל הקריטריונים המשוקללים
@@ -62,7 +54,7 @@ CASES.forEach((v,k)=>{
   const x=scored[k]; if(!x) return;
   applied.push({name:x.t.name,ti:x.i,v});
   if(v===null) return;                       // נושא 8 — ללא ציון כלל
-  x.t.crits.forEach((c,ci)=>{ if(c.w==null) return; G.setGph(x.i,ci,{score:v}); });
+  x.t.crits.forEach((c,ci)=>{ if(c.w==null) return; G.setGph(x.i,ci,{score:v,opt:'א'}); });
 });
 // שאר הנושאים נשארים ללא ציון
 const res=G.scanKS();
@@ -82,7 +74,7 @@ ok('כל 0-100 מסווג', unclassified.length===0, JSON.stringify(unclassified
 
 console.log('\n=== 6. ציון 0 נכנס לשיפור ===');
 G.S=G.BLANK();
-const t0=scored[0]; t0.t.crits.forEach((c,ci)=>{ if(c.w!=null) G.setGph(t0.i,ci,{score:0}); });
+const t0=scored[0]; t0.t.crits.forEach((c,ci)=>{ if(c.w!=null) G.setGph(t0.i,ci,{score:0,opt:'א'}); });
 const r0=G.scanKS().find(x=>x.name===t0.t.name);
 ok('נושא בציון 0 מופיע', !!r0);
 eq('סיווגו', r0&&r0.cls, 'improve');
@@ -92,7 +84,7 @@ console.log('\n=== 7. החרגות ===');
 // נושא איכותי (scored:false — "לא מחושב בציון")
 const qual=gphTopics.map((t,i)=>({t,i})).find(x=>!x.t.scored);
 ok('קיים נושא איכותי ב-DATA', !!qual);
-if(qual){ qual.t.crits.forEach((c,ci)=>G.setGph(qual.i,ci,{score:100,keep:'טקסט'}));
+if(qual){ qual.t.crits.forEach((c,ci)=>G.setGph(qual.i,ci,{score:100,opt:'א'}));
   ok('נושא איכותי לא נכנס לריכוז', !G.scanKS().some(x=>x.name===qual.t.name)); }
 // נושא שסומן "לא רלוונטי"
 G.S.topicNA[G.ksKey('gph','gph',t0.i)]=true;
@@ -107,7 +99,7 @@ ok('נושא שכל קריטריוניו N/A לא נכנס', !G.scanKS().some(x=
 console.log('\n=== 8. ksBuckets / ksReportHTML ===');
 G.S=G.BLANK();
 CASES.forEach((v,k)=>{ const x=scored[k]; if(!x||v===null)return;
-  x.t.crits.forEach((c,ci)=>{ if(c.w!=null) G.setGph(x.i,ci,{score:v}); }); });
+  x.t.crits.forEach((c,ci)=>{ if(c.w!=null) G.setGph(x.i,ci,{score:v,opt:'א'}); }); });
 const bk=G.ksBuckets();
 eq('שיפור: מספר נושאים', bk.improve.length, 2);           // 50, 69
 eq('שימור: מספר נושאים', bk.keep.length, 5);              // 70,80,90,91,100
@@ -123,7 +115,7 @@ ok('ריכוז ריק כשאין בחירות', G.ksReportHTML().includes('טר�
 console.log('\n=== 9. רגרסיה — מנוע הציונים לא נפגע ===');
 G.S=G.BLANK();
 const T=G.DATA.gph[0];
-T.crits.forEach((c,ci)=>{ if(c.w!=null) G.setGph(0,ci,{score:80}); });
+T.crits.forEach((c,ci)=>{ if(c.w!=null) G.setGph(0,ci,{score:80,opt:'א'}); });
 eq('topicScore ממוצע משוקלל', Math.round(G.topicScore(T,ci=>G.gphCell(0,ci))), 80);
 ok('gphScore מחזיר ערך', G.gphScore()!=null);
 eq('overallScore ללא מסגרות', G.overallScore()!=null, true);
@@ -132,7 +124,7 @@ eq('band(90)', G.band(90).t, 'מצוין');
 eq('fmt(null)', G.fmt(null), '—');
 // מסגרות
 G.S.frameworks=[{id:'f1',label:'גדוד א',kind:'גדוד',inspectorId:''}];
-G.DATA.prog[0].crits.forEach((c,ci)=>{ if(c.w!=null) G.setFw('f1','prog',0,ci,{score:90,improve:'שיפור נדרש'}); });
+G.DATA.prog[0].crits.forEach((c,ci)=>{ if(c.w!=null) G.setFw('f1','prog',0,ci,{score:90,opt:'א'}); });
 ok('fwDimScore', Math.round(G.fwDimScore('f1','prog'))===90);
 ok('fwScore', Math.round(G.fwScore('f1'))===90);
 ok('dimAvgAcrossFw', Math.round(G.dimAvgAcrossFw('prog'))===90);
@@ -169,7 +161,7 @@ ok('BLANK עם topicNA', typeof G.S.topicNA==='object');
 
 console.log('\n=== 10. רינדור UI (ללא DOM אמיתי) ===');
 G.S=G.BLANK(); G.S.frameworks=[{id:'f1',label:'גדוד א',kind:'גדוד',inspectorId:''}]; G.S.ui={activeFw:'f1',dim:'prog'};
-G.DATA.gph[0].crits.forEach((c,ci)=>{ if(c.w!=null) G.setGph(0,ci,{score:65}); });
+G.DATA.gph[0].crits.forEach((c,ci)=>{ if(c.w!=null) G.setGph(0,ci,{score:65,opt:'א'}); });
 const th=G.renderTopic('gph',G.DATA.gph,0,G.gphCell,'scoreGph','naGph','gph');
 ok('renderTopic רץ', th.length>0);
 ok('אין כפתור "הוסף לשימור"', !th.includes('הוסף לשימור'));
@@ -177,7 +169,7 @@ ok('אין togglePin', !th.includes('togglePin'));
 ok('אין toggleKs', !th.includes('toggleKs'));
 ok('יש כפתור "לא רלוונטי"', th.includes('לא רלוונטי'));
 ok('תגית שיפור מוצגת (ציון 65)', th.includes('ks-tag improve'));
-G.DATA.gph[0].crits.forEach((c,ci)=>{ if(c.w!=null) G.setGph(0,ci,{score:70}); });
+G.DATA.gph[0].crits.forEach((c,ci)=>{ if(c.w!=null) G.setGph(0,ci,{score:70,opt:'א'}); });
 ok('תגית שימור מוצגת (ציון 70)', G.renderTopic('gph',G.DATA.gph,0,G.gphCell,'scoreGph','naGph','gph').includes('ks-tag keep'));
 
 console.log(`\n============================\nPASS ${pass}   FAIL ${fail}\n============================`);

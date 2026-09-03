@@ -35,6 +35,8 @@ const APP=require('url').pathToFileURL(path.join(__dirname,'..','ביקורות-
   ok('אין כפתורי בחירה ידנית (ks-btn)', await pg.locator('.ks-btn').count()===0);
   ok('אין כפתורי בחירה ידנית לקריטריון (cks-btn)', await pg.locator('.cks-btn').count()===0);
   ok('אין כפתורי pin (tt-btn.keep/.improve)', await pg.locator('.tt-btn.keep, .tt-btn.improve').count()===0);
+  ok('אין שדות שימור/שיפור בקריטריון', await pg.locator('.crit textarea').count()===0);
+  ok('אין תגית שיפור/שימור לקריטריון', await pg.locator('.critks').count()===0);
   ok('כפתור "לא רלוונטי" קיים', await pg.locator('#tp_gph_0 .topic-tools .tt-btn').count()===1);
 
   // ציונים לכל הנושאים לפי טבלת המקרים
@@ -45,7 +47,7 @@ const APP=require('url').pathToFileURL(path.join(__dirname,'..','ביקורות-
     S.ui={activeFw:'f1',dim:'prog'};
     const sc=DATA.gph.map((t,i)=>({t,i})).filter(x=>x.t.scored);
     [50,69,70,80,90,91,100,null].forEach((v,k)=>{ const x=sc[k]; if(!x||v===null)return;
-      x.t.crits.forEach((c,ci)=>{ if(c.w!=null) setGph(x.i,ci,{score:v, keep:'ראוי לשימור '+v, improve:'דורש שיפור '+v}); }); });
+      x.t.crits.forEach((c,ci)=>{ if(c.w!=null) setGph(x.i,ci,{score:v,opt:c.opts[0].k}); }); });
     save(); go('report');
   });
   await pg.waitForTimeout(600);
@@ -67,6 +69,15 @@ const APP=require('url').pathToFileURL(path.join(__dirname,'..','ביקורות-
   ok('מונה שיפור = 2', (await pg.locator('#paper .ks-col.improve .cnt').innerText()).trim()==='2');
   ok('מונה שימור = 5', (await pg.locator('#paper .ks-col.keep .cnt').innerText()).trim()==='5');
   ok('הציון מוצג ליד הנושא', impTxt.includes('50') && keepTxt.includes('100'));
+  ok('תתי-הנושאים מוצגים מתחת לנושא', await pg.locator('#paper .ks-entry .ks-crits').count()>0);
+  const firstSub=await pg.locator('#paper .ks-entry .ks-crit').first().innerText();
+  ok('תת-נושא מציג שם קריטריון ותשובה', firstSub.length>30);
+  ok('כל כרטיס נושא מכיל פירוט', await pg.evaluate(()=>
+    [...document.querySelectorAll('#paper .ks-entry')].every(e=>e.querySelector('.ks-crits'))));
+  const sec5=await pg.locator('#paper .rsec').nth(4).innerText();
+  ok('סעיף 5: עמודת "התשובה שנבחרה"', sec5.includes('התשובה שנבחרה'));
+  ok('סעיף 5: שורות נושא כללי', await pg.locator('#paper tr.ftopic').count()>0);
+  ok('סעיף 5: שורות תתי-נושא מוזחות', await pg.locator('#paper td.fsub').count()>0);
 
   // עדכון חי: שינוי ציון 69 -> 70 מעביר לשימור
   await pg.evaluate((n)=>{ const sc=DATA.gph.map((t,i)=>({t,i})).filter(x=>x.t.scored);
