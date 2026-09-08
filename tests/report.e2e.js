@@ -119,6 +119,53 @@ const APP=require('url').pathToFileURL(path.join(__dirname,'..','ביקורות-
   ok('שלושה ממדים בסרגל', (await pg.locator('.dimbar button').count())===3);
   ok('בנק התשובות מוצג במסגרת', (await pg.locator('.crit .opt').count())>0);
 
+  // הערות שוליים — מספר ליד המילה, בלונית בלחיצה
+  errs.length=0;
+  await pg.evaluate(()=>{ S.ui.dim='prog'; render(); toggleTopic('prog',0); });
+  await pg.waitForTimeout(300);
+  const fnCount=await pg.locator('#tp_prog_0 .fnr').count();
+  ok('סימני הערות מוצגים ליד המילים', fnCount>0);
+  ok('כל סימן הוא sup', await pg.evaluate(()=>
+    [...document.querySelectorAll('.fnr')].every(e=>e.tagName==='SUP')));
+  ok('הבלונית סגורה לפני לחיצה', await pg.locator('#fnpop.show').count()===0);
+  await pg.locator('#tp_prog_0 .fnr').first().click();
+  await pg.waitForTimeout(300);
+  ok('לחיצה פותחת בלונית', await pg.locator('#fnpop.show').count()===1);
+  const popTxt=await pg.locator('#fnpop').innerText();
+  ok('הבלונית מציגה את מספר ההערה', /הערה\s*\d+/.test(popTxt));
+  ok('הבלונית מציגה את המילה שאליה נצמדה', popTxt.includes('«'));
+  ok('הבלונית מציגה את נוסח ההערה מהמסמך', await pg.evaluate(()=>{
+    const el=document.querySelector('.fnr'); const id=+el.getAttribute('onclick').match(/,(\d+)\)/)[1];
+    return document.getElementById('fnpop').innerText.includes(FN_STORE[id].t); }));
+  await pg.locator('#tp_prog_0 .fnr').first().click();
+  await pg.waitForTimeout(250);
+  ok('לחיצה חוזרת סוגרת', await pg.locator('#fnpop.show').count()===0);
+  await pg.locator('#tp_prog_0 .fnr').first().click(); await pg.waitForTimeout(250);
+  await pg.keyboard.press('Escape'); await pg.waitForTimeout(250);
+  ok('Escape סוגר', await pg.locator('#fnpop.show').count()===0);
+  await pg.locator('#tp_prog_0 .fnr').first().click(); await pg.waitForTimeout(250);
+  await pg.locator('body').click({position:{x:5,y:5}}); await pg.waitForTimeout(250);
+  ok('לחיצה מחוץ לבלונית סוגרת', await pg.locator('#fnpop.show').count()===0);
+  await pg.locator('#tp_prog_0 .fnr').first().click(); await pg.waitForTimeout(250);
+  const posA=await pg.evaluate(()=>document.getElementById('fnpop').style.top);
+  await pg.mouse.wheel(0,180); await pg.waitForTimeout(300);
+  ok('גלילה לא סוגרת — הבלונית עוקבת אחרי הסימן',
+     await pg.locator('#fnpop.show').count()===1 &&
+     (await pg.evaluate(()=>document.getElementById('fnpop').style.top))!==posA);
+  await pg.keyboard.press('Escape'); await pg.waitForTimeout(200);
+  ok('בחירת אפשרות לא מופעלת בלחיצה על מספר ההערה', await pg.evaluate(()=>{
+    const before=JSON.stringify(S.fw); const el=document.querySelector('#tp_prog_0 .fnr');
+    el.click(); const after=JSON.stringify(S.fw); return before===after; }));
+  ok('הערות לא גרמו לשגיאות JS', errs.length===0, errs.join(' | '));
+  ok('FN_STORE מתאפס בכל רינדור', await pg.evaluate(()=>{
+    const a=FN_STORE.length; render(); const b=FN_STORE.length; render();
+    return FN_STORE.length===b && b>0; }));
+
+  // ההערות אינן מגיעות לדוח
+  await pg.evaluate(()=>go('report')); await pg.waitForTimeout(400);
+  ok('אין סימני הערות בדוח', await pg.locator('#paper .fnr').count()===0);
+  ok('אין מילים מסומנות בדוח', await pg.locator('#paper .fnw').count()===0);
+
   // ייצוא / ייבוא JSON
   errs.length=0;
   const json=await pg.evaluate(()=>JSON.stringify(S));

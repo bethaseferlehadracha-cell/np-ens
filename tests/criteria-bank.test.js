@@ -266,5 +266,62 @@ ok('שם תת-הנושא בטבלה', ft.includes(G.esc(rt.crits[0].t)));
 ok('נוסח התשובה בטבלה', ft.includes(G.esc(rt.crits[0].opts.find(x=>x.s!=null).t)));
 ok('הדוח המלא נבנה', G.reportHTML().includes('<table'));
 
+console.log('\n=== 15. הערות שוליים מהמסמך ===');
+const FNS=[];
+DIMS.forEach(d=>D[d].forEach(t=>t.crits.forEach((c,ci)=>{
+  (c.fn||[]).forEach(f=>FNS.push({...f,dim:d,topic:t.name,ci,opt:null,txt:c.t}));
+  (c.opts||[]).forEach(o=>(o.fn||[]).forEach(f=>FNS.push({...f,dim:d,topic:t.name,ci,opt:o.k,txt:o.t})));
+})));
+eq('סה"כ הערות שוליים', FNS.length, 42);
+const nums=FNS.map(f=>f.n).sort((a,b)=>a-b);
+ok('המספרים הם 1..42 ללא כפילות וללא חוסר', JSON.stringify(nums)===JSON.stringify([...Array(42)].map((_,i)=>i+1)));
+eq('הערות שנצמדות לכותרת הקריטריון', FNS.filter(f=>f.opt===null).length, 5);
+eq('הערות שנצמדות לאפשרות', FNS.filter(f=>f.opt!==null).length, 37);
+let fnBad=[];
+FNS.forEach(f=>{
+  const loc=`הערה ${f.n} (${f.dim}/${f.topic}/[${f.ci}]${f.opt?'/'+f.opt:''})`;
+  if(!f.w||!f.w.trim()) fnBad.push(loc+': אין מילה עוגן');
+  if(!f.t||!f.t.trim()) fnBad.push(loc+': נוסח ההערה ריק');
+  if(!Number.isInteger(f.n)||f.n<1||f.n>42) fnBad.push(loc+': מספר לא תקין');
+  const n=(f.txt.match(new RegExp(f.w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'g'))||[]).length;
+  if(n===0) fnBad.push(loc+`: המילה «${f.w}» אינה בטקסט`);
+  if(n>1)  fnBad.push(loc+`: המילה «${f.w}» מופיעה ${n} פעמים — ההצמדה דו-משמעית`);
+});
+ok('כל הערה נצמדת למילה שקיימת בטקסט, פעם אחת בדיוק', fnBad.length===0, fnBad.slice(0,4).join(' | '));
+ok('נוסח ההערה אינו משוכפל בתוך הטקסט עצמו',
+   FNS.every(f=>!f.txt.includes(f.t)), 'הערה שהושארה משולבת בסוגריים בטקסט');
+
+console.log('\n=== 16. רינדור ההערות ===');
+ok('fnText קיימת', typeof G.fnText==='function');
+ok('fnShow קיימת', typeof G.fnShow==='function');
+const sample=FNS.find(f=>f.opt!==null);
+const rendered=G.fnText(sample.txt,[sample]);
+ok('נשתל מספר ההערה', rendered.includes('>'+sample.n+'<'));
+ok('הסימן הוא sup.fnr', rendered.includes('<sup class="fnr"'));
+ok('המילה מסומנת', rendered.includes('<span class="fnw">'+G.esc(sample.w)+'</span>'));
+ok('המספר בא מיד אחרי המילה',
+   rendered.indexOf('</span><sup class="fnr"')===rendered.indexOf('<span class="fnw">')+('<span class="fnw">'+G.esc(sample.w)).length);
+ok('טקסט ללא הערות נשאר מוגן-HTML בלבד', G.fnText('א<b>ב',[])==='א&lt;b&gt;ב');
+ok('מילה שאינה בטקסט אינה שוברת', G.fnText('שלום עולם',[{n:9,w:'לאקיים',t:'x'}])==='שלום עולם');
+// רינדור אמיתי של קריטריון עם הערה
+const fnCrit=D.prog.find(t=>t.name==='תיק יסוד ומימושו');
+const fnTi=D.prog.indexOf(fnCrit);
+const fh=G.renderTopic('prog',D.prog,fnTi,(a,b)=>G.fwCell('f1','prog',a,b),'pickFw','naFw','f1');
+ok('הקריטריון מרונדר עם סימני הערות', (fh.match(/class="fnr"/g)||[]).length>0);
+eq('מספר הסימנים בנושא תואם למספר ההערות בו',
+   (fh.match(/class="fnr"/g)||[]).length,
+   FNS.filter(f=>f.dim==='prog'&&f.topic==='תיק יסוד ומימושו').length);
+
+console.log('\n=== 17. ההערות לבקר בלבד — לא בדוח ===');
+G.S=G.BLANK(); G.S.frameworks=[{id:'f1',label:'גדוד א',kind:'גדוד',inspectorId:''}]; G.S.ui={activeFw:'f1',dim:'prog'};
+fnCrit.crits.forEach((c,ci)=>{ const o=c.opts.find(x=>x.s!=null); G.pickFw('prog',fnTi,ci,o.k); });
+const rep=G.reportHTML();
+ok('אין סימני הערה בדוח', !rep.includes('class="fnr"'));
+ok('אין מילים מסומנות בדוח', !rep.includes('class="fnw"'));
+const fnTexts=FNS.filter(f=>f.dim==='prog'&&f.topic==='תיק יסוד ומימושו').map(f=>f.t);
+ok('אין נוסחי הערות בדוח', fnTexts.every(t=>!rep.includes(G.esc(t))), fnTexts.find(t=>rep.includes(G.esc(t))));
+ok('הריכוז נקי מהערות', !G.ksReportHTML().includes('fnr'));
+ok('הדוח עדיין מציג את התשובות שנבחרו', rep.includes(G.esc(fnCrit.crits[0].opts.find(x=>x.s!=null).t)));
+
 console.log(`\n============================\nPASS ${pass}   FAIL ${fail}\n============================`);
 process.exit(fail?1:0);
