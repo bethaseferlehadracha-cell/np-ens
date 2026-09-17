@@ -959,7 +959,10 @@ body.has-tabbar{ padding-bottom:calc(var(--tabbar-h) + env(safe-area-inset-botto
   margin-bottom:var(--space-5);
 }
 .dash-head-inner{ position:relative; max-width:720px; margin:0 auto; }
-.dash-greet{ font-size:clamp(1.5rem,5.5vw,2rem); font-weight:700; letter-spacing:-.02em; line-height:1.2; }
+.dash-greet{
+  font-size:clamp(1.5rem,5.5vw,2rem); font-weight:700; letter-spacing:-.02em; line-height:1.2;
+  padding-inline-end:56px;
+}
 .dash-greet span{ color:var(--color-accent-light); }
 .dash-meta{
   display:flex; flex-wrap:wrap; align-items:center; gap:var(--space-2) var(--space-4);
@@ -1171,6 +1174,97 @@ body.has-tabbar{ padding-bottom:calc(var(--tabbar-h) + env(safe-area-inset-botto
 @media (max-width:359px){
   .rings,.quick-grid{ grid-template-columns:1fr; }
 }
+
+/* ── SPLASH · STEPS & CYCLE SETUP ──────────────────────── */
+.splash-step{ margin-top:var(--space-6); text-align:right; animation:rise var(--dur-base) var(--ease-out) both; }
+.splash-step[hidden]{ display:none; }
+
+.splash-skip{
+  width:100%; min-height:44px; margin-top:var(--space-3);
+  color:rgba(255,255,255,.66); font-size:13.5px; font-weight:500;
+  border-radius:var(--radius);
+  transition:color var(--dur-fast), background var(--dur-fast);
+}
+.splash-skip:hover{ color:#fff; background:rgba(255,255,255,.08); }
+.splash-skip:focus-visible{ outline-color:var(--color-accent-light); }
+.splash-skip[hidden]{ display:none; }
+
+.cycle-grid{ display:grid; grid-template-columns:1fr 1fr; gap:var(--space-2); }
+.cycle-opt{
+  min-height:52px; padding:var(--space-2) var(--space-3);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px;
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.22);
+  border-radius:var(--radius);
+  color:var(--color-on-primary);
+  transition:background var(--dur-fast), border-color var(--dur-fast);
+}
+.cycle-opt:hover{ background:rgba(255,255,255,.14); }
+.cycle-opt:focus-visible{ outline-color:var(--color-accent-light); }
+.cycle-opt[aria-pressed="true"]{
+  background:var(--color-accent-light);
+  border-color:var(--color-accent-light);
+  color:var(--color-accent-ink);
+}
+.cycle-opt-main{ font-family:var(--mono); font-size:15px; font-weight:600; }
+.cycle-opt-sub{ font-size:10.5px; opacity:.75; }
+
+.cycle-custom{ display:grid; grid-template-columns:1fr 1fr; gap:var(--space-2); margin-top:var(--space-2); }
+.cycle-custom[hidden]{ display:none; }
+.cycle-field{ display:flex; flex-direction:column; gap:var(--space-1); }
+.cycle-field span{ font-size:11.5px; color:rgba(255,255,255,.62); }
+.cycle-field input{
+  min-height:48px; padding:0 var(--space-3);
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.28);
+  border-radius:var(--radius);
+  color:var(--color-on-primary);
+  font-family:var(--mono); font-size:16px; text-align:center;
+}
+.cycle-field input:focus{ outline:none; border-color:var(--color-accent-light); }
+.cycle-field input:focus-visible{ outline:2px solid var(--color-accent-light); outline-offset:2px; }
+
+/* the native date control needs help to sit in a dark RTL field */
+#cycleStart{ font-family:var(--mono); text-align:right; }
+#cycleStart::-webkit-calendar-picker-indicator{ filter:invert(1); opacity:.7; cursor:pointer; }
+
+/* ── CYCLE SETTINGS ENTRY ON THE DASHBOARD ─────────────── */
+.dash-settings{
+  position:absolute; z-index:2; top:var(--space-5); left:var(--space-4);
+  width:44px; height:44px; border-radius:var(--radius);
+  display:flex; align-items:center; justify-content:center;
+  color:rgba(255,255,255,.72);
+  transition:background var(--dur-fast), color var(--dur-fast);
+}
+.dash-settings:hover{ background:rgba(255,255,255,.12); color:#fff; }
+.dash-settings:focus-visible{ outline-color:var(--color-accent-light); }
+
+.week-today{
+  display:inline-flex; align-items:center; gap:var(--space-1);
+  min-height:32px; padding:0 var(--space-2);
+  font-size:12px; font-weight:600; color:var(--color-accent);
+  border-radius:var(--radius-sm);
+}
+.week-today:hover{ background:var(--color-muted); }
+.week-today[hidden]{ display:none; }
+
+/* cycle fields inside the settings sheet */
+.sheet-custom{ display:grid; grid-template-columns:1fr 1fr; gap:var(--space-2); margin-top:var(--space-3); }
+.sheet-custom[hidden]{ display:none; }
+.sheet-field{ display:flex; flex-direction:column; gap:var(--space-1); }
+.sheet-field span{ font-size:12px; color:var(--color-muted-foreground); }
+.sheet-field input,.sheet-date{
+  min-height:48px; padding:0 var(--space-3);
+  background:var(--color-card);
+  border:1px solid var(--color-control-border);
+  border-radius:var(--radius);
+  color:var(--color-foreground);
+  font-family:var(--mono); font-size:16px;
+}
+.sheet-field input{ text-align:center; }
+.sheet-date{ width:100%; text-align:right; }
+.sheet-field input:focus-visible,.sheet-date:focus-visible{ outline:2px solid var(--color-ring); outline-offset:2px; }
+.splash-input.invalid,.sheet-date.invalid{ border-color:#FFB4A8; }
 </style>
 </head>
 <body>
@@ -1183,20 +1277,52 @@ body.has-tabbar{ padding-bottom:calc(var(--tabbar-h) + env(safe-area-inset-botto
     <h1 class="splash-title">מארז <span>למ"פ</span></h1>
     <p class="splash-tagline">מערכת ניהול הכשרה · לשימוש פנימי</p>
 
-    <div class="splash-form">
+    <!-- step 1: who -->
+    <div class="splash-step" id="splashStep1">
       <label class="splash-label" for="splashName">שם המשתמש</label>
       <input class="splash-input" id="splashName" type="text" autocomplete="name"
              placeholder="למשל: אלון" maxlength="24"
-             aria-describedby="splashHint" onkeydown="if(event.key==='Enter')enterApp(event)">
+             aria-describedby="splashHint" onkeydown="if(event.key==='Enter')splashNext()">
       <p class="splash-hint" id="splashHint">נשמר במכשיר שלכם בלבד ומשמש רק לפנייה אישית.</p>
-      <p class="splash-error" id="splashError" role="alert" hidden>נא להזין שם כדי להיכנס</p>
-      <button class="splash-btn" id="splashBtn" type="button" onclick="enterApp(event)">
-        כניסה למערכת
+      <p class="splash-error" id="splashError" role="alert" hidden>נא להזין שם כדי להמשיך</p>
+      <button class="splash-btn" id="splashBtn" type="button" onclick="splashNext()">
+        המשך
         <span data-icon="arrow-start" data-size="18"></span>
+      </button>
+      <button class="splash-skip" id="splashSkip" type="button" onclick="enterApp()" hidden>
+        המחזור כבר מוגדר · כניסה מהירה
       </button>
     </div>
 
-    <p class="splash-foot" id="splashFoot">v3.0</p>
+    <!-- step 2: which cycle -->
+    <div class="splash-step" id="splashStep2" hidden>
+      <span class="splash-label">משך המחזור</span>
+      <div class="cycle-grid" id="cycleGrid" role="group" aria-label="בחירת משך המחזור"></div>
+
+      <div class="cycle-custom" id="cycleCustom" hidden>
+        <label class="cycle-field">
+          <span>שבועות הכשרה</span>
+          <input type="number" id="cycleT" min="1" max="52" inputmode="numeric">
+        </label>
+        <label class="cycle-field">
+          <span>שבועות הכנת סגל</span>
+          <input type="number" id="cycleP" min="0" max="12" inputmode="numeric">
+        </label>
+      </div>
+
+      <label class="splash-label" for="cycleStart" style="margin-top:var(--space-5)">תאריך פתיחת המחזור</label>
+      <input class="splash-input" id="cycleStart" type="date" onchange="previewCycle()">
+      <p class="splash-hint" id="cyclePreview">לפי התאריך המערכת תדע באיזה שבוע אתם נמצאים.</p>
+      <p class="splash-error" id="cycleError" role="alert" hidden>נא לבחור תאריך פתיחה</p>
+
+      <button class="splash-btn" type="button" onclick="enterApp()">
+        כניסה למערכת
+        <span data-icon="arrow-start" data-size="18"></span>
+      </button>
+      <button class="splash-skip" type="button" onclick="splashBack()">חזרה</button>
+    </div>
+
+    <p class="splash-foot" id="splashFoot">v3.1</p>
   </div>
 </div>
 
@@ -1207,6 +1333,9 @@ body.has-tabbar{ padding-bottom:calc(var(--tabbar-h) + env(safe-area-inset-botto
 
   <div class="dash-head">
     <div class="grid-bg" aria-hidden="true"></div>
+    <button class="dash-settings" type="button" onclick="openCycleSheet()">
+      <span data-icon="gear" data-size="20"></span><span class="sr-only">הגדרות המחזור</span>
+    </button>
     <div class="dash-head-inner">
       <h1 class="dash-greet" id="dashGreet">שלום</h1>
       <div class="dash-meta">
@@ -1249,14 +1378,17 @@ body.has-tabbar{ padding-bottom:calc(var(--tabbar-h) + env(safe-area-inset-botto
         </button>
       </div>
       <div class="week-bar">
-        <button class="week-step" type="button" id="weekPrev" onclick="setWeek(currentWeek-1)" aria-label="שבוע קודם">
+        <button class="week-step" type="button" id="weekPrev" onclick="setWeek(currentWeek-1,true)" aria-label="שבוע קודם">
           <span data-icon="chevron-end" data-size="18"></span>
         </button>
         <div class="week-now">
           <span class="week-now-num" id="weekNum">1</span>
           <span class="week-now-label">שבוע במחזור</span>
+          <button class="week-today" type="button" id="weekToday" onclick="backToToday()" hidden>
+            חזרה להיום
+          </button>
         </div>
-        <button class="week-step" type="button" id="weekNext" onclick="setWeek(currentWeek+1)" aria-label="שבוע הבא">
+        <button class="week-step" type="button" id="weekNext" onclick="setWeek(currentWeek+1,true)" aria-label="שבוע הבא">
           <span data-icon="chevron-start" data-size="18"></span>
         </button>
       </div>
@@ -1470,7 +1602,7 @@ body.has-tabbar{ padding-bottom:calc(var(--tabbar-h) + env(safe-area-inset-botto
           <h1>ציר משימות <span>מ"פ</span></h1>
           <p class="module-sub">מה נדרש בכל שלב, מהכנ"ס ועד סיום המחזור</p>
         </div>
-        <button class="duration-badge" id="tr_dur-badge" type="button" onclick="tr_openDuration()">
+        <button class="duration-badge" id="tr_dur-badge" type="button" onclick="openCycleSheet()">
           <span data-icon="gear" data-size="16"></span>
           <span id="tr_dur-label">מחזור 13+3</span>
         </button>
@@ -1599,6 +1731,15 @@ body.has-tabbar{ padding-bottom:calc(var(--tabbar-h) + env(safe-area-inset-botto
   </div>
 </div>
 
+
+<!-- app-level sheet: openable from any screen, so it cannot sit inside one -->
+<div class="modal-overlay" id="cycle-modal-overlay" onclick="closeCycleSheet(event)">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="cycle-modal-title">
+    <div class="modal-handle"></div>
+    <div id="cycle-modal-content"></div>
+    <button class="modal-close" type="button" onclick="closeCycleSheet()">ביטול</button>
+  </div>
+</div>
 
 </div>
 
@@ -1730,33 +1871,143 @@ const MODULES = {
 const TAB_SCREEN = {home:'home-screen', clocks:'screen-clocks', checks:'screen-checks', search:'screen-search'};
 
 const initialized = {};
-let userName   = '';
-let lastModule = null;
+let userName    = '';
+let lastModule  = null;
 let currentWeek = 1;
+let weekPinned  = false;   // true once the user steps away from today's week
+let cycleStart  = '';      // YYYY-MM-DD, the day the cycle opened
 
 function store(key, val) { try { localStorage.setItem(key, val); } catch(e) {} }
 function recall(key)     { try { return localStorage.getItem(key); } catch(e) { return null; } }
 
 
 // ─── SPLASH ──────────────────────────────────────────────────────────────────
-function enterApp(e) {
-  if (e) e.preventDefault();
+const CYCLE_PRESETS = [
+  {t:8,  p:2}, {t:11, p:3}, {t:13, p:3},
+  {t:16, p:3}, {t:20, p:4}, {t:0,  p:0}   // 0/0 is the custom slot
+];
+let cyclePick = {t:13, p:3, custom:false};
+
+function renderCycleGrid() {
+  document.getElementById('cycleGrid').innerHTML = CYCLE_PRESETS.map(d => {
+    const isCustom = d.t === 0;
+    const on = isCustom ? cyclePick.custom
+                        : (!cyclePick.custom && d.t === cyclePick.t && d.p === cyclePick.p);
+    return `<button type="button" class="cycle-opt" aria-pressed="${on}"
+        onclick="pickCycle(${d.t},${d.p})">
+        <span class="cycle-opt-main">${isCustom ? 'אחר' : d.t + '+' + d.p}</span>
+        <span class="cycle-opt-sub">${isCustom ? 'הזנה ידנית' : d.t + ' שבועות הכשרה'}</span>
+      </button>`;
+  }).join('');
+  document.getElementById('cycleCustom').hidden = !cyclePick.custom;
+}
+
+function pickCycle(t, p) {
+  if (t === 0) {
+    cyclePick.custom = true;
+    document.getElementById('cycleT').value = cyclePick.t;
+    document.getElementById('cycleP').value = cyclePick.p;
+  } else {
+    cyclePick = {t, p, custom:false};
+  }
+  renderCycleGrid();
+  previewCycle();
+}
+
+function readCyclePick() {
+  if (cyclePick.custom) {
+    const t = parseInt(document.getElementById('cycleT').value, 10);
+    const p = parseInt(document.getElementById('cycleP').value, 10);
+    return {t: Math.min(Math.max(t || 1, 1), 52), p: Math.min(Math.max(isNaN(p) ? 0 : p, 0), 12)};
+  }
+  return {t: cyclePick.t, p: cyclePick.p};
+}
+
+// Which week of the cycle today falls in, from the opening date.
+function weekFromDate(startStr, totalWeeks) {
+  if (!startStr) return null;
+  const start = new Date(startStr + 'T00:00:00');
+  if (isNaN(start)) return null;
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const days = Math.round((today - start) / 86400000);
+  if (days < 0)  return {week:1, state:'before', days:-days};
+  const w = Math.floor(days / 7) + 1;
+  if (w > totalWeeks) return {week:totalWeeks, state:'after', days};
+  return {week:w, state:'during', days};
+}
+
+function previewCycle() {
+  const {t, p} = readCyclePick();
+  const el = document.getElementById('cyclePreview');
+  const start = document.getElementById('cycleStart').value;
+  const info = weekFromDate(start, t);
+  if (!info) { el.textContent = 'לפי התאריך המערכת תדע באיזה שבוע אתם נמצאים.'; return; }
+  if (info.state === 'before') el.textContent = `המחזור ייפתח בעוד ${info.days} ימים.`;
+  else if (info.state === 'after') el.textContent = `המחזור הסתיים. השבוע האחרון היה ${t}.`;
+  else el.textContent = `היום אתם בשבוע ${info.week} מתוך ${t}.`;
+}
+
+function splashNext() {
   const input = document.getElementById('splashName');
   const error = document.getElementById('splashError');
   const name = input.value.trim();
-
   if (!name) {
-    // own validation: the browser's own bubble does not render everywhere
     error.hidden = false;
     input.classList.add('invalid');
     input.focus();
-    return false;
+    return;
   }
   error.hidden = true;
   input.classList.remove('invalid');
-
   userName = name;
   store('mp_user', name);
+  document.getElementById('splashStep1').hidden = true;
+  document.getElementById('splashStep2').hidden = false;
+  renderCycleGrid();
+  previewCycle();
+}
+
+function splashBack() {
+  document.getElementById('splashStep2').hidden = true;
+  document.getElementById('splashStep1').hidden = false;
+  document.getElementById('splashName').focus();
+}
+
+function applyCycle(t, p, start) {
+  tr_totalWeeks = t;
+  tr_prepWeeks  = p;
+  cycleStart    = start || '';
+  store('mp_cycle', JSON.stringify({t, p, start: cycleStart}));
+  syncWeekToToday();
+  if (typeof tr_updateDurLabel === 'function') tr_updateDurLabel();
+  if (initialized.tr) tr_renderContent();
+}
+
+// Follow today's date unless the user deliberately stepped to another week.
+function syncWeekToToday() {
+  const info = weekFromDate(cycleStart, tr_totalWeeks);
+  if (info && !weekPinned) currentWeek = info.week;
+  currentWeek = Math.min(Math.max(1, currentWeek), tr_totalWeeks);
+}
+
+function enterApp(e) {
+  if (e) e.preventDefault();
+
+  // entering from step 2 means a cycle was chosen here
+  if (!document.getElementById('splashStep2').hidden) {
+    const start = document.getElementById('cycleStart').value;
+    const err = document.getElementById('cycleError');
+    if (!start) {
+      err.hidden = false;
+      document.getElementById('cycleStart').classList.add('invalid');
+      document.getElementById('cycleStart').focus();
+      return false;
+    }
+    err.hidden = true;
+    const {t, p} = readCyclePick();
+    applyCycle(t, p, start);
+  }
+  if (!userName) userName = document.getElementById('splashName').value.trim() || recall('mp_user') || '';
 
   document.body.classList.add('has-tabbar');
   document.getElementById('tabbar').hidden = false;
@@ -1932,16 +2183,30 @@ function renderRings() {
     </button>`;
 }
 
-function setWeek(w) {
+function setWeek(w, fromUser) {
   currentWeek = Math.min(Math.max(1, w), tr_totalWeeks);
-  store('mp_week', String(currentWeek));
+  if (fromUser !== false) {
+    const info = weekFromDate(cycleStart, tr_totalWeeks);
+    weekPinned = !!(info && info.week !== currentWeek);
+    store('mp_week_pinned', weekPinned ? String(currentWeek) : '');
+  }
   renderWeek();
+}
+
+function backToToday() {
+  weekPinned = false;
+  store('mp_week_pinned', '');
+  syncWeekToToday();
+  renderWeek();
+  renderDashboard();
 }
 
 function renderWeek() {
   document.getElementById('weekNum').textContent = currentWeek;
   document.getElementById('weekPrev').disabled = currentWeek <= 1;
   document.getElementById('weekNext').disabled = currentWeek >= tr_totalWeeks;
+  const todayBtn = document.getElementById('weekToday');
+  if (todayBtn) todayBtn.hidden = !weekPinned;
 
   // a training task belongs to this week when its own weeksFn says so
   const hits = [];
@@ -2007,8 +2272,11 @@ function renderDashboard() {
     `${greetingFor(now.getHours())}<span>${userName ? ', ' + userName : ''}</span>`;
   document.getElementById('dashDate').textContent =
     `יום ${HE_DAYS[now.getDay()]} · ${now.getDate()} ב${HE_MONTHS[now.getMonth()]}`;
-  document.getElementById('dashCycle').textContent =
-    `מחזור ${tr_totalWeeks}+${tr_prepWeeks} · שבוע ${currentWeek}`;
+  const info = weekFromDate(cycleStart, tr_totalWeeks);
+  let cycleText = `מחזור ${tr_totalWeeks}+${tr_prepWeeks} · שבוע ${currentWeek}`;
+  if (info && info.state === 'before') cycleText = `מחזור ${tr_totalWeeks}+${tr_prepWeeks} · נפתח בעוד ${info.days} ימים`;
+  else if (info && info.state === 'after') cycleText = `מחזור ${tr_totalWeeks}+${tr_prepWeeks} · הסתיים`;
+  document.getElementById('dashCycle').textContent = cycleText;
 
   renderNowCard();
   renderContinue();
@@ -2237,22 +2505,42 @@ function boot() {
   cb_init(); ca_init();
   initialized.cb = true; initialized.ca = true;
 
-  const savedWeek = parseInt(recall('mp_week'), 10);
-  if (savedWeek) currentWeek = Math.min(Math.max(1, savedWeek), tr_totalWeeks);
+  // the stored cycle drives every timing calculation, so restore it first
+  let savedCycle = null;
+  try { savedCycle = JSON.parse(recall('mp_cycle') || 'null'); } catch(e) {}
+  if (savedCycle && savedCycle.t) {
+    tr_totalWeeks = savedCycle.t;
+    tr_prepWeeks  = savedCycle.p;
+    cycleStart    = savedCycle.start || '';
+  }
+  const pinned = parseInt(recall('mp_week_pinned'), 10);
+  if (pinned) { weekPinned = true; currentWeek = pinned; }
+  syncWeekToToday();
+
   lastModule = recall('mp_last');
 
   const savedName = recall('mp_user');
   if (savedName) {
-    // returning user: fill the field and let them straight in
     userName = savedName;
     document.getElementById('splashName').value = savedName;
-    document.getElementById('splashFoot').textContent = 'v3.0 · ברוך שובך';
+    document.getElementById('splashFoot').textContent = 'v3.1 · ברוך שובך';
+    if (savedCycle && savedCycle.t) document.getElementById('splashSkip').hidden = false;
   }
+  cyclePick = {t: tr_totalWeeks, p: tr_prepWeeks,
+               custom: !CYCLE_PRESETS.some(d => d.t === tr_totalWeeks && d.p === tr_prepWeeks)};
+  document.getElementById('cycleStart').value = cycleStart;
   const nameInput = document.getElementById('splashName');
   nameInput.addEventListener('input', () => {
     document.getElementById('splashError').hidden = true;
     nameInput.classList.remove('invalid');
   });
+  const dateInput = document.getElementById('cycleStart');
+  dateInput.addEventListener('input', () => {
+    document.getElementById('cycleError').hidden = true;
+    dateInput.classList.remove('invalid');
+  });
+  ['cycleT','cycleP'].forEach(id =>
+    document.getElementById(id).addEventListener('input', previewCycle));
   nameInput.focus();
 }
 
@@ -2529,38 +2817,94 @@ function tr_updateDurLabel(){
   if(el) el.textContent=`מחזור ${tr_totalWeeks}+${tr_prepWeeks}`;
 }
 
-function tr_openDuration(){
-  const opts=tr_durations.map(d=>
-    `<button type="button" class="w-opt" aria-pressed="${d.t===tr_totalWeeks&&d.p===tr_prepWeeks}"
-       onclick="tr_setDuration(${d.t},${d.p})">${d.t} שבועות + ${d.p}</button>`
-  ).join('');
-  document.getElementById('tr_modal-content').innerHTML=`
+// The dashboard and the training module open the same cycle sheet.
+function openCycleSheet() {
+  const {t, p} = {t: tr_totalWeeks, p: tr_prepWeeks};
+  cyclePick = {t, p, custom: !CYCLE_PRESETS.some(d => d.t === t && d.p === p)};
+  const opts = CYCLE_PRESETS.map(d => {
+    const isCustom = d.t === 0;
+    const on = isCustom ? cyclePick.custom : (!cyclePick.custom && d.t === t && d.p === p);
+    return `<button type="button" class="w-opt" aria-pressed="${on}"
+      onclick="sheetPickCycle(${d.t},${d.p})">${isCustom ? 'אחר' : d.t + ' + ' + d.p}</button>`;
+  }).join('');
+  document.getElementById('cycle-modal-content').innerHTML = `
     <div class="modal-header">
       <span class="modal-icon">${icon('calendar',22)}</span>
       <div>
-        <h2 class="modal-title" id="tr_modal-title">משך המחזור</h2>
+        <h2 class="modal-title" id="cycle-modal-title">הגדרות המחזור</h2>
         <p class="modal-freq">שבועות הכשרה + שבועות הכנת סגל</p>
       </div>
     </div>
     <div class="modal-divider"></div>
     <div class="modal-section">
-      <div class="modal-section-title">בחרו משך</div>
-      <div class="w-picker">${opts}</div>
+      <div class="modal-section-title">משך</div>
+      <div class="w-picker" id="sheetCycleOpts">${opts}</div>
+      <div class="sheet-custom" id="sheetCustom" ${cyclePick.custom ? '' : 'hidden'}>
+        <label class="sheet-field"><span>שבועות הכשרה</span>
+          <input type="number" id="sheetT" min="1" max="52" inputmode="numeric" value="${t}"></label>
+        <label class="sheet-field"><span>הכנת סגל</span>
+          <input type="number" id="sheetP" min="0" max="12" inputmode="numeric" value="${p}"></label>
+      </div>
     </div>
-    <p class="modal-body" style="font-size:14px;color:var(--color-muted-foreground)">
-      העיתויים בציר המשימות מחושבים מחדש לפי הבחירה.
-    </p>
+    <div class="modal-section">
+      <div class="modal-section-title">תאריך פתיחה</div>
+      <input class="sheet-date" type="date" id="sheetStart" value="${cycleStart}" onchange="sheetPreview()">
+      <p class="modal-freq" id="sheetPreviewText" style="margin-top:var(--space-2)"></p>
+    </div>
+    <button class="nav-btn primary" type="button" style="width:100%;justify-content:center"
+            onclick="saveCycleSheet()">שמירה</button>
   `;
-  openSheet('tr_modal-overlay');
+  sheetPreview();
+  openSheet('cycle-modal-overlay');
 }
 
-function tr_setDuration(t,p){
-  tr_totalWeeks=t; tr_prepWeeks=p;
-  tr_updateDurLabel();
-  closeSheet('tr_modal-overlay');
-  tr_renderContent();
-  if (currentWeek > tr_totalWeeks) setWeek(tr_totalWeeks);
+function closeCycleSheet(e) {
+  if (!e || e.target === document.getElementById('cycle-modal-overlay')) closeSheet('cycle-modal-overlay');
 }
+
+function sheetPickCycle(t, p) {
+  if (t === 0) cyclePick.custom = true;
+  else cyclePick = {t, p, custom:false};
+  document.getElementById('sheetCustom').hidden = !cyclePick.custom;
+  document.querySelectorAll('#sheetCycleOpts .w-opt').forEach((b, i) => {
+    const d = CYCLE_PRESETS[i];
+    const on = d.t === 0 ? cyclePick.custom : (!cyclePick.custom && d.t === cyclePick.t && d.p === cyclePick.p);
+    b.setAttribute('aria-pressed', String(on));
+  });
+  sheetPreview();
+}
+
+function sheetReadCycle() {
+  if (cyclePick.custom) {
+    const t = parseInt(document.getElementById('sheetT').value, 10);
+    const p = parseInt(document.getElementById('sheetP').value, 10);
+    return {t: Math.min(Math.max(t || 1, 1), 52), p: Math.min(Math.max(isNaN(p) ? 0 : p, 0), 12)};
+  }
+  return {t: cyclePick.t, p: cyclePick.p};
+}
+
+function sheetPreview() {
+  const {t} = sheetReadCycle();
+  const start = document.getElementById('sheetStart').value;
+  const info = weekFromDate(start, t);
+  const el = document.getElementById('sheetPreviewText');
+  if (!info) { el.textContent = 'בלי תאריך, השבוע הנוכחי נבחר ידנית.'; return; }
+  if (info.state === 'before')     el.textContent = `המחזור ייפתח בעוד ${info.days} ימים.`;
+  else if (info.state === 'after') el.textContent = `המחזור הסתיים. השבוע האחרון היה ${t}.`;
+  else                             el.textContent = `היום: שבוע ${info.week} מתוך ${t}.`;
+}
+
+function saveCycleSheet() {
+  const {t, p} = sheetReadCycle();
+  weekPinned = false;
+  store('mp_week_pinned', '');
+  applyCycle(t, p, document.getElementById('sheetStart').value);
+  closeSheet('cycle-modal-overlay');
+  renderDashboard();
+  renderPickerStats();
+}
+
+
 
 // ─── TIMELINE ──────────────────────────────────────────────────────────
 function tr_renderTimeline(){
