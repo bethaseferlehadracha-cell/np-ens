@@ -893,6 +893,13 @@ body.has-tabbar{ padding-bottom:calc(var(--tabbar-h) + env(safe-area-inset-botto
 .splash-input:focus{ outline:none; border-color:#7FD1B0; background:rgba(255,255,255,.13); }
 .splash-input:focus-visible{ outline:2px solid #7FD1B0; outline-offset:2px; }
 .splash-hint{ font-size:12px; color:rgba(255,255,255,.5); margin-top:var(--space-2); }
+.splash-error{
+  display:flex; align-items:center; gap:var(--space-2);
+  font-size:13px; font-weight:600; color:#FFB4A8;
+  margin-top:var(--space-2);
+}
+.splash-error[hidden]{ display:none; }
+.splash-input.invalid{ border-color:#FFB4A8; }
 
 .splash-btn{
   width:100%; min-height:52px; margin-top:var(--space-4);
@@ -1174,16 +1181,18 @@ body.has-tabbar{ padding-bottom:calc(var(--tabbar-h) + env(safe-area-inset-botto
     <h1 class="splash-title">מארז <span>למ"פ</span></h1>
     <p class="splash-tagline">מערכת ניהול הכשרה · לשימוש פנימי</p>
 
-    <form class="splash-form" id="splashForm" onsubmit="return enterApp(event)">
+    <div class="splash-form">
       <label class="splash-label" for="splashName">שם המשתמש</label>
       <input class="splash-input" id="splashName" type="text" autocomplete="name"
-             placeholder="למשל: אלון" maxlength="24" required>
-      <p class="splash-hint">נשמר במכשיר שלכם בלבד ומשמש רק לפנייה אישית.</p>
-      <button class="splash-btn" type="submit">
+             placeholder="למשל: אלון" maxlength="24"
+             aria-describedby="splashHint" onkeydown="if(event.key==='Enter')enterApp(event)">
+      <p class="splash-hint" id="splashHint">נשמר במכשיר שלכם בלבד ומשמש רק לפנייה אישית.</p>
+      <p class="splash-error" id="splashError" role="alert" hidden>נא להזין שם כדי להיכנס</p>
+      <button class="splash-btn" id="splashBtn" type="button" onclick="enterApp(event)">
         כניסה למערכת
         <span data-icon="arrow-start" data-size="18"></span>
       </button>
-    </form>
+    </div>
 
     <p class="splash-foot" id="splashFoot">v3.0</p>
   </div>
@@ -1731,16 +1740,29 @@ function recall(key)     { try { return localStorage.getItem(key); } catch(e) { 
 function enterApp(e) {
   if (e) e.preventDefault();
   const input = document.getElementById('splashName');
+  const error = document.getElementById('splashError');
   const name = input.value.trim();
-  if (!name) { input.focus(); return false; }
+
+  if (!name) {
+    // own validation: the browser's own bubble does not render everywhere
+    error.hidden = false;
+    input.classList.add('invalid');
+    input.focus();
+    return false;
+  }
+  error.hidden = true;
+  input.classList.remove('invalid');
+
   userName = name;
   store('mp_user', name);
-  const splash = document.getElementById('splash-screen');
-  splash.classList.add('leaving');
-  setTimeout(() => { splash.remove(); }, 420);
+
   document.body.classList.add('has-tabbar');
   document.getElementById('tabbar').hidden = false;
   go('home');
+
+  const splash = document.getElementById('splash-screen');
+  splash.classList.add('leaving');
+  setTimeout(() => { if (splash.parentNode) splash.remove(); }, 420);
   return false;
 }
 
@@ -2224,7 +2246,12 @@ function boot() {
     document.getElementById('splashName').value = savedName;
     document.getElementById('splashFoot').textContent = 'v3.0 · ברוך שובך';
   }
-  document.getElementById('splashName').focus();
+  const nameInput = document.getElementById('splashName');
+  nameInput.addEventListener('input', () => {
+    document.getElementById('splashError').hidden = true;
+    nameInput.classList.remove('invalid');
+  });
+  nameInput.focus();
 }
 
 // ─── SHEETS ──────────────────────────────────────────────────────────────────
