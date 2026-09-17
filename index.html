@@ -26,8 +26,10 @@
   --color-on-primary:       #FFFFFF;
   --color-secondary:        #2563EB;
   --color-on-secondary:     #FFFFFF;
-  --color-accent:           #047857;
+  --color-accent:           #0369A1;  /* blue CTA, sits with the navy */
   --color-on-accent:        #FFFFFF;
+  --color-accent-light:     #7DD3FC;  /* the same accent for navy surfaces */
+  --color-accent-ink:       #08243A;  /* text on --color-accent-light */
   --color-background:       #F8FAFC;
   --color-foreground:       #0F172A;
   --color-card:             #FFFFFF;
@@ -42,8 +44,8 @@
   --color-ring:             #1E3A5F;
 
   /* tonal surfaces used by the frequency system */
-  --tone-daily:    #047857;
-  --tone-daily-bg: #E7F3EE;
+  --tone-daily:    #0F766E;
+  --tone-daily-bg: #E3F1EF;
   --tone-week:     #1D4ED8;
   --tone-week-bg:  #E8EFFC;
   --tone-month:    #B45309;
@@ -178,7 +180,7 @@ button{ cursor:pointer; background:none; border:none; }
   font-size:clamp(2rem,7vw,2.75rem);
   font-weight:700; line-height:1.1; letter-spacing:-.02em;
 }
-.home-title span{ color:#7FD1B0; }
+.home-title span{ color:var(--color-accent-light); }
 .home-subtitle{
   margin-top:var(--space-3);
   font-size:15px; font-weight:400; line-height:1.6;
@@ -350,7 +352,7 @@ button{ cursor:pointer; background:none; border:none; }
   font-size:clamp(1.375rem,4.5vw,1.875rem);
   font-weight:700; letter-spacing:-.02em; line-height:1.2;
 }
-.module-head h1 span{ color:#7FD1B0; }
+.module-head h1 span{ color:var(--color-accent-light); }
 .module-sub{
   font-size:13px; font-weight:400; color:rgba(255,255,255,.66);
   margin-top:var(--space-2); max-width:52ch;
@@ -609,7 +611,7 @@ button{ cursor:pointer; background:none; border:none; }
 }
 
 /* ═══════════════ CHECKLISTS ═══════════════ */
-.mod-cb{ --tone:var(--color-accent); --tone-bg:var(--tone-daily-bg); }
+.mod-cb{ --tone:var(--tone-month); --tone-bg:var(--tone-month-bg); }
 .mod-ca{ --tone:var(--color-secondary); --tone-bg:var(--tone-week-bg); }
 .mod-cb,.mod-ca{ background:var(--color-background); min-height:100vh; }
 
@@ -851,13 +853,13 @@ body.has-tabbar{ padding-bottom:calc(var(--tabbar-h) + env(safe-area-inset-botto
   border:2px solid rgba(255,255,255,.28);
   border-radius:var(--radius-lg);
   font-family:var(--mono); font-size:26px; font-weight:600; letter-spacing:.04em;
-  color:#7FD1B0;
+  color:var(--color-accent-light);
   position:relative;
   animation:markIn var(--dur-slow) var(--ease-out) both;
 }
 .splash-mark::after{
   content:''; position:absolute; inset:-7px;
-  border:1px solid rgba(127,209,176,.24);
+  border:1px solid rgba(125,211,252,.26);
   border-radius:calc(var(--radius-lg) + 5px);
 }
 @keyframes markIn{ from{opacity:0; transform:scale(.9)} to{opacity:1; transform:none} }
@@ -866,7 +868,7 @@ body.has-tabbar{ padding-bottom:calc(var(--tabbar-h) + env(safe-area-inset-botto
   font-size:clamp(2rem,9vw,2.5rem); font-weight:700; letter-spacing:-.02em; line-height:1.1;
   animation:rise var(--dur-slow) var(--ease-out) 80ms both;
 }
-.splash-title span{ color:#7FD1B0; }
+.splash-title span{ color:var(--color-accent-light); }
 .splash-tagline{
   margin-top:var(--space-3); font-size:14px; color:rgba(255,255,255,.62);
   animation:rise var(--dur-slow) var(--ease-out) 140ms both;
@@ -890,8 +892,8 @@ body.has-tabbar{ padding-bottom:calc(var(--tabbar-h) + env(safe-area-inset-botto
   transition:border-color var(--dur-fast), background var(--dur-fast);
 }
 .splash-input::placeholder{ color:rgba(255,255,255,.42); }
-.splash-input:focus{ outline:none; border-color:#7FD1B0; background:rgba(255,255,255,.13); }
-.splash-input:focus-visible{ outline:2px solid #7FD1B0; outline-offset:2px; }
+.splash-input:focus{ outline:none; border-color:var(--color-accent-light); background:rgba(255,255,255,.13); }
+.splash-input:focus-visible{ outline:2px solid var(--color-accent-light); outline-offset:2px; }
 .splash-hint{ font-size:12px; color:rgba(255,255,255,.5); margin-top:var(--space-2); }
 .splash-error{
   display:flex; align-items:center; gap:var(--space-2);
@@ -904,12 +906,12 @@ body.has-tabbar{ padding-bottom:calc(var(--tabbar-h) + env(safe-area-inset-botto
 .splash-btn{
   width:100%; min-height:52px; margin-top:var(--space-4);
   display:flex; align-items:center; justify-content:center; gap:var(--space-2);
-  background:#7FD1B0; color:#0B2F22;
+  background:var(--color-accent-light); color:var(--color-accent-ink);
   border-radius:var(--radius);
   font-size:16px; font-weight:700;
   transition:background var(--dur-fast) var(--ease-out), transform var(--dur-instant);
 }
-.splash-btn:hover{ background:#96DCC0; }
+.splash-btn:hover{ background:#A5E0FD; }
 .splash-btn:active{ transform:scale(.99); }
 .splash-btn:focus-visible{ outline-color:#fff; }
 
@@ -958,7 +960,7 @@ body.has-tabbar{ padding-bottom:calc(var(--tabbar-h) + env(safe-area-inset-botto
 }
 .dash-head-inner{ position:relative; max-width:720px; margin:0 auto; }
 .dash-greet{ font-size:clamp(1.5rem,5.5vw,2rem); font-weight:700; letter-spacing:-.02em; line-height:1.2; }
-.dash-greet span{ color:#7FD1B0; }
+.dash-greet span{ color:var(--color-accent-light); }
 .dash-meta{
   display:flex; flex-wrap:wrap; align-items:center; gap:var(--space-2) var(--space-4);
   margin-top:var(--space-3);
@@ -1017,10 +1019,10 @@ body.has-tabbar{ padding-bottom:calc(var(--tabbar-h) + env(safe-area-inset-botto
 .now-live{
   width:7px; height:7px; border-radius:var(--radius-pill);
   background:var(--color-accent);
-  box-shadow:0 0 0 0 rgba(4,120,87,.5);
+  box-shadow:0 0 0 0 rgba(3,105,161,.5);
   animation:livePulse 2.4s ease-out infinite;
 }
-@keyframes livePulse{ 70%{box-shadow:0 0 0 7px rgba(4,120,87,0)} 100%{box-shadow:0 0 0 0 rgba(4,120,87,0)} }
+@keyframes livePulse{ 70%{box-shadow:0 0 0 7px rgba(3,105,161,0)} 100%{box-shadow:0 0 0 0 rgba(3,105,161,0)} }
 .now-name{ display:block; font-size:16px; font-weight:600; line-height:1.3; }
 .now-countdown{
   font-family:var(--mono); font-size:12px; color:var(--color-muted-foreground);
@@ -1267,15 +1269,15 @@ body.has-tabbar{ padding-bottom:calc(var(--tabbar-h) + env(safe-area-inset-botto
         <h2 class="dash-section-title"><span data-icon="toolbox" data-size="14"></span>כניסה מהירה</h2>
       </div>
       <div class="quick-grid">
-        <button class="quick-tile" type="button" style="--tint:var(--tone-week);--tint-bg:var(--tone-week-bg)" onclick="go('module','tac')">
-          <span class="quick-ico" data-icon="clock" data-size="20"></span>
-          <span class="quick-name">שעון תקה"ד</span>
-          <span class="quick-sub" id="qsTac"></span>
-        </button>
         <button class="quick-tile" type="button" style="--tint:var(--tone-daily);--tint-bg:var(--tone-daily-bg)" onclick="go('module','tr')">
           <span class="quick-ico" data-icon="calendar" data-size="20"></span>
           <span class="quick-name">ציר ההכשרה</span>
           <span class="quick-sub" id="qsTr"></span>
+        </button>
+        <button class="quick-tile" type="button" style="--tint:var(--tone-week);--tint-bg:var(--tone-week-bg)" onclick="go('module','tac')">
+          <span class="quick-ico" data-icon="clock" data-size="20"></span>
+          <span class="quick-name">שעון תקה"ד</span>
+          <span class="quick-sub" id="qsTac"></span>
         </button>
         <button class="quick-tile" type="button" style="--tint:var(--tone-month);--tint-bg:var(--tone-month-bg)" onclick="go('module','cb')">
           <span class="quick-ico" data-icon="clipboard" data-size="20"></span>
@@ -1307,21 +1309,21 @@ body.has-tabbar{ padding-bottom:calc(var(--tabbar-h) + env(safe-area-inset-botto
     </div>
   </div>
   <div class="picker">
-    <button class="picker-card" type="button" style="--tint:var(--tone-week);--tint-bg:var(--tone-week-bg)" onclick="go('module','tac')">
-      <span class="picker-ico" data-icon="clock" data-size="24"></span>
-      <span class="picker-body">
-        <span class="picker-name">שעון תקה"ד</span>
-        <span class="picker-desc">כלים פיקודיים לאורך היום, מ"כ עד מ"פ</span>
-        <span class="picker-stat" id="pickTacStat"></span>
-      </span>
-      <span data-icon="chevron-start" data-size="18"></span>
-    </button>
     <button class="picker-card" type="button" style="--tint:var(--tone-daily);--tint-bg:var(--tone-daily-bg)" onclick="go('module','tr')">
       <span class="picker-ico" data-icon="calendar" data-size="24"></span>
       <span class="picker-body">
         <span class="picker-name">ציר משימות ההכשרה</span>
         <span class="picker-desc">מה נדרש מהמ"פ בכל שלב של המחזור</span>
         <span class="picker-stat" id="pickTrStat"></span>
+      </span>
+      <span data-icon="chevron-start" data-size="18"></span>
+    </button>
+    <button class="picker-card" type="button" style="--tint:var(--tone-week);--tint-bg:var(--tone-week-bg)" onclick="go('module','tac')">
+      <span class="picker-ico" data-icon="clock" data-size="24"></span>
+      <span class="picker-body">
+        <span class="picker-name">שעון תקה"ד</span>
+        <span class="picker-desc">כלים פיקודיים לאורך היום, מ"כ עד מ"פ</span>
+        <span class="picker-stat" id="pickTacStat"></span>
       </span>
       <span data-icon="chevron-start" data-size="18"></span>
     </button>
@@ -1720,8 +1722,8 @@ function hydrateIcons(root) {
 
 // ─── APP STATE ───────────────────────────────────────────────────────────────
 const MODULES = {
-  tac: {tab:'clocks', screen:'screen-tactical',         title:'שעון תקה"ד',        icon:'clock'},
   tr:  {tab:'clocks', screen:'screen-training',         title:'ציר משימות ההכשרה', icon:'calendar'},
+  tac: {tab:'clocks', screen:'screen-tactical',         title:'שעון תקה"ד',        icon:'clock'},
   cb:  {tab:'checks', screen:'screen-checklist_before', title:'לפני הכשרה',        icon:'clipboard'},
   ca:  {tab:'checks', screen:'screen-checklist_after',  title:'אחרי הכשרה',        icon:'flag'}
 };
@@ -2067,7 +2069,7 @@ function buildSearchIndex() {
           desc: task.desc || '',
           module: 'tactical',
           moduleName: tacModuleName,
-          color: '#1D9E75',
+          color: '#0F766E',
           phase: phase.title,
           badge: task.badgeText || task.badgeClass || '',
           keywords: [task.name, phase.title, task.desc || '', task.source || ''].join(' ')
@@ -2323,8 +2325,8 @@ const tr_phases = [
       {
         name:'א.ת שבועיים קדימה',
         icon:'📊',
-        badge:'badge-weekly',badgeText:'🗓 כל שבוע',dotColor:'#1D9E75',
-        chipBg:'#E1F5EE',chipColor:'#0B5E44',
+        badge:'badge-weekly',badgeText:'🗓 כל שבוע',dotColor:'#0F766E',
+        chipBg:'#E3F1EF',chipColor:'#0F766E',
         weeksFn: (t,p) => Array.from({length:t+p},(_,i)=>`שבוע ${i+1}`),
         desc:'הכנת אומדן תקדים (א.ת) לשבועיים הקרובים של ההכשרה. מטרת הא.ת היא לאפשר למ"פ לתכנן מראש את פעילות הפלוגה, לאתר אילוצים צפויים ולוודא שכל הסגל ערוך לביצוע התכנית. הא.ת כולל את לוח הזמנים של כל הפעילויות, הכשירויות המתוכננות ואבני הדרך הצפויות.',
         source:'נוהל 1.2 – שעון פעילות ביחידת הדרכה'
@@ -2341,14 +2343,14 @@ const tr_phases = [
     ]
   },
   {
-    id:'start',title:'תחילת הכשרה',icon:'📅',color:'#1D9E75',bgLight:'#E1F5EE',
+    id:'start',title:'תחילת הכשרה',icon:'📅',color:'#0F766E',bgLight:'#E3F1EF',
     desc:'שלב פתיחת ההכשרה',
     tasks:[
       {
         name:'א.ת שבועיים קדימה',
         icon:'📊',
-        badge:'badge-weekly',badgeText:'🗓 כל שבוע',dotColor:'#1D9E75',
-        chipBg:'#E1F5EE',chipColor:'#0B5E44',
+        badge:'badge-weekly',badgeText:'🗓 כל שבוע',dotColor:'#0F766E',
+        chipBg:'#E3F1EF',chipColor:'#0F766E',
         weeksFn: (t,p) => Array.from({length:t},(_,i)=>`שבוע ${i+1}`),
         desc:'הכנת אומדן תקדים (א.ת) לשבועיים הקרובים של ההכשרה. מטרת הא.ת היא לאפשר למ"פ לתכנן מראש את פעילות הפלוגה, לאתר אילוצים צפויים ולוודא שכל הסגל ערוך לביצוע התכנית. הא.ת כולל את לוח הזמנים של כל הפעילויות, הכשירויות המתוכננות ואבני הדרך הצפויות.',
         source:'נוהל 1.2 – שעון פעילות ביחידת הדרכה'
@@ -2356,8 +2358,8 @@ const tr_phases = [
       {
         name:'סיכומי שבוע',
         icon:'📋',
-        badge:'badge-weekly',badgeText:'🗓 כל שבוע',dotColor:'#1D9E75',
-        chipBg:'#E1F5EE',chipColor:'#0B5E44',
+        badge:'badge-weekly',badgeText:'🗓 כל שבוע',dotColor:'#0F766E',
+        chipBg:'#E3F1EF',chipColor:'#0F766E',
         weeksFn: (t,p) => Array.from({length:t},(_,i)=>`שבוע ${i+1}`),
         desc:'סיכום שבועי ברמת הפלוגה, בראשות המ"פ, עם השתתפות מ"מים ומ"כים. הסיכום עוסק ב: תכנון מול ביצוע, לקחים מהשבוע החולף, דגשים להמשך, טיפול באירועים חריגים, חלוקת עבודה בין אנשי הסגל ומשמעויות לוגיסטיות. הסיכום מתקיים בסוף כל שבוע ומהווה כלי מרכזי לניהול ההכשרה.',
         source:'נוהל 1.6 – סיכומים עיתיים במהלך ההכשרה'
@@ -2409,8 +2411,8 @@ const tr_phases = [
       {
         name:'א.ת שבועיים קדימה',
         icon:'📊',
-        badge:'badge-weekly',badgeText:'🗓 כל שבוע',dotColor:'#1D9E75',
-        chipBg:'#E1F5EE',chipColor:'#0B5E44',
+        badge:'badge-weekly',badgeText:'🗓 כל שבוע',dotColor:'#0F766E',
+        chipBg:'#E3F1EF',chipColor:'#0F766E',
         weeksFn: (t,p) => Array.from({length:t},(_,i)=>`שבוע ${i+1}`),
         desc:'הכנת אומדן תקדים (א.ת) לשבועיים הקרובים של ההכשרה. מטרת הא.ת היא לאפשר למ"פ לתכנן מראש את פעילות הפלוגה, לאתר אילוצים צפויים ולוודא שכל הסגל ערוך לביצוע התכנית.',
         source:'נוהל 1.2 – שעון פעילות ביחידת הדרכה'
@@ -2418,8 +2420,8 @@ const tr_phases = [
       {
         name:'סיכומי שבוע',
         icon:'📋',
-        badge:'badge-weekly',badgeText:'🗓 כל שבוע',dotColor:'#1D9E75',
-        chipBg:'#E1F5EE',chipColor:'#0B5E44',
+        badge:'badge-weekly',badgeText:'🗓 כל שבוע',dotColor:'#0F766E',
+        chipBg:'#E3F1EF',chipColor:'#0F766E',
         weeksFn: (t,p) => Array.from({length:t},(_,i)=>`שבוע ${i+1}`),
         desc:'סיכום שבועי ברמת הפלוגה בראשות המ"פ. עוסק בתכנון מול ביצוע, לקחים מהשבוע, דגשים להמשך, אירועים חריגים וחלוקת עבודה בין הסגל.',
         source:'נוהל 1.6 – סיכומים עיתיים במהלך ההכשרה'
@@ -2470,8 +2472,8 @@ const tr_phases = [
       {
         name:'א.ת שבועיים קדימה',
         icon:'📊',
-        badge:'badge-weekly',badgeText:'🗓 כל שבוע',dotColor:'#1D9E75',
-        chipBg:'#E1F5EE',chipColor:'#0B5E44',
+        badge:'badge-weekly',badgeText:'🗓 כל שבוע',dotColor:'#0F766E',
+        chipBg:'#E3F1EF',chipColor:'#0F766E',
         weeksFn: (t,p) => Array.from({length:t},(_,i)=>`שבוע ${i+1}`),
         desc:'הכנת אומדן תקדים (א.ת) לשבועיים הקרובים של ההכשרה.',
         source:'נוהל 1.2 – שעון פעילות ביחידת הדרכה'
@@ -2479,8 +2481,8 @@ const tr_phases = [
       {
         name:'סיכומי שבוע',
         icon:'📋',
-        badge:'badge-weekly',badgeText:'🗓 כל שבוע',dotColor:'#1D9E75',
-        chipBg:'#E1F5EE',chipColor:'#0B5E44',
+        badge:'badge-weekly',badgeText:'🗓 כל שבוע',dotColor:'#0F766E',
+        chipBg:'#E3F1EF',chipColor:'#0F766E',
         weeksFn: (t,p) => Array.from({length:t},(_,i)=>`שבוע ${i+1}`),
         desc:'סיכום שבועי ברמת הפלוגה בראשות המ"פ. עוסק בתכנון מול ביצוע, לקחים מהשבוע, דגשים להמשך ואירועים חריגים.',
         source:'נוהל 1.6 – סיכומים עיתיים במהלך ההכשרה'
@@ -2690,67 +2692,67 @@ window.addEventListener('resize',()=>{if(tr_current>=0)tr_renderTimeline()});
 // ─── DATA ───────────────────────────────────────────────────────────────────
 const tac_phases = [
   {
-    id:'morning',title:'יומי',icon:'🌅',color:'#1D9E75',bgLight:'#E1F5EE',
+    id:'morning',title:'יומי',icon:'🌅',color:'#0F766E',bgLight:'#E3F1EF',
     desc:'פעולות תחילת יום',
     tasks:[
       {
-        freq:'daily',name:'השכמה',icon:'☀️',dotColor:'#1D9E75',chipBg:'#E1F5EE',chipColor:'#0B5E44',
+        freq:'daily',name:'השכמה',icon:'☀️',dotColor:'#0F766E',chipBg:'#E3F1EF',chipColor:'#0F766E',
         badgeClass:'badge-daily',badgeText:'🌅 כל יום',
         sub:'06:30',
         desc:'ביצוע השכמה מסודרת לכלל חיילי הפלוגה. לפי ניסיון עשיות: הפקודים ומפקדי הכיתות אחראים לכך שכל חייל יקום ויתארגן. חיילים יוצאים ומתגלגלים בשטח בין 06:30 ל-07:00.',
         source:'פרק א\' סעיף 11, לוז יומי לדוגמה – 06:30 השכמה'
       },
       {
-        freq:'daily',name:'מסדר בוקר',icon:'🪖',dotColor:'#1D9E75',chipBg:'#E1F5EE',chipColor:'#0B5E44',
+        freq:'daily',name:'מסדר בוקר',icon:'🪖',dotColor:'#0F766E',chipBg:'#E3F1EF',chipColor:'#0F766E',
         badgeClass:'badge-daily',badgeText:'🌅 כל יום',
         sub:'07:00',
         desc:'מסדר בוקר יתבצע בכל בוקר לפני תחילת הפעילות היומית. המסדר כולל מסדר פקודים, מסדר כוננות, מסדר דגל ומסדר בלאי. המפקד יבדוק על הפקודים, המסדר יבוצע ויתועד ע"י הרס"פ או הסמ"פ והמ"פ.',
         source:'פרק א\' סעיף 11.ג, לוז יומי 07:00-08:00'
       },
       {
-        freq:'daily',name:'מסדר כוננות',icon:'⚔️',dotColor:'#1D9E75',chipBg:'#E1F5EE',chipColor:'#0B5E44',
+        freq:'daily',name:'מסדר כוננות',icon:'⚔️',dotColor:'#0F766E',chipBg:'#E3F1EF',chipColor:'#0F766E',
         badgeClass:'badge-daily',badgeText:'🌅 כל יום',
         sub:'07:00',
         desc:'מסדר כוננות יבוצע בכל בוקר בתוך מסדר הבוקר. כולל: ניקוי נשק – פק"לים + פקל"ים + מא"ג וה הצל"מ המחלקתי, ניקוי החללים המעורבים בשרשרת הפיצוץ (פנים שושנה, בית לוליה וקנה), בדיקת פירוק מלא של נשק הנשק ופירוק מלא.',
         source:'פרק א\' סעיף 11.ז.1'
       },
       {
-        freq:'daily',name:'מסדר פקודים',icon:'📋',dotColor:'#1D9E75',chipBg:'#E1F5EE',chipColor:'#0B5E44',
+        freq:'daily',name:'מסדר פקודים',icon:'📋',dotColor:'#0F766E',chipBg:'#E3F1EF',chipColor:'#0F766E',
         badgeClass:'badge-daily',badgeText:'🌅 כל יום',
         sub:'07:00',
         desc:'בכל בוקר יערוך המפקד מסדר פקודים. המסדר ייכלל בסיכום פעילות הפלוגה ובמסגרת לוז הפעילות. מטרת המסדר: מסר ושמיעות, עמידה על מכשולים לביצוע, בקרה וניהול בשגרה.',
         source:'פרק א\' סעיף 10.א'
       },
       {
-        freq:'daily',name:'גלח"ץ – פנים ועליונים',icon:'🏃',dotColor:'#1D9E75',chipBg:'#E1F5EE',chipColor:'#0B5E44',
+        freq:'daily',name:'גלח"ץ – פנים ועליונים',icon:'🏃',dotColor:'#0F766E',chipBg:'#E3F1EF',chipColor:'#0F766E',
         badgeClass:'badge-daily',badgeText:'🌅 כל יום',
         sub:'07:07',
         desc:'גלח"ץ יבוצע בכל בוקר לכלל החיילים והמפקדים בפלוגה. יבוצע לא יאוחר מהשעה 10:30 בבוקר. יבוצע ע"י כל החיילים והמפקדים בשטח בצורה מתגלגלים.',
         source:'פרק א\' סעיף 11.ב, לוז 07:07 גלח"ץ'
       },
       {
-        freq:'daily',name:'ארוחת בוקר',icon:'🍽️',dotColor:'#1D9E75',chipBg:'#E1F5EE',chipColor:'#0B5E44',
+        freq:'daily',name:'ארוחת בוקר',icon:'🍽️',dotColor:'#0F766E',chipBg:'#E3F1EF',chipColor:'#0F766E',
         badgeClass:'badge-daily',badgeText:'🌅 כל יום',
         sub:'08:15',
         desc:'ארוחת בוקר לכלל הכוח. הגשת ארוחה מסודרת לחיילים ומפקדים. שמירה על ניקיון ועמידה בדרישות הבריאות והתזונה. לוז 08:15.',
         source:'פרק א\' סעיף 11, לוז 08:15 ארוחת בוקר'
       },
       {
-        freq:'daily',name:'ביקורות ושבועיות',icon:'✅',dotColor:'#1D9E75',chipBg:'#E1F5EE',chipColor:'#0B5E44',
+        freq:'daily',name:'ביקורות ושבועיות',icon:'✅',dotColor:'#0F766E',chipBg:'#E3F1EF',chipColor:'#0F766E',
         badgeClass:'badge-daily',badgeText:'🌅 כל יום',
         sub:'לאחר מסדר',
         desc:'ביקורות יומיות ושבועיות הן כלי לבחינת יישום ההנחיות ואיכות הביצוע. ודא כי בסיום נערך סיכום ונעשה תהליך לקחים. ביקורת נשק יומית: ניקוי נשק ובדיקת כשירות.',
         source:'פרק א\' סעיף 10.ה'
       },
       {
-        freq:'daily',name:'מסדר חוף"ל יומי',icon:'🌙',dotColor:'#1D9E75',chipBg:'#E1F5EE',chipColor:'#0B5E44',
+        freq:'daily',name:'מסדר חוף"ל יומי',icon:'🌙',dotColor:'#0F766E',chipBg:'#E3F1EF',chipColor:'#0F766E',
         badgeClass:'badge-daily',badgeText:'🌅 כל יום',
         sub:'19:30',
         desc:'מסדר חוף"ל יערך בכל בוקר לפני הפעילות היומית. מפקד שהוא קצין, רשאי לאשר כי ביום מסוים אם אינו יתקיים המסדר המסויים בתקופה שאינו יתקיים, מאפשרת ביחידה לחלק לחלופין או לפני תחילת האימונים.',
         source:'פרק א\' סעיף 11.ד, לוז 19:30 מסדר חוף"ל'
       },
       {
-        freq:'daily',name:'סיכום יום',icon:'📝',dotColor:'#1D9E75',chipBg:'#E1F5EE',chipColor:'#0B5E44',
+        freq:'daily',name:'סיכום יום',icon:'📝',dotColor:'#0F766E',chipBg:'#E3F1EF',chipColor:'#0F766E',
         badgeClass:'badge-daily',badgeText:'🌅 כל יום',
         sub:'22:00',
         desc:'סיכום יום יומי – בחינת מול תוכנית היום, מה בוצע ומה לא, אירועים חריגים, לקחים ודגשים ליום המחרת. כולל סיכום ישיבת פורום מוביל, מסדר כוננות ובדיקת ביצועי הפלוגה.',
