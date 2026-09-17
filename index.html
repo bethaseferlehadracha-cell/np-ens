@@ -3,57 +3,83 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#1C2B22">
-<meta name="description" content="מארז למ&quot;פ – שעון תקה&quot;ד, ציר משימות ההכשרה וצ׳ק ליסטים לפתיחה ולסגירת מחזור.">
+<meta name="theme-color" content="#1E3A5F">
+<meta name="description" content="מארז למ&quot;פ - שעון תקה&quot;ד, ציר משימות ההכשרה וצ׳ק ליסטים לפתיחה ולסגירת מחזור.">
 <title>מארז למ"פ · כלי ניהול הכשרה</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&family=Frank+Ruhl+Libre:wght@500;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 /* ===========================================================
-   מארז למ"פ — Design system
-   One palette, one type scale, one set of components.
+   מארז למ"פ - Design System
+   Style:      Minimalism & Swiss Style
+   Palette:    Navy professional + green accent
+   Typography: Noto Sans Hebrew (RTL)
+   Dials:      variance 6 / motion 4 / density 6
+   Icons:      Heroicons v2 outline (MIT), 24px grid, stroke 1.5
    =========================================================== */
 
 :root{
-  /* surfaces */
-  --paper:      #F2F0EA;
-  --paper-2:    #EAE7DE;
-  --surface:    #FFFFFF;
-  --ink:        #17191C;
-  --ink-soft:   #3D4046;
-  --muted:      #71747B;
-  --faint:      #A3A5AB;
-  --line:       rgba(23,25,28,.10);
-  --line-soft:  rgba(23,25,28,.06);
+  /* ── semantic color tokens (no raw hex below this block) ── */
+  --color-primary:          #1E3A5F;
+  --color-primary-hover:    #162C48;
+  --color-on-primary:       #FFFFFF;
+  --color-secondary:        #2563EB;
+  --color-on-secondary:     #FFFFFF;
+  --color-accent:           #047857;
+  --color-on-accent:        #FFFFFF;
+  --color-background:       #F8FAFC;
+  --color-foreground:       #0F172A;
+  --color-card:             #FFFFFF;
+  --color-card-foreground:  #0F172A;
+  --color-muted:            #F1F3F5;
+  --color-muted-foreground: #475569;
+  --color-border:           #E4E7EB;
+  --color-border-strong:    #CBD2DA;  /* decorative rules, rails, handles */
+  --color-control-border:   #7C8AA0;  /* interactive boundaries: 3:1 per WCAG 1.4.11 */
+  --color-destructive:      #DC2626;
+  --color-on-destructive:   #FFFFFF;
+  --color-ring:             #1E3A5F;
 
-  /* brand */
-  --field:      #1C2B22;   /* deep field green — headers */
-  --field-2:    #24382B;
-  --accent:     #D98324;   /* brass */
-  --accent-ink: #7A4A08;
-  --accent-bg:  #FBEFDD;
+  /* tonal surfaces used by the frequency system */
+  --tone-daily:    #047857;
+  --tone-daily-bg: #E7F3EE;
+  --tone-week:     #1D4ED8;
+  --tone-week-bg:  #E8EFFC;
+  --tone-month:    #B45309;
+  --tone-month-bg: #FBF0E0;
+  --tone-third:    #5B21B6;
+  --tone-third-bg: #EFEAFA;
+  --tone-once:     #475569;
+  --tone-once-bg:  #EEF1F4;
 
-  /* semantic accents (shared with data colors) */
-  --c-green:    #1D9E75;
-  --c-blue:     #185FA5;
-  --c-amber:    #C77A12;
-  --c-violet:   #534AB7;
-  --c-stone:    #5C5B55;
+  /* ── spacing scale (density 6: 8/16/24/32/48/64) ── */
+  --space-1: 4px;  --space-2: 8px;  --space-3: 12px; --space-4: 16px;
+  --space-5: 24px; --space-6: 32px; --space-7: 48px; --space-8: 64px;
 
-  /* shape */
-  --r-xs: 8px;
-  --r-sm: 12px;
-  --r:    16px;
-  --r-lg: 22px;
-  --r-xl: 30px;
+  /* ── radii: one scale, applied consistently ── */
+  --radius-sm: 6px;
+  --radius:    10px;
+  --radius-lg: 14px;
+  --radius-pill: 999px;
 
-  /* depth — low, layered, never a single fat blur */
-  --sh-1: 0 1px 2px rgba(23,25,28,.05), 0 1px 1px rgba(23,25,28,.03);
-  --sh-2: 0 2px 4px rgba(23,25,28,.05), 0 6px 16px -8px rgba(23,25,28,.14);
-  --sh-3: 0 4px 8px rgba(23,25,28,.06), 0 18px 40px -16px rgba(23,25,28,.24);
+  /* ── elevation: Swiss style, sharp and shallow ── */
+  --shadow-1: 0 1px 2px rgba(15,23,42,.06);
+  --shadow-2: 0 1px 3px rgba(15,23,42,.08), 0 4px 12px -4px rgba(15,23,42,.10);
+  --shadow-3: 0 2px 6px rgba(15,23,42,.10), 0 12px 32px -12px rgba(15,23,42,.24);
 
-  --ease: cubic-bezier(.22,.7,.3,1);
+  /* ── motion tokens, chosen per distance, not one duration for all ── */
+  --dur-instant: 120ms;   /* press feedback */
+  --dur-fast:    200ms;   /* hover, color */
+  --dur-base:    300ms;   /* enter, expand */
+  --dur-slow:    420ms;   /* sheet, progress */
+  --ease-out:    cubic-bezier(.22,.7,.3,1);
+  --ease-spring: cubic-bezier(.34,1.3,.5,1);
+
+  /* ── icon sizes as tokens ── */
+  --icon-sm: 16px; --icon-md: 20px; --icon-lg: 24px;
+
+  --nav-h: 56px;
 }
 
 *,*::before,*::after{ box-sizing:border-box; margin:0; padding:0; }
@@ -61,728 +87,697 @@
 html{ -webkit-text-size-adjust:100%; }
 
 body{
-  font-family:'Heebo',system-ui,sans-serif;
-  background:var(--paper);
-  color:var(--ink);
-  min-height:100vh;
-  direction:rtl;
+  font-family:'Noto Sans Hebrew',system-ui,sans-serif;
   font-size:16px;
-  line-height:1.55;
+  line-height:1.5;
+  background:var(--color-background);
+  color:var(--color-foreground);
+  direction:rtl;
+  min-height:100vh;
   -webkit-font-smoothing:antialiased;
-  text-rendering:optimizeLegibility;
   overflow-x:hidden;
+  /* safe-area compliance for notched devices */
+  padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
 
-::selection{ background:rgba(217,131,36,.24); }
+button,input{ font-family:inherit; font-size:inherit; color:inherit; }
+button{ cursor:pointer; background:none; border:none; }
 
-button,input{ font-family:inherit; }
-
-/* focus that is visible but not ugly */
-:where(button,input,[onclick]):focus-visible{
-  outline:2px solid var(--accent);
-  outline-offset:3px;
-  border-radius:var(--r-xs);
+/* Focus: 2px perimeter, 3:1 state contrast, never removed (WCAG 2.2) */
+:where(a,button,input,[tabindex]):focus-visible{
+  outline:2px solid var(--color-ring);
+  outline-offset:2px;
+  border-radius:var(--radius-sm);
 }
 
-/* soft scrollbars */
+.ico{ flex-shrink:0; display:block; }
+
+/* screen-reader-only text for icon-only controls */
+.sr-only{
+  position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+  overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;
+}
+
+::selection{ background:rgba(30,58,95,.16); }
 *::-webkit-scrollbar{ width:10px; height:10px; }
-*::-webkit-scrollbar-thumb{ background:rgba(23,25,28,.16); border-radius:99px; border:3px solid transparent; background-clip:content-box; }
+*::-webkit-scrollbar-thumb{
+  background:var(--color-border-strong); border-radius:var(--radius-pill);
+  border:3px solid transparent; background-clip:content-box;
+}
 
-/* ── SHELL / SCREENS ───────────────────────────────────── */
+/* ── SHELL ─────────────────────────────────────────────── */
 .app-shell{ min-height:100vh; }
 .screen{ display:none; }
-.screen.active{ display:block; animation:screenIn .3s var(--ease) both; }
-/* opacity only — a transform here would become the containing block for the fixed modals */
-@keyframes screenIn{ from{opacity:0} to{opacity:1} }
+.screen.active{ display:block; animation:fade var(--dur-base) var(--ease-out) both; }
+/* opacity only: a transform here would capture the fixed sheets */
+@keyframes fade{ from{opacity:0} to{opacity:1} }
+@keyframes rise{ from{opacity:0; transform:translateY(12px)} to{opacity:1; transform:none} }
 
-/* ── BACK BUTTON ───────────────────────────────────────── */
-.back-btn{
-  position:fixed; top:14px; left:14px; z-index:400;
-  display:inline-flex; align-items:center; gap:7px;
-  background:rgba(255,255,255,.82);
-  -webkit-backdrop-filter:saturate(1.6) blur(14px);
-  backdrop-filter:saturate(1.6) blur(14px);
-  border:1px solid rgba(23,25,28,.10);
-  color:var(--ink);
-  font-size:13px; font-weight:600; letter-spacing:.01em;
-  padding:9px 15px; border-radius:99px; cursor:pointer;
-  box-shadow:var(--sh-2);
-  transition:transform .18s var(--ease), box-shadow .18s var(--ease), background .18s;
+/* ── TOP BAR ───────────────────────────────────────────── */
+/* sticky, and every module compensates with its own top padding */
+.topbar{
+  position:sticky; top:0; z-index:60;
+  height:var(--nav-h);
+  display:flex; align-items:center; gap:var(--space-3);
+  padding:0 var(--space-4);
+  background:var(--color-primary);
+  color:var(--color-on-primary);
 }
-.back-btn:hover{ transform:translateY(-1px); background:#fff; box-shadow:var(--sh-3); }
-.back-btn:active{ transform:translateY(0) scale(.98); }
-
-/* ═══════════════════════════════════════════════════════
-   HOME
-   ═══════════════════════════════════════════════════════ */
-#home-screen{ min-height:100vh; padding-bottom:3rem; }
-
-.home-hero{
-  position:relative;
-  background:
-    radial-gradient(120% 90% at 85% -10%, rgba(217,131,36,.20) 0%, transparent 55%),
-    radial-gradient(90% 80% at 10% 0%, rgba(29,158,117,.16) 0%, transparent 60%),
-    linear-gradient(168deg, var(--field) 0%, var(--field-2) 58%, #1A2620 100%);
-  color:#fff;
-  padding:clamp(2.6rem,7vw,4.4rem) 1.4rem clamp(4rem,9vw,5.6rem);
-  overflow:hidden;
-  isolation:isolate;
+.topbar-back{
+  display:inline-flex; align-items:center; gap:var(--space-2);
+  min-height:44px; padding:var(--space-2) var(--space-3);
+  margin-inline-start:calc(var(--space-3) * -1);
+  border-radius:var(--radius);
+  color:var(--color-on-primary);
+  font-size:14px; font-weight:500;
+  transition:background var(--dur-fast) var(--ease-out);
 }
-/* topographic hairlines — texture, not decoration-for-decoration's-sake */
-.home-hero::before{
-  content:''; position:absolute; inset:-20% -10% auto -10%; height:160%;
-  background-image:
-    repeating-linear-gradient(115deg, rgba(255,255,255,.055) 0 1px, transparent 1px 46px);
-  transform:rotate(-2deg);
-  z-index:-1;
-}
-.home-hero::after{
-  content:''; position:absolute; inset:0; z-index:-1;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.055'/%3E%3C/svg%3E");
-  mix-blend-mode:overlay;
-}
-.home-hero-inner{ max-width:620px; margin:0 auto; text-align:center; }
-
-.home-kicker{
-  display:inline-flex; align-items:center; gap:8px;
-  font-size:11px; font-weight:600; letter-spacing:.14em;
-  text-transform:uppercase;
+.topbar-back:hover{ background:rgba(255,255,255,.12); }
+.topbar-back:active{ background:rgba(255,255,255,.2); }
+.topbar-back:focus-visible{ outline-color:var(--color-on-primary); }
+.topbar-title{
+  font-size:14px; font-weight:600; letter-spacing:.01em;
   color:rgba(255,255,255,.72);
-  background:rgba(255,255,255,.09);
-  border:1px solid rgba(255,255,255,.16);
-  padding:6px 14px; border-radius:99px;
-  margin-bottom:1.2rem;
+  margin-inline-start:auto;
 }
-.home-kicker i{ width:6px; height:6px; border-radius:50%; background:var(--accent); display:block;
-  box-shadow:0 0 0 0 rgba(217,131,36,.6); animation:pulse 2.6s infinite; }
-@keyframes pulse{ 70%{box-shadow:0 0 0 9px rgba(217,131,36,0)} 100%{box-shadow:0 0 0 0 rgba(217,131,36,0)} }
 
+/* ═══════════════ HOME ═══════════════ */
+.home-masthead{
+  background:var(--color-primary);
+  color:var(--color-on-primary);
+  padding:var(--space-7) var(--space-4) var(--space-8);
+}
+.home-masthead-inner{ max-width:720px; margin:0 auto; }
+.home-eyebrow{
+  display:block;
+  font-size:12px; font-weight:600; letter-spacing:.14em;
+  color:rgba(255,255,255,.6);
+  margin-bottom:var(--space-3);
+}
 .home-title{
-  font-family:'Frank Ruhl Libre',Georgia,serif;
-  font-size:clamp(2.2rem,8vw,3.6rem);
-  font-weight:800;
-  line-height:1.06;
-  letter-spacing:-.02em;
+  font-size:clamp(2rem,7vw,2.75rem);
+  font-weight:700; line-height:1.1; letter-spacing:-.02em;
 }
-.home-title em{
-  font-style:normal;
-  color:var(--accent);
-  position:relative;
-  white-space:nowrap;
-}
-.home-title em::after{
-  content:''; position:absolute; right:0; left:0; bottom:.06em; height:.14em;
-  background:rgba(217,131,36,.28); border-radius:99px;
-}
+.home-title span{ color:#7FD1B0; }
 .home-subtitle{
-  margin-top:.9rem;
-  font-size:14.5px; font-weight:300;
-  color:rgba(255,255,255,.66);
-  letter-spacing:.01em;
+  margin-top:var(--space-3);
+  font-size:15px; font-weight:400; line-height:1.6;
+  color:rgba(255,255,255,.72);
+  max-width:46ch;
 }
 
-/* ── SEARCH (home) — floats over the hero seam ─────────── */
+/* search sits on the seam between masthead and page */
 .home-search-wrap{
-  max-width:620px; margin:-2.1rem auto 0; padding:0 1.2rem;
-  position:relative; z-index:5;
+  max-width:720px; margin:calc(var(--space-6) * -1) auto 0;
+  padding:0 var(--space-4); position:relative; z-index:10;
 }
-.home-search-box{
-  display:flex; align-items:center; gap:12px;
-  background:var(--surface);
-  border:1px solid var(--line);
-  border-radius:var(--r-lg);
-  padding:15px 20px;
-  box-shadow:var(--sh-3);
-  transition:box-shadow .2s var(--ease), border-color .2s;
+.home-search-box,.search-box{
+  display:flex; align-items:center; gap:var(--space-3);
+  min-height:52px;
+  background:var(--color-card);
+  border:1px solid var(--color-control-border);
+  border-radius:var(--radius-lg);
+  padding:0 var(--space-4);
+  box-shadow:var(--shadow-2);
+  transition:border-color var(--dur-fast), box-shadow var(--dur-fast);
 }
-.home-search-box:focus-within{
-  border-color:rgba(29,158,117,.55);
-  box-shadow:var(--sh-3), 0 0 0 4px rgba(29,158,117,.12);
+.home-search-box:focus-within,.search-box:focus-within{
+  border-color:var(--color-primary);
+  box-shadow:var(--shadow-2),0 0 0 3px rgba(30,58,95,.12);
 }
-.home-search-icon{ color:var(--faint); flex-shrink:0; display:flex; }
-.home-search-input{
-  flex:1; border:none; outline:none; background:transparent;
-  font-size:15.5px; color:var(--ink); direction:rtl; min-width:0;
+.home-search-icon,.search-icon{ color:var(--color-muted-foreground); display:flex; }
+.home-search-input,.search-input{
+  flex:1; min-width:0; border:none; outline:none; background:transparent;
+  font-size:16px; /* 16px keeps iOS from zooming the field on focus */
+  color:var(--color-foreground); direction:rtl;
 }
-.home-search-input::placeholder{ color:var(--faint); font-weight:300; }
-.home-search-clear{
-  background:var(--paper-2); border:none; color:var(--muted);
-  width:26px; height:26px; border-radius:50%; cursor:pointer;
-  display:none; align-items:center; justify-content:center; font-size:13px;
-  flex-shrink:0; transition:background .15s, color .15s;
+.home-search-input::placeholder,.search-input::placeholder{ color:var(--color-muted-foreground); }
+.home-search-clear,.search-clear{
+  display:none; align-items:center; justify-content:center;
+  width:44px; height:44px; margin-inline-end:calc(var(--space-2) * -1);
+  border-radius:var(--radius-pill);
+  color:var(--color-muted-foreground);
+  transition:background var(--dur-fast), color var(--dur-fast);
 }
-.home-search-clear:hover{ background:#ded9cd; color:var(--ink); }
-.home-search-clear.show{ display:flex; }
+.home-search-clear:hover,.search-clear:hover{ background:var(--color-muted); color:var(--color-foreground); }
+.home-search-clear.show,.search-clear.show{ display:flex; }
 
 /* ── SEARCH RESULTS ────────────────────────────────────── */
-.home-search-results{ max-width:620px; margin:12px auto 0; padding:0 1.2rem; display:none; }
+.home-search-results{ max-width:720px; margin:var(--space-3) auto 0; padding:0 var(--space-4); display:none; }
 .home-search-results.show{ display:block; }
-.home-sr-item{
-  background:var(--surface);
-  border:1px solid var(--line);
-  border-radius:var(--r);
-  padding:13px 16px 13px 14px;
-  margin-bottom:8px; cursor:pointer;
-  box-shadow:var(--sh-1);
-  position:relative; overflow:hidden;
-  transition:transform .16s var(--ease), box-shadow .16s var(--ease);
-  animation:riseIn .22s var(--ease) both;
+.home-sr-item,.search-result-item{
+  display:block; width:100%; text-align:right;
+  background:var(--color-card);
+  border:1px solid var(--color-border);
+  border-inline-start:3px solid var(--src-color,var(--color-primary));
+  border-radius:var(--radius);
+  padding:var(--space-3) var(--space-4);
+  margin-bottom:var(--space-2);
+  transition:border-color var(--dur-fast), background var(--dur-fast);
+  animation:rise var(--dur-base) var(--ease-out) both;
 }
-.home-sr-item::before{
-  content:''; position:absolute; top:0; bottom:0; right:0; width:3px;
-  background:var(--src-color,var(--c-green));
+.home-sr-item:hover,.search-result-item:hover{ background:var(--color-muted); }
+.home-sr-item:active,.search-result-item:active{ background:var(--color-border); }
+.home-sr-name,.sr-name{ display:block; font-size:15px; font-weight:600; margin-bottom:var(--space-1); }
+.home-sr-meta,.sr-meta{ display:block; font-size:13px; color:var(--color-muted-foreground); }
+.home-sr-module,.sr-badge{
+  display:inline-block; font-size:12px; font-weight:600;
+  padding:2px var(--space-2); border-radius:var(--radius-sm);
+  margin-inline-end:var(--space-2);
 }
-.home-sr-item:hover{ transform:translateX(-3px); box-shadow:var(--sh-2); }
-.home-sr-name{ font-size:14.5px; font-weight:600; margin-bottom:4px; }
-.home-sr-meta{ font-size:12.5px; color:var(--muted); }
-.home-sr-module{
-  display:inline-block; font-size:10.5px; font-weight:600;
-  padding:2px 9px; border-radius:99px; margin-left:7px;
-  letter-spacing:.02em;
+.home-no-results,.no-results{
+  text-align:center; color:var(--color-muted-foreground);
+  padding:var(--space-6) var(--space-4); font-size:14px;
 }
-.home-no-results{ text-align:center; color:var(--muted); padding:1.6rem; font-size:14px; }
 
-/* ── MODULE CARDS ──────────────────────────────────────── */
+/* ── MODULE INDEX ──────────────────────────────────────── */
+.home-index{ max-width:720px; margin:var(--space-7) auto 0; padding:0 var(--space-4); }
+.section-label{
+  display:flex; align-items:center; gap:var(--space-3);
+  font-size:12px; font-weight:600; letter-spacing:.14em;
+  color:var(--color-muted-foreground);
+  margin-bottom:var(--space-4);
+}
+.section-label::after{ content:''; flex:1; height:1px; background:var(--color-border); }
+
+/* Swiss grid: a rule-separated index, not a pile of drop-shadow cards */
 .home-buttons{
-  display:grid; gap:14px;
-  grid-template-columns:repeat(2,1fr);
-  max-width:620px; margin:2.2rem auto 0; padding:0 1.2rem;
+  border-top:1px solid var(--color-border);
+  background:var(--color-card);
+  border-radius:var(--radius-lg);
+  overflow:hidden;
+  border:1px solid var(--color-border);
+  box-shadow:var(--shadow-1);
 }
-@media (max-width:520px){ .home-buttons{ grid-template-columns:1fr; } }
-
-.home-section-label{
-  max-width:620px; margin:2.4rem auto .9rem; padding:0 1.5rem;
-  display:flex; align-items:center; gap:12px;
-  font-size:11px; font-weight:600; letter-spacing:.16em; text-transform:uppercase;
-  color:var(--faint);
-}
-.home-section-label::after{ content:''; flex:1; height:1px; background:var(--line); }
-
 .home-btn{
-  --tint: var(--c-green);
-  position:relative; overflow:hidden;
-  background:var(--surface);
-  border:1px solid var(--line);
-  border-radius:var(--r-lg);
-  padding:1.15rem 1.2rem 1.2rem;
-  cursor:pointer; text-align:right; color:var(--ink);
-  box-shadow:var(--sh-1);
-  transition:transform .22s var(--ease), box-shadow .22s var(--ease), border-color .22s;
-  display:flex; flex-direction:column; gap:.4rem;
+  --tint:var(--color-primary);
+  position:relative;
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  align-items:center;
+  gap:var(--space-4);
+  width:100%;
+  min-height:76px;
+  padding:var(--space-4) var(--space-4);
+  text-align:right;
+  color:var(--color-card-foreground);
+  border-bottom:1px solid var(--color-border);
+  transition:background var(--dur-fast) var(--ease-out);
 }
+.home-btn:last-child{ border-bottom:none; }
+/* press feedback that does not shift layout bounds */
+.home-btn:hover{ background:var(--color-muted); }
+.home-btn:active{ background:var(--color-border); }
 .home-btn::before{
-  content:''; position:absolute; inset:0;
-  background:radial-gradient(120% 100% at 100% 0%, color-mix(in srgb,var(--tint) 11%,transparent) 0%, transparent 62%);
-  opacity:0; transition:opacity .25s;
+  content:''; position:absolute; inset-block:0; inset-inline-start:0; width:3px;
+  background:var(--tint); opacity:0;
+  transition:opacity var(--dur-fast) var(--ease-out);
 }
-.home-btn::after{
-  content:''; position:absolute; top:0; right:0; left:0; height:3px;
-  background:var(--tint); transform:scaleX(0); transform-origin:right;
-  transition:transform .3s var(--ease);
-}
-.home-btn:hover{ transform:translateY(-4px); box-shadow:var(--sh-3); border-color:color-mix(in srgb,var(--tint) 34%,var(--line)); }
 .home-btn:hover::before{ opacity:1; }
-.home-btn:hover::after{ transform:scaleX(1); }
-.home-btn:active{ transform:translateY(-1px); }
 
-.home-btn-top{ display:flex; align-items:center; justify-content:space-between; margin-bottom:.35rem; }
 .home-btn-icon{
-  width:42px; height:42px; border-radius:13px;
   display:flex; align-items:center; justify-content:center;
-  background:color-mix(in srgb,var(--tint) 12%,transparent);
+  width:44px; height:44px; border-radius:var(--radius);
+  background:var(--tint-bg,var(--color-muted));
   color:var(--tint);
-  flex-shrink:0;
-  transition:transform .25s var(--ease);
 }
-.home-btn:hover .home-btn-icon{ transform:scale(1.06) rotate(-3deg); }
-.home-btn-num{
-  font-family:'Frank Ruhl Libre',Georgia,serif;
-  font-size:13px; font-weight:700; color:var(--faint); letter-spacing:.06em;
+.home-btn-text{ min-width:0; }
+.home-btn-title{ display:block; font-size:16px; font-weight:600; letter-spacing:-.01em; line-height:1.3; }
+.home-btn-desc{
+  display:block; font-size:13px; color:var(--color-muted-foreground);
+  margin-top:3px; line-height:1.45;
 }
-.home-btn-title{ font-size:16.5px; font-weight:700; letter-spacing:-.015em; line-height:1.25; }
-.home-btn-desc{ font-size:12.5px; font-weight:300; color:var(--muted); line-height:1.5; }
-.home-btn-go{
-  position:absolute; bottom:1.1rem; left:1.2rem;
-  font-size:12px; font-weight:600; color:var(--tint);
-  display:inline-flex; align-items:center; gap:5px;
-  opacity:0; transform:translateX(6px);
-  transition:opacity .22s, transform .22s var(--ease);
-  pointer-events:none;
+.home-btn-chevron{
+  color:var(--color-border-strong);
+  transition:color var(--dur-fast), transform var(--dur-fast) var(--ease-out);
 }
-.home-btn:hover .home-btn-go{ opacity:1; transform:none; }
-@media (hover:none){ .home-btn-go{ opacity:.75; transform:none; } }
+.home-btn:hover .home-btn-chevron{ color:var(--tint); transform:translateX(-3px); }
 
 .home-footer{
-  text-align:center; margin-top:2.6rem;
-  font-size:11px; color:var(--faint); letter-spacing:.06em;
+  max-width:720px; margin:var(--space-6) auto 0;
+  padding:0 var(--space-4) var(--space-7);
+  text-align:center; font-size:12px; color:var(--color-muted-foreground);
 }
 
-@keyframes riseIn{ from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:none} }
-@keyframes fadeUp{ from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:none} }
+/* ═══════════════ MODULE SHELL ═══════════════ */
+.module{ background:var(--color-background); min-height:100vh; }
 
-/* ═══════════════════════════════════════════════════════
-   MODULE SHELL (shared by the two timeline modules)
-   ═══════════════════════════════════════════════════════ */
-.module{ background:var(--paper); min-height:100vh; }
-
-.header{
-  position:relative; overflow:hidden;
-  background:
-    radial-gradient(110% 120% at 88% -20%, rgba(217,131,36,.18) 0%, transparent 58%),
-    linear-gradient(160deg, var(--field) 0%, var(--field-2) 100%);
-  padding:clamp(1.8rem,4vw,2.6rem) 1.5rem clamp(1.6rem,3.5vw,2.2rem);
+.module-head{
+  background:var(--color-primary);
+  color:var(--color-on-primary);
+  padding:var(--space-5) var(--space-4) var(--space-7);
 }
-.header::before{
-  content:''; position:absolute; inset:-30% -10% auto -10%; height:180%;
-  background-image:repeating-linear-gradient(115deg, rgba(255,255,255,.05) 0 1px, transparent 1px 44px);
-  transform:rotate(-2deg);
-}
-.header-inner{
-  position:relative;
+.module-head-inner{
   max-width:960px; margin:0 auto;
-  display:flex; align-items:flex-end; justify-content:space-between; gap:14px; flex-wrap:wrap;
-  padding-right:2px;
+  display:flex; align-items:flex-end; justify-content:space-between;
+  gap:var(--space-4); flex-wrap:wrap;
 }
-.header h1{
-  font-family:'Frank Ruhl Libre',Georgia,serif;
-  font-size:clamp(1.4rem,4vw,2.1rem); font-weight:800; color:#fff;
-  letter-spacing:-.02em; line-height:1.15;
+.module-head h1{
+  font-size:clamp(1.375rem,4.5vw,1.875rem);
+  font-weight:700; letter-spacing:-.02em; line-height:1.2;
 }
-.header h1 em{ color:var(--accent); font-style:normal; }
-.header-sub{
-  font-size:12px; font-weight:300; color:rgba(255,255,255,.58);
-  margin-top:7px; letter-spacing:.02em;
-}
-.header-eyebrow{
-  display:inline-block; font-size:10.5px; font-weight:600; letter-spacing:.16em;
-  text-transform:uppercase; color:rgba(255,255,255,.5); margin-bottom:9px;
+.module-head h1 span{ color:#7FD1B0; }
+.module-sub{
+  font-size:13px; font-weight:400; color:rgba(255,255,255,.66);
+  margin-top:var(--space-2); max-width:52ch;
 }
 
 .duration-badge{
-  display:inline-flex; align-items:center; gap:8px;
-  background:rgba(255,255,255,.10);
-  border:1px solid rgba(255,255,255,.2);
-  color:#fff; font-size:12.5px; font-weight:600;
-  padding:9px 16px; border-radius:99px; cursor:pointer;
-  transition:background .18s, transform .18s var(--ease);
+  display:inline-flex; align-items:center; gap:var(--space-2);
+  min-height:44px; padding:var(--space-2) var(--space-4);
+  border:1px solid rgba(255,255,255,.28);
+  border-radius:var(--radius-pill);
+  color:var(--color-on-primary);
+  font-size:14px; font-weight:500;
+  transition:background var(--dur-fast) var(--ease-out);
 }
-.duration-badge:hover{ background:rgba(255,255,255,.2); transform:translateY(-1px); }
+.duration-badge:hover{ background:rgba(255,255,255,.14); }
+.duration-badge:active{ background:rgba(255,255,255,.22); }
+.duration-badge:focus-visible{ outline-color:var(--color-on-primary); }
 
-/* ── SEARCH (module) ───────────────────────────────────── */
-.search-wrap{ max-width:960px; margin:0 auto; padding:0 1.5rem; position:relative; z-index:5; margin-top:-24px; }
-.search-box{
-  display:flex; align-items:center; gap:11px;
-  background:var(--surface); border:1px solid var(--line);
-  border-radius:var(--r); padding:12px 18px;
-  box-shadow:var(--sh-2);
-  transition:box-shadow .2s var(--ease), border-color .2s;
+.search-wrap{
+  max-width:960px; margin:calc(var(--space-6) * -1) auto 0;
+  padding:0 var(--space-4); position:relative; z-index:10;
 }
-.search-box:focus-within{ border-color:rgba(29,158,117,.5); box-shadow:var(--sh-2), 0 0 0 4px rgba(29,158,117,.1); }
-.search-icon{ color:var(--faint); display:flex; flex-shrink:0; }
-.search-input{ flex:1; border:none; outline:none; background:transparent; font-size:15px; color:var(--ink); min-width:0; }
-.search-input::placeholder{ color:var(--faint); font-weight:300; }
-.search-clear{
-  background:var(--paper-2); border:none; color:var(--muted);
-  width:24px; height:24px; border-radius:50%; cursor:pointer; font-size:12px;
-  display:none; align-items:center; justify-content:center; flex-shrink:0;
-}
-.search-clear.show{ display:flex; }
-
-.search-results{ max-width:960px; margin:10px auto 0; padding:0 1.5rem; display:none; }
+.search-results{ max-width:960px; margin:var(--space-3) auto 0; padding:0 var(--space-4); display:none; }
 .search-results.show{ display:block; }
-.search-result-item{
-  background:var(--surface); border:1px solid var(--line);
-  border-radius:var(--r); padding:13px 16px; margin-bottom:8px; cursor:pointer;
-  position:relative; overflow:hidden; box-shadow:var(--sh-1);
-  transition:transform .16s var(--ease), box-shadow .16s var(--ease);
-  animation:riseIn .2s var(--ease) both;
-}
-.search-result-item::before{ content:''; position:absolute; top:0; bottom:0; right:0; width:3px; background:var(--rc,var(--c-green)); }
-.search-result-item:hover{ transform:translateX(-3px); box-shadow:var(--sh-2); }
-.sr-name{ font-size:14.5px; font-weight:600; margin-bottom:3px; }
-.sr-meta{ font-size:12.5px; color:var(--muted); }
-.sr-badge{ display:inline-flex; align-items:center; font-size:10.5px; font-weight:600; padding:3px 9px; border-radius:99px; margin-left:7px; }
-.no-results{ text-align:center; color:var(--muted); padding:2rem; font-size:14px; }
 
-/* ── TIMELINE ──────────────────────────────────────────── */
-.tl-outer{ max-width:960px; margin:0 auto; padding:2rem 1.5rem 0; }
+/* ── TIMELINE / STEP INDICATOR ─────────────────────────── */
+.tl-outer{ max-width:960px; margin:0 auto; padding:var(--space-6) var(--space-4) 0; }
 .tl-strip{ display:flex; align-items:flex-start; position:relative; }
 .tl-strip::before{
-  content:''; position:absolute; top:21px; right:20px; left:20px; height:2px;
-  background:rgba(23,25,28,.11); border-radius:2px; z-index:0;
+  content:''; position:absolute; top:19px; right:20px; left:20px;
+  height:2px; background:var(--color-border); z-index:0;
 }
 .tl-fill{
-  position:absolute; top:21px; right:20px; height:2px; z-index:1; border-radius:2px;
-  background:linear-gradient(to left, var(--fill-end,var(--c-violet)), var(--fill-start,var(--c-green)));
-  transition:width .45s var(--ease);
+  position:absolute; top:19px; right:20px; height:2px; z-index:1;
+  background:var(--color-primary);
+  transition:width var(--dur-slow) var(--ease-out);
 }
 .tl-phase{
   flex:1; display:flex; flex-direction:column; align-items:center;
-  position:relative; z-index:2; cursor:pointer; padding-bottom:.4rem;
+  position:relative; z-index:2;
+  padding:0 var(--space-1) var(--space-2);
+  min-height:44px;
+  background:none; border:none;
 }
 .tl-node{
-  width:42px; height:42px; border-radius:50%;
-  background:var(--surface); border:2px solid rgba(23,25,28,.12);
-  display:flex; align-items:center; justify-content:center; font-size:16px;
-  box-shadow:var(--sh-1);
-  transition:border-color .22s, transform .22s var(--ease), background .22s, box-shadow .22s;
+  width:40px; height:40px; border-radius:var(--radius-pill);
+  background:var(--color-card);
+  border:2px solid var(--color-control-border);
+  color:var(--color-muted-foreground);
+  display:flex; align-items:center; justify-content:center;
+  transition:border-color var(--dur-fast), background var(--dur-fast),
+             color var(--dur-fast), box-shadow var(--dur-fast);
 }
-.tl-phase.done .tl-node{ background:var(--phase-color); border-color:var(--phase-color); color:#fff; font-size:13px; }
+.tl-phase:hover .tl-node{ border-color:var(--phase-color); color:var(--phase-color); }
+.tl-phase.done .tl-node{ background:var(--phase-color); border-color:var(--phase-color); color:#fff; }
 .tl-phase.active .tl-node{
-  background:var(--phase-color); border-color:var(--phase-color); transform:scale(1.14);
-  box-shadow:0 0 0 5px color-mix(in srgb,var(--phase-color) 16%,transparent), var(--sh-2);
+  background:var(--phase-color); border-color:var(--phase-color); color:#fff;
+  box-shadow:0 0 0 4px color-mix(in srgb,var(--phase-color) 16%,transparent);
 }
-.tl-phase:hover:not(.active) .tl-node{ border-color:var(--phase-color); transform:translateY(-2px); }
 .tl-label{
-  margin-top:10px; font-size:10.5px; font-weight:600; text-align:center;
-  color:var(--faint); line-height:1.35; max-width:76px; transition:color .18s;
+  margin-top:var(--space-2);
+  font-size:11px; font-weight:500; text-align:center; line-height:1.3;
+  color:var(--color-muted-foreground); max-width:80px;
 }
-.tl-phase.active .tl-label,.tl-phase.done .tl-label{ color:var(--phase-color); }
+.tl-phase.active .tl-label{ color:var(--phase-color); font-weight:600; }
+.tl-phase.done .tl-label{ color:var(--color-foreground); }
 
 /* ── CONTENT ───────────────────────────────────────────── */
-.content-wrap{ max-width:960px; margin:0 auto; padding:2rem 1.5rem 3.5rem; }
-.phase-hero{ display:flex; align-items:center; gap:15px; margin-bottom:1.5rem; animation:fadeUp .3s var(--ease) both; }
-.phase-icon-box{
-  width:56px; height:56px; border-radius:18px; flex-shrink:0;
-  display:flex; align-items:center; justify-content:center; font-size:25px;
-  box-shadow:inset 0 0 0 1px rgba(23,25,28,.05);
+.content-wrap{ max-width:960px; margin:0 auto; padding:var(--space-6) var(--space-4) var(--space-8); }
+.phase-hero{
+  display:flex; align-items:center; gap:var(--space-4);
+  padding-bottom:var(--space-4); margin-bottom:var(--space-5);
+  border-bottom:1px solid var(--color-border);
+  animation:rise var(--dur-base) var(--ease-out) both;
 }
-.phase-title{ font-family:'Frank Ruhl Libre',Georgia,serif; font-size:23px; font-weight:800; letter-spacing:-.02em; }
-.phase-desc{ font-size:13px; color:var(--muted); margin-top:3px; font-weight:300; }
-.tap-hint{ font-size:11.5px; color:var(--faint); margin-bottom:1rem; letter-spacing:.02em; }
+.phase-icon-box{
+  width:48px; height:48px; border-radius:var(--radius); flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  background:var(--phase-bg); color:var(--phase-color);
+}
+.phase-title{ font-size:20px; font-weight:700; letter-spacing:-.02em; line-height:1.25; }
+.phase-desc{ font-size:14px; color:var(--color-muted-foreground); margin-top:2px; }
+.tap-hint{ font-size:13px; color:var(--color-muted-foreground); margin-bottom:var(--space-3); }
 
 /* ── TASK LIST ─────────────────────────────────────────── */
-.vtl{ position:relative; padding-right:30px; }
-.vtl::before{
-  content:''; position:absolute; right:10px; top:10px; bottom:10px; width:2px;
-  background:linear-gradient(to bottom, var(--spine-top), var(--spine-bottom));
-  border-radius:2px; opacity:.45;
-}
+.vtl{ display:flex; flex-direction:column; gap:var(--space-2); }
 .vtl-item{
-  display:flex; align-items:flex-start; gap:14px; margin-bottom:10px;
-  position:relative; cursor:pointer;
-  animation:fadeUp .26s var(--ease) both;
+  display:block; width:100%; text-align:right;
+  background:var(--color-card);
+  border:1px solid var(--color-border);
+  border-inline-start:3px solid var(--dot-color,var(--color-border-strong));
+  border-radius:var(--radius);
+  padding:var(--space-3) var(--space-4);
+  transition:background var(--dur-fast) var(--ease-out), border-color var(--dur-fast);
+  animation:rise var(--dur-base) var(--ease-out) both;
 }
-.vtl-item:nth-child(1){animation-delay:.02s}
-.vtl-item:nth-child(2){animation-delay:.05s}
-.vtl-item:nth-child(3){animation-delay:.08s}
-.vtl-item:nth-child(4){animation-delay:.11s}
-.vtl-item:nth-child(5){animation-delay:.14s}
-.vtl-item:nth-child(6){animation-delay:.17s}
-.vtl-item:nth-child(7){animation-delay:.20s}
-.vtl-dot{
-  position:absolute; right:-30px; top:15px; width:22px; height:22px; border-radius:50%;
-  background:var(--paper); border:2px solid var(--dot-color,#ccc);
-  display:flex; align-items:center; justify-content:center; z-index:1;
-  transition:transform .18s var(--ease), box-shadow .18s;
+.vtl-item:nth-child(1){animation-delay:0ms}
+.vtl-item:nth-child(2){animation-delay:60ms}
+.vtl-item:nth-child(3){animation-delay:120ms}
+.vtl-item:nth-child(4){animation-delay:180ms}
+.vtl-item:nth-child(5){animation-delay:240ms}
+.vtl-item:nth-child(6){animation-delay:300ms}
+.vtl-item:nth-child(7){animation-delay:360ms}
+.vtl-item:hover{ background:var(--color-muted); border-color:var(--color-border-strong); }
+.vtl-item:active{ background:var(--color-border); }
+.vtl-row{ display:flex; align-items:center; gap:var(--space-3); }
+.vtl-ico{
+  width:36px; height:36px; border-radius:var(--radius-sm); flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  background:var(--dot-bg,var(--color-muted)); color:var(--dot-color,var(--color-muted-foreground));
 }
-.vtl-dot::after{ content:''; width:7px; height:7px; border-radius:50%; background:var(--dot-color,#ccc); }
-.vtl-item:hover .vtl-dot{ transform:scale(1.14); box-shadow:0 0 0 4px color-mix(in srgb,var(--dot-color) 14%,transparent); }
-.vtl-card{
-  flex:1; position:relative; overflow:hidden;
-  background:var(--surface); border:1px solid var(--line); border-radius:var(--r);
-  padding:14px 17px; display:flex; align-items:center; justify-content:space-between; gap:12px;
-  box-shadow:var(--sh-1);
-  transition:box-shadow .18s var(--ease), transform .18s var(--ease), border-color .18s;
-}
-.vtl-card::before{ content:''; position:absolute; top:0; bottom:0; right:0; width:3px; background:var(--dot-color,#eee); opacity:.85; }
-.vtl-item:hover .vtl-card{ transform:translateX(-3px); box-shadow:var(--sh-2); border-color:color-mix(in srgb,var(--dot-color) 26%,var(--line)); }
 .vtl-left{ flex:1; min-width:0; }
-.vtl-name{ font-size:15px; font-weight:600; margin-bottom:3px; letter-spacing:-.01em; }
-.vtl-week,.vtl-sub{ font-size:12.5px; color:var(--muted); font-weight:300; }
+.vtl-name{ display:block; font-size:15px; font-weight:600; line-height:1.35; }
+.vtl-week,.vtl-sub{
+  display:flex; align-items:center; gap:var(--space-1);
+  font-size:13px; color:var(--color-muted-foreground); margin-top:3px;
+}
 
 .badge{
-  display:inline-flex; align-items:center; font-size:11.5px; font-weight:600;
-  padding:5px 12px; border-radius:99px; white-space:nowrap; flex-shrink:0;
-  letter-spacing:.01em;
+  display:inline-flex; align-items:center; gap:var(--space-1);
+  font-size:12px; font-weight:600;
+  padding:var(--space-1) var(--space-2);
+  border-radius:var(--radius-sm);
+  white-space:nowrap; flex-shrink:0;
 }
-.badge-daily,.badge-weekly{ background:#E4F4EE; color:#0B5E44; }
-.badge-monthly{ background:#FBEFDD; color:#7A4A08; }
-.badge-10days{ background:#FBEFDD; color:#7A4A08; }
-.badge-3weekly{ background:#EEEDFB; color:#413A9E; }
-.badge-once{ background:#EFEDE6; color:#55544E; }
-/* the training module uses blue for monthly and green for weekly */
-.mod-tr .badge-weekly{ background:#E4F4EE; color:#0B5E44; }
-.mod-tr .badge-monthly{ background:#E7F0FA; color:#14508D; }
-.mod-tac .badge-weekly{ background:#E7F0FA; color:#14508D; }
+.badge-daily,.badge-weekly{ background:var(--tone-daily-bg); color:var(--tone-daily); }
+.badge-monthly,.badge-10days{ background:var(--tone-month-bg); color:var(--tone-month); }
+.badge-3weekly{ background:var(--tone-third-bg); color:var(--tone-third); }
+.badge-once{ background:var(--tone-once-bg); color:var(--tone-once); }
+.mod-tr .badge-monthly{ background:var(--tone-week-bg); color:var(--tone-week); }
+.mod-tac .badge-weekly{ background:var(--tone-week-bg); color:var(--tone-week); }
 
 /* ── SECTION DIVIDER ───────────────────────────────────── */
-.section-divider{ display:flex; align-items:center; gap:12px; margin:1.6rem 0 .9rem; }
-.section-divider:first-child{ margin-top:.2rem; }
-.section-divider-line{ flex:1; height:1px; background:var(--line); }
+.section-divider{ display:flex; align-items:center; gap:var(--space-3); margin:var(--space-5) 0 var(--space-3); }
+.section-divider:first-child{ margin-top:0; }
+.section-divider-line{ flex:1; height:1px; background:var(--color-border); }
 .section-divider-label{
-  font-size:10.5px; font-weight:600; letter-spacing:.16em; text-transform:uppercase;
-  color:var(--faint); white-space:nowrap;
+  display:inline-flex; align-items:center; gap:var(--space-2);
+  font-size:12px; font-weight:600; letter-spacing:.1em;
+  color:var(--color-muted-foreground); white-space:nowrap;
 }
 
-/* ── NAV ───────────────────────────────────────────────── */
-.nav-row{ display:flex; gap:10px; margin-top:1.8rem; justify-content:space-between; align-items:center; }
-.nav-btn{
-  padding:10px 20px; border-radius:99px; border:1px solid var(--line);
-  background:var(--surface); color:var(--ink);
-  font-size:13.5px; font-weight:600; cursor:pointer;
-  box-shadow:var(--sh-1);
-  transition:transform .16s var(--ease), box-shadow .16s var(--ease), background .16s;
+/* ── STEP NAV ──────────────────────────────────────────── */
+.nav-row{
+  display:flex; gap:var(--space-2); align-items:center; justify-content:space-between;
+  margin-top:var(--space-6); padding-top:var(--space-5);
+  border-top:1px solid var(--color-border);
 }
-.nav-btn:hover{ transform:translateY(-2px); box-shadow:var(--sh-2); }
-.nav-btn:active{ transform:translateY(0); }
-.nav-btn.primary{ color:#fff; border-color:transparent; box-shadow:var(--sh-2); }
-.nav-btn.primary:hover{ filter:brightness(1.07); }
-.step-counter{ font-size:12.5px; color:var(--muted); font-weight:400; letter-spacing:.02em; }
+.nav-btn{
+  display:inline-flex; align-items:center; gap:var(--space-2);
+  min-height:44px; padding:var(--space-2) var(--space-4);
+  border:1px solid var(--color-control-border);
+  border-radius:var(--radius);
+  background:var(--color-card); color:var(--color-foreground);
+  font-size:14px; font-weight:600;
+  transition:background var(--dur-fast) var(--ease-out), border-color var(--dur-fast);
+}
+.nav-btn:hover{ background:var(--color-muted); }
+.nav-btn:active{ background:var(--color-border); }
+.nav-btn.primary{
+  background:var(--color-primary); color:var(--color-on-primary); border-color:var(--color-primary);
+}
+.nav-btn.primary:hover{ background:var(--color-primary-hover); border-color:var(--color-primary-hover); }
+.step-counter{ font-size:13px; color:var(--color-muted-foreground); font-weight:500; }
 
 /* ── LEGEND ────────────────────────────────────────────── */
-.legend{ display:flex; flex-wrap:wrap; gap:9px 18px; margin-top:2rem; padding-top:1.2rem; border-top:1px solid var(--line); }
-.legend-item{ display:flex; align-items:center; gap:7px; font-size:12px; color:var(--muted); font-weight:300; }
-.legend-dot{ width:8px; height:8px; border-radius:50%; flex-shrink:0; }
-
-/* ── WEEK SELECTOR ─────────────────────────────────────── */
-.w-picker{ display:flex; flex-wrap:wrap; gap:8px; margin-top:.6rem; }
-.w-opt{
-  padding:8px 15px; border-radius:99px; border:1px solid var(--line);
-  background:var(--surface); color:var(--ink-soft);
-  font-size:13px; font-weight:600; cursor:pointer;
-  transition:all .16s var(--ease);
+.legend{
+  display:flex; flex-wrap:wrap; gap:var(--space-2) var(--space-5);
+  margin-top:var(--space-5); padding-top:var(--space-4);
+  border-top:1px solid var(--color-border);
 }
-.w-opt:hover{ border-color:var(--accent); color:var(--accent-ink); }
-.w-opt.sel{ background:var(--field); border-color:var(--field); color:#fff; }
+.legend-item{ display:flex; align-items:center; gap:var(--space-2); font-size:13px; color:var(--color-muted-foreground); }
+.legend-dot{ width:8px; height:8px; border-radius:var(--radius-pill); flex-shrink:0; }
 
-/* ── MODAL ─────────────────────────────────────────────── */
+/* ── CYCLE PICKER ──────────────────────────────────────── */
+.w-picker{ display:flex; flex-wrap:wrap; gap:var(--space-2); margin-top:var(--space-2); }
+.w-opt{
+  min-height:44px; padding:var(--space-2) var(--space-4);
+  border:1px solid var(--color-control-border); border-radius:var(--radius);
+  background:var(--color-card); color:var(--color-foreground);
+  font-size:14px; font-weight:600;
+  transition:background var(--dur-fast), border-color var(--dur-fast), color var(--dur-fast);
+}
+.w-opt:hover{ background:var(--color-muted); }
+.w-opt[aria-pressed="true"]{
+  background:var(--color-primary); border-color:var(--color-primary); color:var(--color-on-primary);
+}
+
+/* ── SHEET / MODAL ─────────────────────────────────────── */
 .modal-overlay{
-  position:fixed; inset:0; z-index:500;
-  background:rgba(14,16,14,.46);
-  -webkit-backdrop-filter:blur(3px); backdrop-filter:blur(3px);
+  position:fixed; inset:0; z-index:200;
+  background:rgba(15,23,42,.55);
   display:flex; align-items:flex-end; justify-content:center;
-  opacity:0; pointer-events:none; transition:opacity .24s var(--ease);
+  opacity:0; pointer-events:none;
+  transition:opacity var(--dur-base) var(--ease-out);
 }
 .modal-overlay.open{ opacity:1; pointer-events:auto; }
 .modal{
-  background:var(--surface);
-  border-radius:var(--r-xl) var(--r-xl) 0 0;
   width:100%; max-width:640px;
-  padding:1.2rem 1.7rem 2.4rem;
   max-height:88vh; overflow-y:auto;
-  transform:translateY(24px);
-  transition:transform .3s var(--ease);
-  box-shadow:0 -10px 60px -20px rgba(0,0,0,.4);
+  background:var(--color-card);
+  border-radius:var(--radius-lg) var(--radius-lg) 0 0;
+  padding:var(--space-3) var(--space-5) var(--space-7);
+  transform:translateY(16px);
+  transition:transform var(--dur-slow) var(--ease-out);
+  box-shadow:var(--shadow-3);
+  padding-bottom:calc(var(--space-7) + env(safe-area-inset-bottom));
 }
 .modal-overlay.open .modal{ transform:none; }
-@media (min-width:700px){
-  .modal-overlay{ align-items:center; }
-  .modal{ border-radius:var(--r-xl); margin:0 1rem; max-height:84vh; }
+@media (min-width:768px){
+  .modal-overlay{ align-items:center; padding:var(--space-4); }
+  .modal{ border-radius:var(--radius-lg); max-height:84vh; padding-bottom:var(--space-6); }
+  .modal-handle{ display:none; }
 }
-.modal-handle{ width:42px; height:4px; background:rgba(23,25,28,.14); border-radius:99px; margin:.2rem auto 1.3rem; }
-.modal-header{ display:flex; align-items:center; gap:13px; margin-bottom:1.1rem; }
+.modal-handle{ width:40px; height:4px; background:var(--color-border-strong); border-radius:var(--radius-pill); margin:var(--space-1) auto var(--space-5); }
+.modal-header{ display:flex; align-items:center; gap:var(--space-3); margin-bottom:var(--space-4); }
 .modal-icon{
-  width:52px; height:52px; border-radius:16px; flex-shrink:0;
-  display:flex; align-items:center; justify-content:center; font-size:23px;
-  box-shadow:inset 0 0 0 1px rgba(23,25,28,.05);
+  width:48px; height:48px; border-radius:var(--radius); flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  background:var(--icon-bg,var(--color-muted)); color:var(--icon-fg,var(--color-primary));
 }
-.modal-title{ font-family:'Frank Ruhl Libre',Georgia,serif; font-size:19.5px; font-weight:800; margin-bottom:6px; letter-spacing:-.01em; line-height:1.2; }
-.modal-freq{ font-size:12px; color:var(--muted); }
-.modal-divider{ height:1px; background:var(--line); margin:1rem 0; }
-.modal-section{ margin-bottom:1.1rem; }
+.modal-title{ font-size:18px; font-weight:700; letter-spacing:-.01em; line-height:1.3; margin-bottom:var(--space-1); }
+.modal-freq{ font-size:13px; color:var(--color-muted-foreground); }
+.modal-divider{ height:1px; background:var(--color-border); margin:var(--space-4) 0; }
+.modal-section{ margin-bottom:var(--space-4); }
 .modal-section-title{
-  font-size:10.5px; font-weight:600; letter-spacing:.16em; text-transform:uppercase;
-  color:var(--faint); margin-bottom:.5rem;
+  font-size:12px; font-weight:600; letter-spacing:.1em;
+  color:var(--color-muted-foreground); margin-bottom:var(--space-2);
 }
-.modal-body{ font-size:14.5px; line-height:1.8; color:var(--ink-soft); font-weight:300; }
-.modal-weeks{ display:flex; flex-wrap:wrap; gap:7px; margin-top:.5rem; }
+.modal-body{ font-size:15px; line-height:1.7; color:var(--color-foreground); }
+.modal-weeks{ display:flex; flex-wrap:wrap; gap:var(--space-2); }
 .week-chip{
-  padding:5px 13px; border-radius:99px; font-size:12px; font-weight:600;
-  background:var(--chip-bg,var(--paper-2)); color:var(--chip-color,var(--ink-soft));
+  padding:var(--space-1) var(--space-3); border-radius:var(--radius-sm);
+  font-size:13px; font-weight:500;
+  background:var(--chip-bg,var(--color-muted)); color:var(--chip-color,var(--color-foreground));
 }
 .source-tag{
-  display:inline-block; background:var(--paper); border:1px solid var(--line);
-  border-radius:var(--r-xs); padding:6px 12px; font-size:12.5px; color:var(--muted); margin-top:.2rem;
+  display:inline-flex; align-items:center; gap:var(--space-2);
+  background:var(--color-muted); border:1px solid var(--color-border);
+  border-radius:var(--radius-sm); padding:var(--space-2) var(--space-3);
+  font-size:13px; color:var(--color-muted-foreground);
 }
 .modal-close{
-  margin-top:1.4rem; width:100%; padding:14px; border-radius:var(--r);
-  border:1px solid var(--line); background:var(--paper); color:var(--ink);
-  font-size:15px; font-weight:600; cursor:pointer; transition:background .16s;
+  width:100%; min-height:48px; margin-top:var(--space-5);
+  border:1px solid var(--color-control-border); border-radius:var(--radius);
+  background:var(--color-card); color:var(--color-foreground);
+  font-size:15px; font-weight:600;
+  transition:background var(--dur-fast) var(--ease-out);
 }
-.modal-close:hover{ background:var(--paper-2); }
+.modal-close:hover{ background:var(--color-muted); }
+.modal-close:active{ background:var(--color-border); }
 
-.footer{ text-align:center; padding:1.4rem; font-size:11px; color:var(--faint); letter-spacing:.05em; }
-
-/* ═══════════════════════════════════════════════════════
-   CHECKLIST MODULES
-   ═══════════════════════════════════════════════════════ */
-.mod-cb{ --tone:#1D9E75; --tone-deep:#12664B; --tone-bg:#E7F4EF; }
-.mod-ca{ --tone:#3C6EA5; --tone-deep:#1E4571; --tone-bg:#E9F0F8; }
-
-.mod-cb,.mod-ca{ background:var(--paper); min-height:100vh; }
-
-.mod-cb header,.mod-ca header{
-  position:relative; overflow:hidden;
-  background:linear-gradient(160deg, var(--field) 0%, var(--field-2) 100%);
-  padding:clamp(2.2rem,5vw,3rem) clamp(1.4rem,4vw,2.4rem) clamp(2rem,4vw,2.6rem);
-  border-radius:0 0 var(--r-xl) var(--r-xl);
-  margin-bottom:0;
-}
-.mod-cb header::before,.mod-ca header::before{
-  content:''; position:absolute; inset:0;
-  background:radial-gradient(100% 120% at 88% -20%, color-mix(in srgb,var(--tone) 34%,transparent) 0%, transparent 60%);
-}
-.mod-cb header::after,.mod-ca header::after{
-  content:''; position:absolute; inset:-30% -10% auto -10%; height:180%;
-  background-image:repeating-linear-gradient(115deg, rgba(255,255,255,.05) 0 1px, transparent 1px 44px);
-  transform:rotate(-2deg);
-}
-.mod-cb header h1,.mod-ca header h1{
-  position:relative;
-  font-family:'Frank Ruhl Libre',Georgia,serif;
-  color:#fff; font-size:clamp(1.5rem,4.4vw,2.1rem); font-weight:800;
-  letter-spacing:-.02em; margin-bottom:8px; line-height:1.18;
-}
-.mod-cb header p,.mod-ca header p{
-  position:relative; color:rgba(255,255,255,.6); font-size:13.5px; font-weight:300;
+.footer{
+  text-align:center; padding:var(--space-5) var(--space-4);
+  font-size:12px; color:var(--color-muted-foreground);
 }
 
-.page-wrapper{ max-width:860px; margin:0 auto; padding:0 0 60px; }
-.page-inner{ padding:0 clamp(1rem,3vw,1.4rem); }
+/* ═══════════════ CHECKLISTS ═══════════════ */
+.mod-cb{ --tone:var(--color-accent); --tone-bg:var(--tone-daily-bg); }
+.mod-ca{ --tone:var(--color-secondary); --tone-bg:var(--tone-week-bg); }
+.mod-cb,.mod-ca{ background:var(--color-background); min-height:100vh; }
+
+.page-wrapper{ max-width:860px; margin:0 auto; padding-bottom:var(--space-8); }
+.page-inner{ padding:0 var(--space-4); }
 
 /* PROGRESS */
 .progress-section{
-  background:var(--surface); border:1px solid var(--line);
-  border-radius:var(--r-lg); padding:20px 24px;
-  margin:-26px 0 22px; position:relative; z-index:2;
-  box-shadow:var(--sh-3);
-  display:flex; align-items:center; gap:20px;
+  display:flex; align-items:center; gap:var(--space-5);
+  background:var(--color-card);
+  border:1px solid var(--color-border);
+  border-radius:var(--radius-lg);
+  padding:var(--space-4) var(--space-5);
+  margin:calc(var(--space-6) * -1) 0 var(--space-5);
+  position:relative; z-index:10;
+  box-shadow:var(--shadow-2);
 }
-.progress-labels{ min-width:88px; text-align:center; flex-shrink:0; }
-.progress-num{ font-family:'Frank Ruhl Libre',Georgia,serif; font-size:2.2rem; font-weight:800; color:var(--tone-deep); line-height:1; }
-.progress-sub{ font-size:.76rem; color:var(--muted); margin-top:3px; }
+.progress-labels{ min-width:78px; text-align:center; flex-shrink:0; }
+.progress-num{ font-size:2rem; font-weight:700; line-height:1; color:var(--tone); font-variant-numeric:tabular-nums; }
+.progress-sub{ font-size:12px; color:var(--color-muted-foreground); margin-top:var(--space-1); }
 .progress-bar-wrap{ flex:1; min-width:0; }
-.progress-bar-bg{ background:var(--paper-2); border-radius:99px; height:10px; overflow:hidden; }
+.progress-bar-bg{ height:8px; background:var(--color-muted); border-radius:var(--radius-pill); overflow:hidden; }
 .progress-bar-fill{
-  height:100%; border-radius:99px; width:0%;
-  background:linear-gradient(90deg, var(--tone-deep), var(--tone));
-  transition:width .6s var(--ease);
+  height:100%; width:0%; background:var(--tone);
+  border-radius:var(--radius-pill);
+  transition:width var(--dur-slow) var(--ease-out);
 }
-.progress-pct{ font-size:.8rem; font-weight:600; color:var(--tone-deep); margin-top:8px; text-align:left; }
+.progress-pct{ font-size:13px; font-weight:600; color:var(--tone); margin-top:var(--space-2); text-align:left; font-variant-numeric:tabular-nums; }
 
 /* CATEGORY */
-.category{ margin-bottom:14px; }
+.category{ margin-bottom:var(--space-3); }
 .category-header{
-  display:flex; align-items:center; gap:12px; cursor:pointer; user-select:none;
-  padding:15px 20px; background:var(--surface);
-  border:1px solid var(--line); border-radius:var(--r-lg);
-  box-shadow:var(--sh-1);
-  transition:box-shadow .18s var(--ease), border-color .18s, border-radius .25s;
+  display:flex; align-items:center; gap:var(--space-3);
+  width:100%; min-height:60px;
+  padding:var(--space-3) var(--space-4);
+  background:var(--color-card);
+  border:1px solid var(--color-border);
+  border-radius:var(--radius-lg);
+  text-align:right;
+  transition:background var(--dur-fast) var(--ease-out), border-radius var(--dur-base);
 }
-.category:not(.collapsed) .category-header{ border-radius:var(--r-lg) var(--r-lg) 0 0; border-bottom-color:transparent; }
-.category-header:hover{ box-shadow:var(--sh-2); border-color:color-mix(in srgb,var(--tone) 30%,var(--line)); }
-.category-icon{ font-size:1.15rem; flex-shrink:0; width:36px; height:36px; border-radius:11px;
-  background:var(--tone-bg); display:flex; align-items:center; justify-content:center; }
-.category-title{ flex:1; font-size:1rem; font-weight:600; color:var(--ink); letter-spacing:-.01em; }
+.category:not(.collapsed) .category-header{ border-radius:var(--radius-lg) var(--radius-lg) 0 0; border-bottom-color:transparent; }
+.category-header:hover{ background:var(--color-muted); }
+.category-header:active{ background:var(--color-border); }
+.category-icon{
+  width:36px; height:36px; border-radius:var(--radius-sm); flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  background:var(--tone-bg); color:var(--tone);
+}
+.category-title{ flex:1; font-size:15px; font-weight:600; letter-spacing:-.01em; }
 .category-count{
-  background:var(--paper-2); color:var(--muted);
-  border-radius:99px; padding:3px 11px; font-size:.76rem; font-weight:600; flex-shrink:0;
-  transition:background .25s, color .25s;
+  flex-shrink:0; padding:2px var(--space-2);
+  border-radius:var(--radius-sm);
+  background:var(--color-muted); color:var(--color-muted-foreground);
+  font-size:12px; font-weight:600; font-variant-numeric:tabular-nums;
+  transition:background var(--dur-base), color var(--dur-base);
 }
 .category-count.all-done{ background:var(--tone); color:#fff; }
-.chevron{ color:var(--faint); font-size:.7rem; transition:transform .3s var(--ease); flex-shrink:0; }
-.category.collapsed .chevron{ transform:rotate(-90deg); }
+.chevron{ color:var(--color-border-strong); transition:transform var(--dur-base) var(--ease-out); flex-shrink:0; display:flex; }
+.category.collapsed .chevron{ transform:rotate(90deg); }
 
 .tasks-list{
-  background:var(--surface);
-  border:1px solid var(--line); border-top:none;
-  border-radius:0 0 var(--r-lg) var(--r-lg);
+  background:var(--color-card);
+  border:1px solid var(--color-border); border-top:none;
+  border-radius:0 0 var(--radius-lg) var(--radius-lg);
   overflow:hidden; max-height:9999px;
-  transition:max-height .4s var(--ease);
+  transition:max-height var(--dur-slow) var(--ease-out);
 }
 .category.collapsed .tasks-list{ max-height:0; border-width:0; }
 
 /* TASK */
-.task-item{ border-bottom:1px solid var(--line-soft); transition:background .25s; }
+.task-item{ border-bottom:1px solid var(--color-border); transition:background var(--dur-base); }
 .task-item:last-child{ border-bottom:none; }
-.task-item.done{ background:color-mix(in srgb,var(--tone) 6%,transparent); }
+.task-item.done{ background:var(--tone-bg); }
 
-.task-main{ display:flex; align-items:flex-start; gap:14px; padding:15px 20px; cursor:pointer; }
+.task-main{
+  display:flex; align-items:flex-start; gap:var(--space-3);
+  width:100%; padding:var(--space-3) var(--space-4); text-align:right;
+  min-height:56px;
+}
+.task-toggle{
+  display:flex; align-items:flex-start; gap:var(--space-3);
+  flex:1; min-width:0; text-align:right;
+  padding:var(--space-1) 0;
+  transition:opacity var(--dur-instant);
+}
+.task-toggle:active{ opacity:.6; }
 .task-checkbox{
   flex-shrink:0; width:24px; height:24px; margin-top:1px;
-  border:2px solid rgba(23,25,28,.18); border-radius:8px; background:var(--surface);
-  display:flex; align-items:center; justify-content:center; color:#fff;
-  transition:background .2s var(--ease), border-color .2s, transform .2s var(--ease);
+  border:2px solid var(--color-control-border); border-radius:var(--radius-sm);
+  background:var(--color-card); color:#fff;
+  display:flex; align-items:center; justify-content:center;
+  transition:background var(--dur-fast) var(--ease-out), border-color var(--dur-fast);
 }
-.task-main:hover .task-checkbox{ border-color:var(--tone); }
-.task-item.done .task-checkbox{ background:var(--tone); border-color:var(--tone); transform:scale(1.04); }
-.check-icon{ font-size:.8rem; opacity:0; transform:scale(.6); transition:opacity .2s, transform .2s var(--ease); }
-.task-item.done .check-icon{ opacity:1; transform:none; }
+.task-toggle:hover .task-checkbox{ border-color:var(--tone); }
+.task-item.done .task-checkbox{ background:var(--tone); border-color:var(--tone); }
+.check-icon{ opacity:0; transition:opacity var(--dur-fast); display:flex; }
+.task-item.done .check-icon{ opacity:1; }
 
 .task-text{ flex:1; min-width:0; }
-.task-title{ font-size:.95rem; font-weight:500; color:var(--ink); line-height:1.5; transition:color .2s; }
-.task-item.done .task-title{ color:var(--faint); text-decoration:line-through; text-decoration-thickness:1px; }
+.task-title{ display:block; font-size:15px; font-weight:500; line-height:1.5; transition:color var(--dur-base); }
+.task-item.done .task-title{ color:var(--color-muted-foreground); text-decoration:line-through; text-decoration-thickness:1px; }
 
 .task-expand-btn{
-  flex-shrink:0; margin-top:1px;
-  background:var(--paper); border:1px solid var(--line); border-radius:99px;
-  padding:5px 12px; font-size:.72rem; font-weight:600; color:var(--muted);
-  cursor:pointer; white-space:nowrap; transition:all .16s;
+  flex-shrink:0; min-height:44px;
+  display:inline-flex; align-items:center; gap:var(--space-1);
+  padding:var(--space-1) var(--space-3);
+  border:1px solid var(--color-control-border); border-radius:var(--radius-sm);
+  background:var(--color-background); color:var(--color-muted-foreground);
+  font-size:13px; font-weight:600; white-space:nowrap;
+  transition:background var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast);
 }
-.task-expand-btn:hover{ background:var(--tone-bg); color:var(--tone-deep); border-color:color-mix(in srgb,var(--tone) 34%,transparent); }
+.task-expand-btn:hover{ background:var(--tone-bg); color:var(--tone); border-color:var(--tone); }
+.task-expand-btn .ico{ color:var(--color-muted-foreground); }
+.task-expand-btn .chev{ transition:transform var(--dur-base) var(--ease-out); }
+.task-expand-btn[aria-expanded="true"] .chev{ transform:rotate(180deg); }
 
-.task-detail{ max-height:0; overflow:hidden; transition:max-height .38s var(--ease); background:var(--paper); }
-.task-detail.open{ max-height:1200px; }
+.task-detail{ max-height:0; overflow:hidden; transition:max-height var(--dur-slow) var(--ease-out); background:var(--color-background); }
+.task-detail.open{ max-height:1400px; }
 .task-detail-inner{
-  padding:15px 20px 18px; font-size:.87rem; color:var(--ink-soft);
-  line-height:1.8; font-weight:300;
-  border-top:1px solid var(--line-soft);
+  padding:var(--space-4); font-size:14px; line-height:1.75;
+  color:var(--color-muted-foreground);
+  border-top:1px solid var(--color-border);
 }
-.task-detail-inner ul{ padding-right:18px; margin-top:6px; }
-.task-detail-inner li{ margin-bottom:5px; }
-.task-detail-inner strong{ color:var(--tone-deep); font-weight:600; }
+.task-detail-inner ul{ padding-inline-start:var(--space-5); margin-top:var(--space-2); }
+.task-detail-inner li{ margin-bottom:var(--space-1); }
+.task-detail-inner strong{ color:var(--color-foreground); font-weight:600; }
 
 /* DONE BANNER + RESET */
 .done-banner{
-  display:none; text-align:center; margin-top:22px;
-  background:linear-gradient(140deg, var(--tone-deep), var(--tone));
-  color:#fff; border-radius:var(--r-lg); padding:26px 32px;
-  font-size:1.1rem; font-weight:600; box-shadow:var(--sh-3);
-  animation:popIn .45s var(--ease);
+  display:none;
+  align-items:center; justify-content:center; gap:var(--space-3);
+  margin-top:var(--space-5); padding:var(--space-5);
+  background:var(--tone); color:#fff;
+  border-radius:var(--radius-lg);
+  font-size:16px; font-weight:600; text-align:center;
+  animation:rise var(--dur-slow) var(--ease-out);
 }
-.done-banner.visible{ display:block; }
-@keyframes popIn{ from{transform:scale(.95); opacity:0} to{transform:none; opacity:1} }
+.done-banner.visible{ display:flex; }
 
 .reset-btn{
-  display:block; margin:22px auto 0;
-  background:transparent; border:1px solid var(--line); border-radius:99px;
-  padding:9px 26px; font-size:.84rem; font-weight:600; color:var(--muted);
-  cursor:pointer; transition:all .18s var(--ease);
+  display:flex; align-items:center; justify-content:center; gap:var(--space-2);
+  margin:var(--space-5) auto 0; min-height:44px;
+  padding:var(--space-2) var(--space-5);
+  border:1px solid var(--color-control-border); border-radius:var(--radius);
+  background:transparent; color:var(--color-muted-foreground);
+  font-size:14px; font-weight:600;
+  transition:background var(--dur-fast), color var(--dur-fast);
 }
-.reset-btn:hover{ background:var(--surface); color:var(--ink); border-color:rgba(23,25,28,.2); box-shadow:var(--sh-1); }
+.reset-btn:hover{ background:var(--color-card); color:var(--color-foreground); }
 
-/* ── RESPONSIVE ────────────────────────────────────────── */
-@media (max-width:560px){
-  .vtl-card{ flex-direction:column; align-items:flex-start; gap:8px; padding:12px 14px; }
-  .vtl{ padding-right:26px; }
-  .vtl-dot{ right:-26px; }
-  .tl-label{ font-size:9px; max-width:58px; }
-  .tl-node{ width:36px; height:36px; font-size:14px; }
-  .tl-strip::before,.tl-fill{ top:18px; }
+/* ── RESPONSIVE: 375 / 768 / 1024 / 1440 ───────────────── */
+@media (max-width:420px){
+  .tl-node{ width:34px; height:34px; }
+  .tl-strip::before,.tl-fill{ top:16px; }
+  .tl-label{ font-size:10px; max-width:60px; }
+  .progress-section{ padding:var(--space-3) var(--space-4); gap:var(--space-4); }
+  .progress-num{ font-size:1.75rem; }
+  .task-expand-btn span{
+    position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+    overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap;
+  }
+  .task-expand-btn{ padding-inline:var(--space-2); min-width:44px; justify-content:center; }
   .nav-row{ flex-wrap:wrap; }
-  .step-counter{ order:3; width:100%; text-align:center; }
-  .progress-section{ padding:16px 18px; gap:14px; }
-  .task-main{ padding:13px 15px; }
-  .task-detail-inner{ padding:13px 15px 16px; }
-  .header-inner{ align-items:flex-start; }
+  .step-counter{ order:3; width:100%; text-align:center; padding-top:var(--space-2); }
 }
-
-/* roomier on a desktop screen — the tool is mobile-first, but it should not look lost */
-@media (min-width:900px){
-  .home-hero{ padding-top:5rem; padding-bottom:6.5rem; }
-  .home-hero-inner,.home-search-wrap,.home-search-results,.home-buttons,.home-section-label{ max-width:760px; }
-  .home-search-wrap{ margin-top:-2.6rem; }
-  .home-buttons{ gap:18px; }
-  .home-btn{ padding:1.4rem 1.5rem 1.5rem; }
-  .home-btn-title{ font-size:18px; }
-  .home-btn-desc{ font-size:13px; }
-  .home-btn-icon{ width:48px; height:48px; }
-  .home-btn-go{ bottom:1.3rem; left:1.5rem; }
+@media (min-width:768px){
+  .home-masthead{ padding:var(--space-8) var(--space-5) calc(var(--space-8) + var(--space-3)); }
+  .home-index,.home-search-wrap,.home-search-results,.home-footer{ padding-inline:var(--space-5); }
+  .content-wrap,.tl-outer,.search-wrap,.module-head,.page-inner{ padding-inline:var(--space-5); }
+  .home-btn{ min-height:84px; padding-inline:var(--space-5); }
+}
+@media (min-width:1024px){
+  .home-btn-desc{ font-size:14px; }
+  .vtl-name{ font-size:15.5px; }
 }
 
 @media (prefers-reduced-motion:reduce){
-  *,*::before,*::after{ animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }
+  *,*::before,*::after{
+    animation-duration:.01ms !important; animation-iteration-count:1 !important;
+    transition-duration:.01ms !important; scroll-behavior:auto !important;
+  }
 }
 </style>
 </head>
@@ -792,265 +787,373 @@ button,input{ font-family:inherit; }
 <!-- ═══════════════ HOME ═══════════════ -->
 <div id="home-screen" class="screen active">
 
-  <div class="home-hero">
-    <div class="home-hero-inner">
-      <span class="home-kicker"><i></i>לשימוש פנימי</span>
-      <h1 class="home-title">מארז <em>למ"פ</em></h1>
-      <p class="home-subtitle">שעון תקה"ד, ציר ההכשרה וצ׳ק ליסטים — הכול במקום אחד</p>
+  <div class="home-masthead">
+    <div class="home-masthead-inner">
+      <span class="home-eyebrow">לשימוש פנימי</span>
+      <h1 class="home-title">מארז <span>למ"פ</span></h1>
+      <p class="home-subtitle">שעון תקה"ד, ציר משימות ההכשרה וצ׳ק ליסטים לפתיחה ולסגירת מחזור. הכול במקום אחד.</p>
     </div>
   </div>
 
   <div class="home-search-wrap">
     <div class="home-search-box">
-      <span class="home-search-icon" aria-hidden="true">
-        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
-      </span>
-      <input class="home-search-input" id="homeSearchInput" type="text"
-             placeholder="חפשו משימה, נוהל או שלב בהכשרה…" autocomplete="off" aria-label="חיפוש בכל המודולים">
-      <button class="home-search-clear" id="homeSearchClear" onclick="clearHomeSearch()" aria-label="נקה חיפוש">✕</button>
+      <span class="home-search-icon" data-icon="search" data-size="20"></span>
+      <input class="home-search-input" id="homeSearchInput" type="search"
+             placeholder="חיפוש בכל הכלים" autocomplete="off" aria-label="חיפוש משימה בכל הכלים">
+      <button class="home-search-clear" id="homeSearchClear" onclick="clearHomeSearch()" type="button">
+        <span data-icon="close" data-size="18"></span><span class="sr-only">ניקוי החיפוש</span>
+      </button>
     </div>
   </div>
-  <div class="home-search-results" id="homeSearchResults"></div>
+  <div class="home-search-results" id="homeSearchResults" role="region" aria-live="polite" aria-label="תוצאות חיפוש"></div>
 
-  <div class="home-section-label">הכלים</div>
+  <div class="home-index">
+    <h2 class="section-label">הכלים</h2>
+    <div class="home-buttons">
 
-  <div class="home-buttons">
-    <button class="home-btn" style="--tint:var(--c-blue)" onclick="showScreen('tactical')">
-      <div class="home-btn-top">
-        <span class="home-btn-icon" aria-hidden="true">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/></svg>
+      <button class="home-btn" type="button" style="--tint:var(--tone-week);--tint-bg:var(--tone-week-bg)" onclick="showScreen('tactical')">
+        <span class="home-btn-icon" data-icon="clock" data-size="22"></span>
+        <span class="home-btn-text">
+          <span class="home-btn-title">שעון תקה"ד</span>
+          <span class="home-btn-desc">כלים פיקודיים לאורך היום, מ"כ עד מ"פ</span>
         </span>
-        <span class="home-btn-num">01</span>
-      </div>
-      <div class="home-btn-title">שעון תקה"ד</div>
-      <div class="home-btn-desc">כלים פיקודיים לאורך היום — מ"כ עד מ"פ</div>
-      <span class="home-btn-go">כניסה <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14 6l-6 6 6 6"/></svg></span>
-    </button>
+        <span class="home-btn-chevron" data-icon="chevron-start" data-size="18"></span>
+      </button>
 
-    <button class="home-btn" style="--tint:var(--c-green)" onclick="showScreen('training')">
-      <div class="home-btn-top">
-        <span class="home-btn-icon" aria-hidden="true">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>
+      <button class="home-btn" type="button" style="--tint:var(--tone-daily);--tint-bg:var(--tone-daily-bg)" onclick="showScreen('training')">
+        <span class="home-btn-icon" data-icon="calendar" data-size="22"></span>
+        <span class="home-btn-text">
+          <span class="home-btn-title">ציר משימות ההכשרה</span>
+          <span class="home-btn-desc">מה נדרש מהמ"פ בכל שלב של המחזור</span>
         </span>
-        <span class="home-btn-num">02</span>
-      </div>
-      <div class="home-btn-title">ציר משימות ההכשרה</div>
-      <div class="home-btn-desc">מה נדרש מהמ"פ בכל שלב של המחזור</div>
-      <span class="home-btn-go">כניסה <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14 6l-6 6 6 6"/></svg></span>
-    </button>
+        <span class="home-btn-chevron" data-icon="chevron-start" data-size="18"></span>
+      </button>
 
-    <button class="home-btn" style="--tint:var(--accent)" onclick="showScreen('checklist_before')">
-      <div class="home-btn-top">
-        <span class="home-btn-icon" aria-hidden="true">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4h6a2 2 0 0 1 2 2H7a2 2 0 0 1 2-2z"/><path d="M17 6h2a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h2"/><path d="m8.5 13.5 2 2 4-4.5"/></svg>
+      <button class="home-btn" type="button" style="--tint:var(--tone-month);--tint-bg:var(--tone-month-bg)" onclick="showScreen('checklist_before')">
+        <span class="home-btn-icon" data-icon="clipboard" data-size="22"></span>
+        <span class="home-btn-text">
+          <span class="home-btn-title">צ׳ק ליסט לפני הכשרה</span>
+          <span class="home-btn-desc">כל מה שצריך לסגור לפני פתיחת המחזור</span>
         </span>
-        <span class="home-btn-num">03</span>
-      </div>
-      <div class="home-btn-title">צ׳ק ליסט לפני הכשרה</div>
-      <div class="home-btn-desc">כל מה שצריך לסגור לפני פתיחת המחזור</div>
-      <span class="home-btn-go">כניסה <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14 6l-6 6 6 6"/></svg></span>
-    </button>
+        <span class="home-btn-chevron" data-icon="chevron-start" data-size="18"></span>
+      </button>
 
-    <button class="home-btn" style="--tint:var(--c-violet)" onclick="showScreen('checklist_after')">
-      <div class="home-btn-top">
-        <span class="home-btn-icon" aria-hidden="true">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4.5"/><path d="M5 5.5h12l-2.2 3.6L17 13H5z"/><path d="m9.5 17.5 1.8 1.8 3.7-4"/></svg>
+      <button class="home-btn" type="button" style="--tint:var(--tone-third);--tint-bg:var(--tone-third-bg)" onclick="showScreen('checklist_after')">
+        <span class="home-btn-icon" data-icon="flag" data-size="22"></span>
+        <span class="home-btn-text">
+          <span class="home-btn-title">צ׳ק ליסט אחרי הכשרה</span>
+          <span class="home-btn-desc">סגירת מחזור: הערכות, ציוד ולקחים</span>
         </span>
-        <span class="home-btn-num">04</span>
-      </div>
-      <div class="home-btn-title">צ׳ק ליסט אחרי הכשרה</div>
-      <div class="home-btn-desc">סגירת מחזור: הערכות, ציוד ולקחים</div>
-      <span class="home-btn-go">כניסה <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14 6l-6 6 6 6"/></svg></span>
-    </button>
+        <span class="home-btn-chevron" data-icon="chevron-start" data-size="18"></span>
+      </button>
+
+    </div>
   </div>
 
-  <div class="home-footer">לשימוש פנימי בלבד · הנתונים נשמרים במכשיר שלכם בלבד</div>
+  <p class="home-footer">לשימוש פנימי בלבד · סימוני הצ׳ק ליסט נשמרים במכשיר שלכם בלבד</p>
 </div>
 
 
 <!-- ═══════════════ TACTICAL ═══════════════ -->
 <div id="screen-tactical" class="screen">
-<button class="back-btn" onclick="showScreen('home')">
-  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 6l6 6-6 6"/></svg>
-  דף ראשי
-</button>
-<div class="module mod-tac">
-  <div class="header">
-    <div class="header-inner">
-      <div>
-        <span class="header-eyebrow">כלי 01</span>
-        <h1>שעון <em>תקה"ד</em></h1>
-        <div class="header-sub">מ"כ עד מ"פ · הוראת מפקד זרוע היבשה 02.01.02</div>
+  <div class="topbar">
+    <button class="topbar-back" type="button" onclick="showScreen('home')">
+      <span data-icon="chevron-end" data-size="18"></span>דף ראשי
+    </button>
+    <span class="topbar-title">שעון תקה"ד</span>
+  </div>
+
+  <div class="module mod-tac">
+    <div class="module-head">
+      <div class="module-head-inner">
+        <div>
+          <h1>שעון <span>תקה"ד</span></h1>
+          <p class="module-sub">מ"כ עד מ"פ · הוראת מפקד זרוע היבשה 02.01.02</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="search-wrap">
+      <div class="search-box" id="tac_searchBox">
+        <span class="search-icon" data-icon="search" data-size="18"></span>
+        <input class="search-input" id="tac_searchInput" type="search" placeholder="חיפוש משימה, נוהל או פקודה" autocomplete="off" aria-label="חיפוש בשעון תקה״ד">
+        <button class="search-clear" id="tac_searchClear" onclick="tac_clearSearch()" type="button">
+          <span data-icon="close" data-size="16"></span><span class="sr-only">ניקוי החיפוש</span>
+        </button>
+      </div>
+    </div>
+    <div class="search-results" id="tac_searchResults" role="region" aria-live="polite" aria-label="תוצאות חיפוש"></div>
+
+    <nav class="tl-outer" aria-label="שלבי היום">
+      <div class="tl-strip" id="tac_tl-strip">
+        <div class="tl-fill" id="tac_tl-fill"></div>
+      </div>
+    </nav>
+
+    <div class="content-wrap">
+      <div id="tac_content"></div>
+      <div class="nav-row" id="tac_nav"></div>
+      <div class="legend">
+        <div class="legend-item"><span class="legend-dot" style="background:var(--tone-daily)"></span>יומי</div>
+        <div class="legend-item"><span class="legend-dot" style="background:var(--tone-week)"></span>שבועי</div>
+        <div class="legend-item"><span class="legend-dot" style="background:var(--tone-month)"></span>חודשי</div>
+        <div class="legend-item"><span class="legend-dot" style="background:var(--tone-once)"></span>פעם אחת</div>
+      </div>
+    </div>
+
+    <p class="footer">לשימוש פנימי בלבד · מבוסס על הוראת מפקד זרוע היבשה 02.01.02</p>
+
+    <div class="modal-overlay" id="tac_modal-overlay" onclick="tac_closeModal(event)">
+      <div class="modal" id="tac_modal" role="dialog" aria-modal="true" aria-labelledby="tac_modal-title">
+        <div class="modal-handle"></div>
+        <div id="tac_modal-content"></div>
+        <button class="modal-close" type="button" onclick="tac_closeModal()">סגירה</button>
       </div>
     </div>
   </div>
-
-  <div class="search-wrap">
-    <div class="search-box" id="tac_searchBox">
-      <span class="search-icon" aria-hidden="true">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
-      </span>
-      <input class="search-input" id="tac_searchInput" type="text" placeholder="חפשו משימה, נוהל או פקודה…" autocomplete="off" aria-label="חיפוש בשעון תקה״ד">
-      <button class="search-clear" id="tac_searchClear" onclick="tac_clearSearch()" aria-label="נקה חיפוש">✕</button>
-    </div>
-  </div>
-  <div class="search-results" id="tac_searchResults"></div>
-
-  <div class="tl-outer">
-    <div class="tl-strip" id="tac_tl-strip">
-      <div class="tl-fill" id="tac_tl-fill"></div>
-    </div>
-  </div>
-
-  <div class="content-wrap">
-    <div id="tac_content"></div>
-    <div class="nav-row" id="tac_nav"></div>
-    <div class="legend">
-      <div class="legend-item"><div class="legend-dot" style="background:#1D9E75"></div>יומי</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#185FA5"></div>שבועי</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#A0600A"></div>חודשי</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#888780"></div>פעם אחת</div>
-    </div>
-  </div>
-
-  <div class="footer">לשימוש פנימי בלבד · מבוסס על הוראת מפקד זרוע היבשה 02.01.02</div>
-
-  <div class="modal-overlay" id="tac_modal-overlay" onclick="tac_closeModal(event)">
-    <div class="modal" id="tac_modal" role="dialog" aria-modal="true">
-      <div class="modal-handle"></div>
-      <div id="tac_modal-content"></div>
-      <button class="modal-close" onclick="tac_closeModal()">סגירה</button>
-    </div>
-  </div>
-</div>
 </div>
 
 
 <!-- ═══════════════ TRAINING ═══════════════ -->
 <div id="screen-training" class="screen">
-<button class="back-btn" onclick="showScreen('home')">
-  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 6l6 6-6 6"/></svg>
-  דף ראשי
-</button>
-<div class="module mod-tr" id="tr_app">
-  <div class="header">
-    <div class="header-inner">
-      <div>
-        <span class="header-eyebrow">כלי 02</span>
-        <h1>ציר משימות <em>מ"פ</em></h1>
-        <div class="header-sub">מה נדרש בכל שלב, מהכנ"ס ועד סיום המחזור</div>
+  <div class="topbar">
+    <button class="topbar-back" type="button" onclick="showScreen('home')">
+      <span data-icon="chevron-end" data-size="18"></span>דף ראשי
+    </button>
+    <span class="topbar-title">ציר משימות ההכשרה</span>
+  </div>
+
+  <div class="module mod-tr" id="tr_app">
+    <div class="module-head">
+      <div class="module-head-inner">
+        <div>
+          <h1>ציר משימות <span>מ"פ</span></h1>
+          <p class="module-sub">מה נדרש בכל שלב, מהכנ"ס ועד סיום המחזור</p>
+        </div>
+        <button class="duration-badge" id="tr_dur-badge" type="button" onclick="tr_openDuration()">
+          <span data-icon="gear" data-size="16"></span>
+          <span id="tr_dur-label">מחזור 13+3</span>
+        </button>
       </div>
-      <button class="duration-badge" id="tr_dur-badge" onclick="tr_resetApp()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15.3-6.4L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15.3 6.4L3 16"/><path d="M3 21v-5h5"/></svg>
-        <span id="tr_dur-label">מחזור 13+3</span>
-      </button>
+    </div>
+
+    <nav class="tl-outer" aria-label="שלבי המחזור">
+      <div class="tl-strip" id="tr_tl-strip">
+        <div class="tl-fill" id="tr_tl-fill"></div>
+      </div>
+    </nav>
+
+    <div class="content-wrap">
+      <div id="tr_content"></div>
+      <div class="nav-row" id="tr_nav"></div>
+      <div class="legend">
+        <div class="legend-item"><span class="legend-dot" style="background:var(--tone-daily)"></span>כל שבוע</div>
+        <div class="legend-item"><span class="legend-dot" style="background:var(--tone-week)"></span>פעם בחודש</div>
+        <div class="legend-item"><span class="legend-dot" style="background:var(--tone-month)"></span>תוך 10 ימים</div>
+        <div class="legend-item"><span class="legend-dot" style="background:var(--tone-third)"></span>שבוע שלישי</div>
+        <div class="legend-item"><span class="legend-dot" style="background:var(--tone-once)"></span>פעם אחת</div>
+      </div>
+    </div>
+
+    <p class="footer">לשימוש פנימי בלבד · בחרו משימה לפרטים נוספים</p>
+
+    <div class="modal-overlay" id="tr_modal-overlay" onclick="tr_closeModal(event)">
+      <div class="modal" id="tr_modal" role="dialog" aria-modal="true" aria-labelledby="tr_modal-title">
+        <div class="modal-handle"></div>
+        <div id="tr_modal-content"></div>
+        <button class="modal-close" type="button" onclick="tr_closeModal()">סגירה</button>
+      </div>
     </div>
   </div>
-
-  <div class="tl-outer">
-    <div class="tl-strip" id="tr_tl-strip">
-      <div class="tl-fill" id="tr_tl-fill"></div>
-    </div>
-  </div>
-
-  <div class="content-wrap">
-    <div id="tr_content"></div>
-    <div class="nav-row" id="tr_nav"></div>
-    <div class="legend">
-      <div class="legend-item"><div class="legend-dot" style="background:#1D9E75"></div>כל שבוע</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#185FA5"></div>פעם בחודש</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#EF9F27"></div>תוך 10 ימים</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#7F77DD"></div>שבוע שלישי</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#888780"></div>פעם אחת</div>
-    </div>
-  </div>
-
-  <div class="footer">לשימוש פנימי בלבד · לחצו על משימה לפרטים נוספים</div>
-
-  <div class="modal-overlay" id="tr_modal-overlay" onclick="tr_closeModal(event)">
-    <div class="modal" id="tr_modal" role="dialog" aria-modal="true">
-      <div class="modal-handle"></div>
-      <div id="tr_modal-content"></div>
-      <button class="modal-close" onclick="tr_closeModal()">סגירה</button>
-    </div>
-  </div>
-</div>
 </div>
 
 
 <!-- ═══════════════ CHECKLIST · BEFORE ═══════════════ -->
 <div id="screen-checklist_before" class="screen">
-<button class="back-btn" onclick="showScreen('home')">
-  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 6l6 6-6 6"/></svg>
-  דף ראשי
-</button>
-<div class="mod-cb">
-  <header>
-    <h1>צ׳קליסט מ"פ — לפני הכשרה</h1>
-    <p>כל המשימות שצריך לסגור לפני שהמחזור נפתח</p>
-  </header>
-  <div class="page-wrapper">
-    <div class="page-inner">
-      <div class="progress-section">
-        <div class="progress-labels">
-          <div class="progress-num" id="cb_doneCount">0</div>
-          <div class="progress-sub">מתוך <span id="cb_totalCount">0</span> משימות</div>
-        </div>
-        <div class="progress-bar-wrap">
-          <div class="progress-bar-bg">
-            <div class="progress-bar-fill" id="cb_progressFill"></div>
-          </div>
-          <div class="progress-pct" id="cb_progressPct">0% הושלם</div>
+  <div class="topbar">
+    <button class="topbar-back" type="button" onclick="showScreen('home')">
+      <span data-icon="chevron-end" data-size="18"></span>דף ראשי
+    </button>
+    <span class="topbar-title">לפני הכשרה</span>
+  </div>
+
+  <div class="mod-cb">
+    <div class="module-head">
+      <div class="module-head-inner">
+        <div>
+          <h1>צ׳קליסט <span>לפני הכשרה</span></h1>
+          <p class="module-sub">כל המשימות שצריך לסגור לפני שהמחזור נפתח</p>
         </div>
       </div>
+    </div>
 
-      <div id="cb_checklistRoot"></div>
+    <div class="page-wrapper">
+      <div class="page-inner">
+        <div class="progress-section">
+          <div class="progress-labels">
+            <div class="progress-num" id="cb_doneCount">0</div>
+            <div class="progress-sub">מתוך <span id="cb_totalCount">0</span> משימות</div>
+          </div>
+          <div class="progress-bar-wrap">
+            <div class="progress-bar-bg" role="progressbar" id="cb_progressBar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="התקדמות הצ׳קליסט">
+              <div class="progress-bar-fill" id="cb_progressFill"></div>
+            </div>
+            <div class="progress-pct" id="cb_progressPct">0% הושלם</div>
+          </div>
+        </div>
 
-      <div class="done-banner" id="cb_doneBanner">🎖️ כל המשימות הושלמו — ההכשרה מוכנה לביצוע</div>
-      <button class="reset-btn" onclick="cb_resetAll()">איפוס הרשימה</button>
+        <div id="cb_checklistRoot"></div>
+
+        <p class="done-banner" id="cb_doneBanner" role="status">כל המשימות הושלמו. ההכשרה מוכנה לביצוע.</p>
+        <button class="reset-btn" type="button" onclick="cb_resetAll()">
+          <span data-icon="gear" data-size="16"></span>איפוס הרשימה
+        </button>
+      </div>
     </div>
   </div>
-</div>
 </div>
 
 
 <!-- ═══════════════ CHECKLIST · AFTER ═══════════════ -->
 <div id="screen-checklist_after" class="screen">
-<button class="back-btn" onclick="showScreen('home')">
-  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 6l6 6-6 6"/></svg>
-  דף ראשי
-</button>
-<div class="mod-ca">
-  <header>
-    <h1>צ׳קליסט מ"פ — אחרי הכשרה</h1>
-    <p>סגירת מחזור: הערכות, ציוד, לקחים והעברת מקל</p>
-  </header>
-  <div class="page-wrapper">
-    <div class="page-inner">
-      <div class="progress-section">
-        <div class="progress-labels">
-          <div class="progress-num" id="ca_doneCount">0</div>
-          <div class="progress-sub">מתוך <span id="ca_totalCount">0</span> משימות</div>
-        </div>
-        <div class="progress-bar-wrap">
-          <div class="progress-bar-bg">
-            <div class="progress-bar-fill" id="ca_progressFill"></div>
-          </div>
-          <div class="progress-pct" id="ca_progressPct">0% הושלם</div>
+  <div class="topbar">
+    <button class="topbar-back" type="button" onclick="showScreen('home')">
+      <span data-icon="chevron-end" data-size="18"></span>דף ראשי
+    </button>
+    <span class="topbar-title">אחרי הכשרה</span>
+  </div>
+
+  <div class="mod-ca">
+    <div class="module-head">
+      <div class="module-head-inner">
+        <div>
+          <h1>צ׳קליסט <span>אחרי הכשרה</span></h1>
+          <p class="module-sub">סגירת מחזור: הערכות, ציוד, לקחים והעברת מקל</p>
         </div>
       </div>
+    </div>
 
-      <div id="ca_checklistRoot"></div>
+    <div class="page-wrapper">
+      <div class="page-inner">
+        <div class="progress-section">
+          <div class="progress-labels">
+            <div class="progress-num" id="ca_doneCount">0</div>
+            <div class="progress-sub">מתוך <span id="ca_totalCount">0</span> משימות</div>
+          </div>
+          <div class="progress-bar-wrap">
+            <div class="progress-bar-bg" role="progressbar" id="ca_progressBar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="התקדמות הצ׳קליסט">
+              <div class="progress-bar-fill" id="ca_progressFill"></div>
+            </div>
+            <div class="progress-pct" id="ca_progressPct">0% הושלם</div>
+          </div>
+        </div>
 
-      <div class="done-banner" id="ca_doneBanner">🏅 כל המשימות הושלמו — המחזור נסגר בהצלחה</div>
-      <button class="reset-btn" onclick="ca_resetAll()">איפוס הרשימה</button>
+        <div id="ca_checklistRoot"></div>
+
+        <p class="done-banner" id="ca_doneBanner" role="status">כל המשימות הושלמו. המחזור נסגר בהצלחה.</p>
+        <button class="reset-btn" type="button" onclick="ca_resetAll()">
+          <span data-icon="gear" data-size="16"></span>איפוס הרשימה
+        </button>
+      </div>
     </div>
   </div>
-</div>
 </div>
 
 </div>
 <script>
+// ─── ICON SYSTEM ─────────────────────────────────────────────────────────────
+// Outline paths from Heroicons v2 (MIT, https://heroicons.com), 24x24 grid,
+// stroke 1.5, currentColor. Emoji are never used as icons: the data still
+// carries them, ICON_MAP translates them to a glyph at render time.
+const ICON_PATHS = {
+  chart:     '<path d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z"/>',
+  clipboard: '<path d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25ZM6.75 12h.008v.008H6.75V12Zm0 3h.008v.008H6.75V15Zm0 3h.008v.008H6.75V18Z"/>',
+  shield:    '<path d="M11.998 23.25c-.183 0-.36-.024-.526-.068a11.25 11.25 0 0 1-7.72-9.936 9.75 9.75 0 0 1-.002-.246V6.75c0-.414.336-.75.75-.75a8.213 8.213 0 0 0 5.8-2.4.75.75 0 0 1 1.06 0 8.213 8.213 0 0 0 5.8 2.4.75.75 0 0 1 .75.75v6.25c0 .082 0 .164-.003.246a11.25 11.25 0 0 1-7.72 9.936 2.01 2.01 0 0 1-.19.068Z"/>',
+  calendar:  '<path d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"/>',
+  eye:       '<path d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"/><path d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>',
+  pencil:    '<path d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125"/>',
+  sparkles:  '<path d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456Z"/>',
+  handshake: '<path d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25"/>',
+  rocket:    '<path d="M15.59 14.37a6 6 0 0 1-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 0 0 6.16-12.12A14.98 14.98 0 0 0 9.631 8.41m5.96 5.96a14.926 14.926 0 0 1-5.841 2.58m-.119-8.54a6 6 0 0 0-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 0 0-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 0 1-2.448-2.448 14.9 14.9 0 0 1 .06-.312m-2.24 2.39a4.493 4.493 0 0 0-1.757 4.306 4.493 4.493 0 0 0 4.306-1.758M16.5 9a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"/>',
+  chat:      '<path d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375m-13.5 3.01c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.184-4.183a1.14 1.14 0 0 1 .778-.332 48.294 48.294 0 0 0 5.83-.498c1.585-.233 2.708-1.626 2.708-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v8.269Z"/>',
+  wrench:    '<path d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 1 1-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 0 0 4.486-6.336l-3.276 3.277a3.004 3.004 0 0 1-2.25-2.25l3.276-3.276a4.5 4.5 0 0 0-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437 1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008Z"/>',
+  bell:      '<path d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"/>',
+  search:    '<path d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/>',
+  inbox:     '<path d="M2.25 13.5h3.86a2.25 2.25 0 0 1 2.012 1.244l.256.512a2.25 2.25 0 0 0 2.013 1.244h3.218a2.25 2.25 0 0 0 2.013-1.244l.256-.512a2.25 2.25 0 0 1 2.013-1.244h3.859m-19.5.338V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18v-4.162c0-.224-.034-.447-.1-.661L19.24 5.338a2.25 2.25 0 0 0-2.15-1.588H6.911a2.25 2.25 0 0 0-2.15 1.588L2.35 13.177a2.25 2.25 0 0 0-.1.661Z"/>',
+  bulb:      '<path d="M12 18v-5.25m0 0a6.01 6.01 0 0 0 1.5-.189m-1.5.189a6.01 6.01 0 0 1-1.5-.189m3.75 7.478a12.06 12.06 0 0 1-4.5 0m3.75 2.383a14.406 14.406 0 0 1-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 1 0-7.517 0c.85.493 1.509 1.333 1.509 2.316V18"/>',
+  heart:     '<path d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"/>',
+  users:     '<path d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"/>',
+  thumbsup:  '<path d="M6.633 10.25c.806 0 1.533-.446 2.031-1.08a9.041 9.041 0 0 1 2.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 0 0 .322-1.672V2.75a.75.75 0 0 1 .75-.75 2.25 2.25 0 0 1 2.25 2.25c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 0 1-2.649 7.521c-.388.482-.987.729-1.605.729H13.48c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 0 0-1.423-.23H5.904M6.633 10.25a2.25 2.25 0 0 0-2.25 2.25v6a2.25 2.25 0 0 0 2.25 2.25h.27"/>',
+  hospital:  '<path d="M12 6.042v5.958m-3-2.98h6M2.25 21h19.5m-18-18v18m16.5-18v18M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12M6 21h12a.75.75 0 0 0 .75-.75V3.75A.75.75 0 0 0 18 3"/>',
+  building:  '<path d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21"/>',
+  trophy:    '<path d="M16.5 18.75h-9m9 0a3 3 0 0 1 3 3h-15a3 3 0 0 1 3-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497m5.007 0a7.454 7.454 0 0 1-.982-3.172M9.497 14.25a7.454 7.454 0 0 0 .981-3.172M5.25 4.236c-.982.143-1.954.317-2.916.52A6.003 6.003 0 0 0 7.73 9.728M5.25 4.236V4.5c0 2.108.966 3.99 2.48 5.228M5.25 4.236V2.721C7.456 2.41 9.71 2.25 12 2.25c2.291 0 4.545.16 6.75.47v1.516M7.73 9.728a6.726 6.726 0 0 0 2.748 1.35m8.272-6.842V4.5c0 2.108-.966 3.99-2.48 5.228m2.48-5.492a46.32 46.32 0 0 1 2.916.52 6.003 6.003 0 0 1-5.395 4.972m0 0a6.726 6.726 0 0 1-2.749 1.35m0 0a6.772 6.772 0 0 1-3.044 0"/>',
+  bolt:      '<path d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z"/>',
+  flag:      '<path d="M3 3v1.5M3 21v-6m0 0 2.77-.693a9 9 0 0 1 6.208.682l.108.054a9 9 0 0 0 6.086.71l3.114-.732a48.524 48.524 0 0 1-.005-10.499l-3.11.732a9 9 0 0 1-6.085-.711l-.108-.054a9 9 0 0 0-6.208-.682L3 4.5M3 15V4.5"/>',
+  meal:      '<path d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"/>',
+  tree:      '<path d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0 0 12 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75Z"/>',
+  moon:      '<path d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z"/>',
+  sun:       '<path d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"/>',
+  sunrise:   '<path d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"/>',
+  star:      '<path d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z"/>',
+  check:     '<path d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>',
+  warning:   '<path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/>',
+  gear:      '<path d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.03 7.03 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.241.437-.613.43-.992a6.93 6.93 0 0 1 0-.255c.007-.378-.138-.75-.43-.991l-1.004-.828a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z"/><path d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>',
+  target:    '<path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z"/><path d="M12 16.5a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9Z"/><path d="M12 12h.008v.008H12V12Z"/>',
+  home:      '<path d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75"/>',
+  lock:      '<path d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"/>',
+  toolbox:   '<path d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 0 0 .75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 0 0-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0 1 12 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 0 1-.673-.38m0 0A2.18 2.18 0 0 1 3 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 0 1 3.413-.387m7.5 0V5.25A2.25 2.25 0 0 0 13.5 3h-3a2.25 2.25 0 0 0-2.25 2.25v.894m7.5 0a48.667 48.667 0 0 0-7.5 0M12 12.75h.008v.008H12v-.008Z"/>',
+  clock:     '<path d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>',
+  pin:       '<path d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/>',
+  doc:       '<path d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/>',
+  broom:     '<path d="M9.53 16.122a3 3 0 0 0-5.78 1.128 2.25 2.25 0 0 1-2.4 2.245 4.5 4.5 0 0 0 8.4-2.245c0-.399-.078-.78-.22-1.128Zm0 0a15.998 15.998 0 0 0 3.388-1.62m-5.043-.025a15.994 15.994 0 0 1 1.622-3.395m3.42 3.42a15.995 15.995 0 0 0 4.764-4.648l3.876-5.814a1.151 1.151 0 0 0-1.597-1.597L14.146 6.32a15.996 15.996 0 0 0-4.649 4.763m3.42 3.42a6.776 6.776 0 0 0-3.42-3.42"/>',
+  megaphone: '<path d="M10.34 15.84c-.688-.06-1.386-.09-2.09-.09H7.5a4.5 4.5 0 1 1 0-9h.75c.704 0 1.402-.03 2.09-.09m0 9.18c.253.962.584 1.892.985 2.783.247.55.06 1.21-.463 1.511l-.657.38c-.551.318-1.26.117-1.527-.461a20.845 20.845 0 0 1-1.44-4.282m3.102.069a18.03 18.03 0 0 1-.59-4.59c0-1.586.205-3.124.59-4.59m0 9.18a23.848 23.848 0 0 1 8.835 2.535M10.34 6.66a23.847 23.847 0 0 0 8.835-2.535m0 0A23.74 23.74 0 0 0 18.795 3m.38 1.125a23.91 23.91 0 0 1 1.014 5.395m-1.014 8.855c-.118.38-.245.754-.38 1.125m.38-1.125a23.91 23.91 0 0 0 1.014-5.395m0-3.46c.495.413.811 1.035.811 1.73 0 .695-.316 1.317-.811 1.73m0-3.46a24.347 24.347 0 0 1 0 3.46"/>'
+};
+
+// Data still carries emoji; this table renders a real icon instead.
+const ICON_MAP = {
+  '📊':'chart','📋':'clipboard','🪖':'shield','🛡️':'shield','📅':'calendar','🗓️':'calendar',
+  '🗓':'calendar','📆':'calendar','👁':'eye','📝':'pencil','⚔️':'shield','🧹':'broom',
+  '🤝':'handshake','🚀':'rocket','🗣️':'megaphone','💬':'chat','🔧':'wrench','🔔':'bell',
+  '🔍':'search','📬':'inbox','💡':'bulb','💚':'heart','👥':'users','👤':'users','👍':'thumbsup',
+  '🏥':'hospital','🏢':'building','🏆':'trophy','🏃':'bolt','🏁':'flag','🍽️':'meal','🌳':'tree',
+  '🌙':'moon','🌅':'sunrise','☀️':'sun','⭐':'star','✅':'check','⚠️':'warning','⚙️':'gear',
+  '🎯':'target','🏠':'home','🔒':'lock','🧰':'toolbox','⏰':'clock','⏱':'clock','⚡':'bolt',
+  '📌':'pin','📄':'doc','🎖️':'trophy','🏅':'trophy','🔄':'gear'
+};
+
+function icon(key, size) {
+  const paths = ICON_PATHS[key] || ICON_PATHS.clipboard;
+  return `<svg class="ico" width="${size||20}" height="${size||20}" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+    aria-hidden="true" focusable="false">${paths}</svg>`;
+}
+
+// Emoji in a data string -> icon glyph. Returns the icon plus the cleaned text.
+function deEmoji(str) {
+  return (str || '').replace(/[\p{Extended_Pictographic}️⃣]/gu, '').trim();
+}
+function iconFor(emoji, size) {
+  return icon(ICON_MAP[(emoji || '').trim()] || 'clipboard', size);
+}
+
+// UI chrome glyphs (logical direction: "start"/"end" follow RTL)
+ICON_PATHS['chevron-start'] = '<path d="m15.75 19.5-7.5-7.5 7.5-7.5"/>';
+ICON_PATHS['chevron-end']   = '<path d="m8.25 4.5 7.5 7.5-7.5 7.5"/>';
+ICON_PATHS['chevron-down']  = '<path d="m19.5 8.25-7.5 7.5-7.5-7.5"/>';
+ICON_PATHS['close']         = '<path d="M6 18 18 6M6 6l12 12"/>';
+ICON_PATHS['check-thick']   = '<path d="m4.5 12.75 6 6 9-13.5" stroke-width="2.5"/>';
+ICON_PATHS['arrow-start']   = '<path d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"/>';
+ICON_PATHS['arrow-end']     = '<path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/>';
+
+// Hydrate every <span data-icon="name"> in the static markup.
+function hydrateIcons(root) {
+  (root || document).querySelectorAll('[data-icon]').forEach(el => {
+    if (el.dataset.iconDone) return;
+    el.innerHTML = icon(el.dataset.icon, el.dataset.size) + el.innerHTML;
+    el.dataset.iconDone = '1';
+  });
+}
+
 
 // ─── NAVIGATION ──────────────────────────────────────────────────────────────
 const initialized = {};
@@ -1062,6 +1165,9 @@ function showScreen(id) {
   if (el) {
     el.classList.add('active');
     window.scrollTo({top: 0, behavior: 'smooth'});
+    // screen-reader focus order follows the visual order: land on the new heading
+    const heading = el.querySelector('h1');
+    if (heading) { heading.setAttribute('tabindex', '-1'); heading.focus({preventScroll: true}); }
   }
   
   // Initialize module on first visit
@@ -1210,13 +1316,13 @@ function doHomeSearch(query) {
   }
   
   resultsEl.innerHTML = results.map(r => `
-    <div class="home-sr-item" style="--src-color:${r.color}" onclick="goToResult('${r.module}')">
-      <div class="home-sr-name">${r.name}</div>
-      <div class="home-sr-meta">
-        <span class="home-sr-module" style="background:${r.color}22;color:${r.color}">${r.moduleName}</span>
-        ${r.phase}${r.badge ? ' · ' + r.badge.replace(/<[^>]+>/g,'') : ''}
-      </div>
-    </div>
+    <button type="button" class="home-sr-item" style="--src-color:${r.color}" onclick="goToResult('${r.module}')">
+      <span class="home-sr-name">${deEmoji(r.name)}</span>
+      <span class="home-sr-meta">
+        <span class="home-sr-module" style="background:${r.color}1A;color:${r.color}">${r.moduleName}</span>
+        ${deEmoji(r.phase)}${r.badge ? ' · ' + deEmoji(r.badge.replace(/<[^>]+>/g,'')) : ''}
+      </span>
+    </button>
   `).join('');
   resultsEl.classList.add('show');
 }
@@ -1239,14 +1345,46 @@ document.getElementById('homeSearchInput').addEventListener('input', function() 
 // Build index after a short delay (modules loaded)
 setTimeout(buildSearchIndex, 500);
 
-// Escape closes an open sheet, or steps back out of a module
+// ─── SHEETS ──────────────────────────────────────────────────────────────────
+// A sheet traps focus while open and hands it back to whatever opened it.
+let sheetOpener = null;
+const FOCUSABLE = 'button, [href], input, [tabindex]:not([tabindex="-1"])';
+
+function openSheet(overlayId) {
+  const overlay = document.getElementById(overlayId);
+  sheetOpener = document.activeElement;
+  overlay.classList.add('open');
+  const first = overlay.querySelector(FOCUSABLE);
+  if (first) first.focus();
+}
+
+function closeSheet(overlayId) {
+  document.getElementById(overlayId).classList.remove('open');
+  if (sheetOpener && document.contains(sheetOpener)) sheetOpener.focus();
+  sheetOpener = null;
+}
+
 document.addEventListener('keydown', e => {
-  if (e.key !== 'Escape') return;
   const open = document.querySelector('.modal-overlay.open');
-  if (open) { open.classList.remove('open'); return; }
-  const active = document.querySelector('.screen.active');
-  if (active && active.id !== 'home-screen') showScreen('home');
+
+  if (e.key === 'Escape') {
+    if (open) { closeSheet(open.id); return; }
+    const active = document.querySelector('.screen.active');
+    if (active && active.id !== 'home-screen') showScreen('home');
+    return;
+  }
+
+  // keep Tab inside the open sheet
+  if (e.key === 'Tab' && open) {
+    const items = [...open.querySelectorAll(FOCUSABLE)].filter(el => el.offsetParent !== null);
+    if (!items.length) return;
+    const first = items[0], last = items[items.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  }
 });
+
+hydrateIcons();
 
 
 // ═══════════════════ MODULE: training ═══════════════════
@@ -1480,16 +1618,17 @@ function tr_updateDurLabel(){
   if(el) el.textContent=`מחזור ${tr_totalWeeks}+${tr_prepWeeks}`;
 }
 
-function tr_resetApp(){
+function tr_openDuration(){
   const opts=tr_durations.map(d=>
-    `<button class="w-opt${d.t===tr_totalWeeks&&d.p===tr_prepWeeks?' sel':''}" onclick="tr_setDuration(${d.t},${d.p})">${d.t} שבועות + ${d.p}</button>`
+    `<button type="button" class="w-opt" aria-pressed="${d.t===tr_totalWeeks&&d.p===tr_prepWeeks}"
+       onclick="tr_setDuration(${d.t},${d.p})">${d.t} שבועות + ${d.p}</button>`
   ).join('');
   document.getElementById('tr_modal-content').innerHTML=`
     <div class="modal-header">
-      <div class="modal-icon" style="background:var(--accent-bg)">🗓</div>
+      <span class="modal-icon">${icon('calendar',22)}</span>
       <div>
-        <div class="modal-title">משך המחזור</div>
-        <div class="modal-freq">שבועות הכשרה + שבועות הכנת סגל</div>
+        <h2 class="modal-title" id="tr_modal-title">משך המחזור</h2>
+        <p class="modal-freq">שבועות הכשרה + שבועות הכנת סגל</p>
       </div>
     </div>
     <div class="modal-divider"></div>
@@ -1497,17 +1636,17 @@ function tr_resetApp(){
       <div class="modal-section-title">בחרו משך</div>
       <div class="w-picker">${opts}</div>
     </div>
-    <div class="modal-section">
-      <div class="modal-body" style="font-size:13px">העיתויים בציר המשימות מחושבים מחדש לפי הבחירה.</div>
-    </div>
+    <p class="modal-body" style="font-size:14px;color:var(--color-muted-foreground)">
+      העיתויים בציר המשימות מחושבים מחדש לפי הבחירה.
+    </p>
   `;
-  document.getElementById('tr_modal-overlay').classList.add('open');
+  openSheet('tr_modal-overlay');
 }
 
 function tr_setDuration(t,p){
   tr_totalWeeks=t; tr_prepWeeks=p;
   tr_updateDurLabel();
-  document.getElementById('tr_modal-overlay').classList.remove('open');
+  closeSheet('tr_modal-overlay');
   tr_renderContent();
 }
 
@@ -1518,10 +1657,13 @@ function tr_renderTimeline(){
   strip.innerHTML='';
   strip.appendChild(fill);
   tr_phases.forEach((p,i)=>{
-    const el=document.createElement('div');
+    const el=document.createElement('button');
+    el.type='button';
     el.className='tl-phase'+(i===tr_current?' active':'')+(i<tr_current?' done':'');
     el.style.setProperty('--phase-color',p.color);
-    el.innerHTML=`<div class="tl-node">${i<tr_current?'✓':p.icon}</div><div class="tl-label">${p.title}</div>`;
+    if(i===tr_current) el.setAttribute('aria-current','step');
+    el.setAttribute('aria-label',`שלב ${i+1} מתוך ${tr_phases.length}: ${p.title}`);
+    el.innerHTML=`<span class="tl-node">${i<tr_current?icon('check-thick',18):iconFor(p.icon,20)}</span><span class="tl-label">${p.title}</span>`;
     el.onclick=()=>tr_go(i);
     strip.appendChild(el);
   });
@@ -1538,28 +1680,28 @@ function tr_renderContent(){
   const tasksHtml=p.tasks.map((t,ti)=>{
     const weeks=t.weeksFn(tr_totalWeeks,tr_prepWeeks);
     const weekStr=weeks.length>1?`שבועות: ${weeks.slice(0,2).join(', ')}${weeks.length>2?'...':''}`:`עיתוי: ${weeks[0]}`;
-    return `<div class="vtl-item" onclick="tr_openModal(${tr_current},${ti})">
-      <div class="vtl-dot" style="--dot-color:${t.dotColor}"></div>
-      <div class="vtl-card" style="--dot-color:${t.dotColor}">
-        <div class="vtl-left">
-          <div class="vtl-name">${t.name}</div>
-          <div class="vtl-week">📅 ${weekStr}</div>
-        </div>
-        <span class="badge ${t.badge}">${t.badgeText}</span>
-      </div>
-    </div>`;
+    return `<button type="button" class="vtl-item" style="--dot-color:${t.dotColor};--dot-bg:${t.chipBg}" onclick="tr_openModal(${tr_current},${ti})">
+      <span class="vtl-row">
+        <span class="vtl-ico">${iconFor(t.icon,20)}</span>
+        <span class="vtl-left">
+          <span class="vtl-name">${deEmoji(t.name)}</span>
+          <span class="vtl-week">${icon('calendar',14)} ${weekStr}</span>
+        </span>
+        <span class="badge ${t.badge}">${deEmoji(t.badgeText)}</span>
+      </span>
+    </button>`;
   }).join('');
 
   document.getElementById('tr_content').innerHTML=`
-    <div class="phase-hero">
-      <div class="phase-icon-box" style="background:${p.bgLight}">${p.icon}</div>
+    <div class="phase-hero" style="--phase-color:${p.color};--phase-bg:${p.bgLight}">
+      <span class="phase-icon-box">${iconFor(p.icon,24)}</span>
       <div>
-        <div class="phase-title" style="color:${p.color}">${p.title}</div>
-        <div class="phase-desc">${p.desc}</div>
+        <h2 class="phase-title">${p.title}</h2>
+        <p class="phase-desc">${p.desc}</p>
       </div>
     </div>
-    <div class="tap-hint">לחץ על משימה לפרטים נוספים ↓</div>
-    <div class="vtl" style="--spine-top:${p.color};--spine-bottom:${p.bgLight}">${tasksHtml}</div>
+    <p class="tap-hint">בחרו משימה לפרטים נוספים</p>
+    <div class="vtl">${tasksHtml}</div>
   `;
 
   const nav=document.getElementById('tr_nav');
@@ -1567,8 +1709,8 @@ function tr_renderContent(){
   const prev=document.createElement('div');
   if(tr_current>0){
     const b=document.createElement('button');
-    b.className='nav-btn';
-    b.textContent='→ '+tr_phases[tr_current-1].title;
+    b.type='button'; b.className='nav-btn';
+    b.innerHTML=icon('arrow-end',16)+'<span>'+tr_phases[tr_current-1].title+'</span>';
     b.onclick=()=>tr_go(tr_current-1);
     prev.appendChild(b);
   }
@@ -1580,9 +1722,8 @@ function tr_renderContent(){
   const next=document.createElement('div');
   if(tr_current<tr_phases.length-1){
     const b=document.createElement('button');
-    b.className='nav-btn primary';
-    b.style.background=tr_phases[tr_current+1].color;
-    b.textContent=tr_phases[tr_current+1].title+' ←';
+    b.type='button'; b.className='nav-btn primary';
+    b.innerHTML='<span>'+tr_phases[tr_current+1].title+'</span>'+icon('arrow-start',16);
     b.onclick=()=>tr_go(tr_current+1);
     next.appendChild(b);
   }
@@ -1605,10 +1746,10 @@ function tr_openModal(phaseIdx,taskIdx){
   const weeksHtml=weeks.map(w=>`<span class="week-chip" style="--chip-bg:${t.chipBg};--chip-color:${t.chipColor}">${w}</span>`).join('');
   document.getElementById('tr_modal-content').innerHTML=`
     <div class="modal-header">
-      <div class="modal-icon" style="background:${t.chipBg}">${t.icon}</div>
+      <span class="modal-icon" style="--icon-bg:${t.chipBg};--icon-fg:${t.chipColor}">${iconFor(t.icon,22)}</span>
       <div>
-        <div class="modal-title">${t.name}</div>
-        <div class="modal-freq"><span class="badge ${t.badge}" style="font-size:11px">${t.badgeText}</span></div>
+        <h2 class="modal-title" id="tr_modal-title">${deEmoji(t.name)}</h2>
+        <div class="modal-freq"><span class="badge ${t.badge}">${deEmoji(t.badgeText)}</span></div>
       </div>
     </div>
     <div class="modal-divider"></div>
@@ -1622,15 +1763,13 @@ function tr_openModal(phaseIdx,taskIdx){
     </div>
     <div class="modal-section" style="margin-top:.5rem">
       <div class="modal-section-title">מקור</div>
-      <div class="modal-body" style="font-size:13px;color:var(--muted)">${t.source}</div>
+      <div class="modal-body"><span class="source-tag">${icon('doc',16)} ${t.source}</span></div>
     </div>
   `;
-  document.getElementById('tr_modal-overlay').classList.add('open');
+  openSheet('tr_modal-overlay');
 }
 function tr_closeModal(e){
-  if(!e||e.target===document.getElementById('tr_modal-overlay')){
-    document.getElementById('tr_modal-overlay').classList.remove('open');
-  }
+  if(!e||e.target===document.getElementById('tr_modal-overlay')) closeSheet('tr_modal-overlay');
 }
 
 window.addEventListener('resize',()=>{if(tr_current>=0)tr_renderTimeline()});
@@ -1914,17 +2053,17 @@ function tac_doSearch(q){
     t.name.toLowerCase().includes(ql) || t.desc.toLowerCase().includes(ql)
   );
   if(!results.length){
-    wrap.innerHTML='<div class="no-results">😕 לא נמצאו תוצאות עבור "'+q+'"</div>';
+    wrap.innerHTML='<p class="no-results">לא נמצאו תוצאות עבור "'+q+'"</p>';
     return;
   }
   wrap.innerHTML = results.map(t=>`
-    <div class="search-result-item" style="--rc:${t.dotColor}" onclick="tac_openModalDirect(${t.phaseIdx},${t.taskIdx})">
-      <div class="sr-name">${t.icon} ${t.name}</div>
-      <div class="sr-meta">
-        <span class="sr-badge badge-${t.freq}" style="background:${t.chipBg};color:${t.chipColor}">${t.badgeText}</span>
+    <button type="button" class="search-result-item" style="--src-color:${t.dotColor}" onclick="tac_openModalDirect(${t.phaseIdx},${t.taskIdx})">
+      <span class="sr-name">${deEmoji(t.name)}</span>
+      <span class="sr-meta">
+        <span class="sr-badge" style="background:${t.chipBg};color:${t.chipColor}">${deEmoji(t.badgeText)}</span>
         ${t.phaseTitle} · ${t.source.split('–')[0].trim()}
-      </div>
-    </div>
+      </span>
+    </button>
   `).join('');
 }
 
@@ -1944,10 +2083,13 @@ function tac_renderTimeline(){
   strip.innerHTML='';
   strip.appendChild(fill);
   tac_phases.forEach((p,i)=>{
-    const el=document.createElement('div');
+    const el=document.createElement('button');
+    el.type='button';
     el.className='tl-phase'+(i===tac_currentPhase?' active':'')+(i<tac_currentPhase?' done':'');
     el.style.setProperty('--phase-color',p.color);
-    el.innerHTML=`<div class="tl-node">${i<tac_currentPhase?'✓':p.icon}</div><div class="tl-label">${p.title}</div>`;
+    if(i===tac_currentPhase) el.setAttribute('aria-current','step');
+    el.setAttribute('aria-label',`שלב ${i+1} מתוך ${tac_phases.length}: ${p.title}`);
+    el.innerHTML=`<span class="tl-node">${i<tac_currentPhase?icon('check-thick',18):iconFor(p.icon,20)}</span><span class="tl-label">${p.title}</span>`;
     el.onclick=()=>tac_go(i);
     strip.appendChild(el);
   });
@@ -1965,36 +2107,37 @@ function tac_renderContent(){
   // Group by freq
   const groups = {};
   sorted.forEach(t=>{ if(!groups[t.freq]) groups[t.freq]=[]; groups[t.freq].push(t); });
-  const freqLabels = {daily:'יומי 🌅',weekly:'שבועי 📅',monthly:'חודשי 📆',once:'חד-פעמי ⏱'};
+  const freqIcons = {daily:'sunrise',weekly:'calendar',monthly:'calendar',once:'clock'};
+  const freqLabels = {daily:'יומי',weekly:'שבועי',monthly:'חודשי',once:'חד-פעמי'};
 
   let tasksHtml = '';
   Object.keys(groups).forEach(freq=>{
-    tasksHtml += `<div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label">${freqLabels[freq]}</div><div class="section-divider-line"></div></div>`;
+    tasksHtml += `<div class="section-divider"><span class="section-divider-line"></span><span class="section-divider-label">${icon(freqIcons[freq],14)}${freqLabels[freq]}</span><span class="section-divider-line"></span></div>`;
     tasksHtml += groups[freq].map((t,ti)=>{
       const globalTi = p.tasks.indexOf(t);
-      return `<div class="vtl-item" onclick="tac_openModal(${tac_currentPhase},${globalTi})">
-        <div class="vtl-dot" style="--dot-color:${t.dotColor}"></div>
-        <div class="vtl-card" style="--dot-color:${t.dotColor}">
-          <div class="vtl-left">
-            <div class="vtl-name">${t.icon} ${t.name}</div>
-            <div class="vtl-sub">⏰ ${t.sub}</div>
-          </div>
-          <span class="badge ${t.badgeClass}">${t.badgeText}</span>
-        </div>
-      </div>`;
+      return `<button type="button" class="vtl-item" style="--dot-color:${t.dotColor};--dot-bg:${t.chipBg}" onclick="tac_openModal(${tac_currentPhase},${globalTi})">
+        <span class="vtl-row">
+          <span class="vtl-ico">${iconFor(t.icon,20)}</span>
+          <span class="vtl-left">
+            <span class="vtl-name">${deEmoji(t.name)}</span>
+            <span class="vtl-sub">${icon('clock',14)} ${t.sub}</span>
+          </span>
+          <span class="badge ${t.badgeClass}">${deEmoji(t.badgeText)}</span>
+        </span>
+      </button>`;
     }).join('');
   });
 
   document.getElementById('tac_content').innerHTML=`
-    <div class="phase-hero">
-      <div class="phase-icon-box" style="background:${p.bgLight}">${p.icon}</div>
+    <div class="phase-hero" style="--phase-color:${p.color};--phase-bg:${p.bgLight}">
+      <span class="phase-icon-box">${iconFor(p.icon,24)}</span>
       <div>
-        <div class="phase-title" style="color:${p.color}">${p.title}</div>
-        <div class="phase-desc">${p.desc}</div>
+        <h2 class="phase-title">${p.title}</h2>
+        <p class="phase-desc">${p.desc}</p>
       </div>
     </div>
-    <div class="tap-hint">לחץ על משימה לפרטים נוספים ↓</div>
-    <div class="vtl" style="--spine-top:${p.color};--spine-bottom:${p.bgLight}">${tasksHtml}</div>
+    <p class="tap-hint">בחרו משימה לפרטים נוספים</p>
+    <div class="vtl">${tasksHtml}</div>
   `;
 
   const nav=document.getElementById('tac_nav');
@@ -2002,8 +2145,8 @@ function tac_renderContent(){
   const prev=document.createElement('div');
   if(tac_currentPhase>0){
     const b=document.createElement('button');
-    b.className='nav-btn';
-    b.textContent='→ '+tac_phases[tac_currentPhase-1].title;
+    b.type='button'; b.className='nav-btn';
+    b.innerHTML=icon('arrow-end',16)+'<span>'+tac_phases[tac_currentPhase-1].title+'</span>';
     b.onclick=()=>tac_go(tac_currentPhase-1);
     prev.appendChild(b);
   }
@@ -2015,9 +2158,8 @@ function tac_renderContent(){
   const next=document.createElement('div');
   if(tac_currentPhase<tac_phases.length-1){
     const b=document.createElement('button');
-    b.className='nav-btn primary';
-    b.style.background=tac_phases[tac_currentPhase+1].color;
-    b.textContent=tac_phases[tac_currentPhase+1].title+' ←';
+    b.type='button'; b.className='nav-btn primary';
+    b.innerHTML='<span>'+tac_phases[tac_currentPhase+1].title+'</span>'+icon('arrow-start',16);
     b.onclick=()=>tac_go(tac_currentPhase+1);
     next.appendChild(b);
   }
@@ -2047,10 +2189,10 @@ function tac_openModalDirect(phaseIdx,taskIdx){
 function tac_showModal(t){
   document.getElementById('tac_modal-content').innerHTML=`
     <div class="modal-header">
-      <div class="modal-icon" style="background:${t.chipBg}">${t.icon}</div>
+      <span class="modal-icon" style="--icon-bg:${t.chipBg};--icon-fg:${t.chipColor}">${iconFor(t.icon,22)}</span>
       <div>
-        <div class="modal-title">${t.name}</div>
-        <div class="modal-freq"><span class="badge ${t.badgeClass}">${t.badgeText}</span></div>
+        <h2 class="modal-title" id="tac_modal-title">${deEmoji(t.name)}</h2>
+        <div class="modal-freq"><span class="badge ${t.badgeClass}">${deEmoji(t.badgeText)}</span></div>
       </div>
     </div>
     <div class="modal-divider"></div>
@@ -2060,19 +2202,17 @@ function tac_showModal(t){
     </div>
     <div class="modal-section">
       <div class="modal-section-title">עיתוי</div>
-      <div class="modal-body">⏰ ${t.sub}</div>
+      <div class="modal-body">${t.sub}</div>
     </div>
     <div class="modal-section">
       <div class="modal-section-title">מקור (הוראה / פקודה)</div>
-      <div class="modal-body"><span class="source-tag">📄 ${t.source}</span></div>
+      <div class="modal-body"><span class="source-tag">${icon('doc',16)} ${t.source}</span></div>
     </div>
   `;
-  document.getElementById('tac_modal-overlay').classList.add('open');
+  openSheet('tac_modal-overlay');
 }
 function tac_closeModal(e){
-  if(!e||e.target===document.getElementById('tac_modal-overlay')){
-    document.getElementById('tac_modal-overlay').classList.remove('open');
-  }
+  if(!e||e.target===document.getElementById('tac_modal-overlay')) closeSheet('tac_modal-overlay');
 }
 
 window.addEventListener('resize',()=>tac_renderTimeline());
@@ -2442,7 +2582,7 @@ let cb_states = {};
 function cb_init() {
   // Load from localStorage if available
   try {
-    const saved = localStorage.getItem('checklist_state');
+    const saved = localStorage.getItem('checklist_before_state');
     if (saved) cb_states = JSON.parse(saved);
   } catch(e) {}
 
@@ -2459,12 +2599,13 @@ function cb_init() {
     const allDone = doneCount === taskCount;
 
     catEl.innerHTML = `
-      <div class="category-header" onclick="cb_toggleCategory('${cat.id}')">
-        <span class="category-icon">${cat.icon}</span>
+      <button type="button" class="category-header" aria-expanded="true"
+              aria-controls="cb_tasks_${cat.id}" onclick="cb_toggleCategory('${cat.id}', this)">
+        <span class="category-icon">${iconFor(cat.icon, 20)}</span>
         <span class="category-title">${cat.title}</span>
         <span class="category-count${allDone ? ' all-done' : ''}" id="cb_count_${cat.id}">${doneCount}/${taskCount}</span>
-        <span class="chevron">▼</span>
-      </div>
+        <span class="chevron">${icon('chevron-down', 16)}</span>
+      </button>
       <div class="tasks-list" id="cb_tasks_${cat.id}">
         ${cat.tasks.map(t => cb_renderTask(t)).join('')}
       </div>
@@ -2481,13 +2622,15 @@ function cb_renderTask(t) {
   return `
     <div class="task-item${done ? ' done' : ''}" id="cb_task_${t.id}">
       <div class="task-main">
-        <div class="task-checkbox" onclick="cb_toggleTask('${t.id}')">
-          <span class="check-icon">✓</span>
-        </div>
-        <div class="task-text">
-          <div class="task-title">${t.title}</div>
-        </div>
-        <button class="task-expand-btn" onclick="cb_toggleDetail('${t.id}')">פירוט ▾</button>
+        <button type="button" class="task-toggle" role="checkbox" aria-checked="${done}"
+                id="cb_cbx_${t.id}" onclick="cb_toggleTask('${t.id}')">
+          <span class="task-checkbox"><span class="check-icon">${icon('check-thick', 14)}</span></span>
+          <span class="task-text"><span class="task-title">${t.title}</span></span>
+        </button>
+        <button type="button" class="task-expand-btn" aria-expanded="false"
+                aria-controls="cb_detail_${t.id}" onclick="cb_toggleDetail('${t.id}', this)">
+          <span>פירוט</span>${icon('chevron-down', 14)}
+        </button>
       </div>
       <div class="task-detail" id="cb_detail_${t.id}">
         <div class="task-detail-inner">${t.detail}</div>
@@ -2498,22 +2641,23 @@ function cb_renderTask(t) {
 
 function cb_toggleTask(tid) {
   cb_states[tid] = !cb_states[tid];
-  try { localStorage.setItem('checklist_state', JSON.stringify(cb_states)); } catch(e) {}
+  try { localStorage.setItem('checklist_before_state', JSON.stringify(cb_states)); } catch(e) {}
   const el = document.getElementById('cb_task_' + tid);
-  if (cb_states[tid]) el.classList.add('done');
-  else el.classList.remove('done');
+  const isDone = !!cb_states[tid];
+  el.classList.toggle('done', isDone);
+  document.getElementById('cb_cbx_' + tid).setAttribute('aria-checked', String(isDone));
   cb_updateProgress();
   cb_updateCategoryCount(tid);
 }
 
-function cb_toggleDetail(tid) {
-  const detail = document.getElementById('cb_detail_' + tid);
-  detail.classList.toggle('open');
+function cb_toggleDetail(tid, btn) {
+  const open = document.getElementById('cb_detail_' + tid).classList.toggle('open');
+  btn.setAttribute('aria-expanded', String(open));
 }
 
-function cb_toggleCategory(catId) {
-  const catEl = document.getElementById('cb_cat_' + catId);
-  catEl.classList.toggle('collapsed');
+function cb_toggleCategory(catId, btn) {
+  const collapsed = document.getElementById('cb_cat_' + catId).classList.toggle('collapsed');
+  btn.setAttribute('aria-expanded', String(!collapsed));
 }
 
 function cb_updateCategoryCount(tid) {
@@ -2540,6 +2684,7 @@ function cb_updateProgress() {
   const pct = total ? Math.round(done / total * 100) : 0;
   document.getElementById('cb_progressFill').style.width = pct + '%';
   document.getElementById('cb_progressPct').textContent = pct + '% הושלם';
+  document.getElementById('cb_progressBar').setAttribute('aria-valuenow', String(pct));
   const banner = document.getElementById('cb_doneBanner');
   if (done === total && total > 0) banner.classList.add('visible');
   else banner.classList.remove('visible');
@@ -2548,7 +2693,7 @@ function cb_updateProgress() {
 function cb_resetAll() {
   if (!confirm('לאפס את כל המשימות?')) return;
   cb_states = {};
-  try { localStorage.removeItem('checklist_state'); } catch(e) {}
+  try { localStorage.removeItem('checklist_before_state'); } catch(e) {}
   cb_init();
 }
 
@@ -2950,12 +3095,13 @@ function ca_init() {
     const allDone = doneCount === taskCount;
 
     catEl.innerHTML = `
-      <div class="category-header" onclick="ca_toggleCategory('${cat.id}')">
-        <span class="category-icon">${cat.icon}</span>
+      <button type="button" class="category-header" aria-expanded="true"
+              aria-controls="ca_tasks_${cat.id}" onclick="ca_toggleCategory('${cat.id}', this)">
+        <span class="category-icon">${iconFor(cat.icon, 20)}</span>
         <span class="category-title">${cat.title}</span>
         <span class="category-count${allDone ? ' all-done' : ''}" id="ca_count_${cat.id}">${doneCount}/${taskCount}</span>
-        <span class="chevron">▼</span>
-      </div>
+        <span class="chevron">${icon('chevron-down', 16)}</span>
+      </button>
       <div class="tasks-list" id="ca_tasks_${cat.id}">
         ${cat.tasks.map(t => ca_renderTask(t)).join('')}
       </div>
@@ -2971,13 +3117,15 @@ function ca_renderTask(t) {
   return `
     <div class="task-item${done ? ' done' : ''}" id="ca_task_${t.id}">
       <div class="task-main">
-        <div class="task-checkbox" onclick="ca_toggleTask('${t.id}')">
-          <span class="check-icon">✓</span>
-        </div>
-        <div class="task-text">
-          <div class="task-title">${t.title}</div>
-        </div>
-        <button class="task-expand-btn" onclick="ca_toggleDetail('${t.id}')">פירוט ▾</button>
+        <button type="button" class="task-toggle" role="checkbox" aria-checked="${done}"
+                id="ca_cbx_${t.id}" onclick="ca_toggleTask('${t.id}')">
+          <span class="task-checkbox"><span class="check-icon">${icon('check-thick', 14)}</span></span>
+          <span class="task-text"><span class="task-title">${t.title}</span></span>
+        </button>
+        <button type="button" class="task-expand-btn" aria-expanded="false"
+                aria-controls="ca_detail_${t.id}" onclick="ca_toggleDetail('${t.id}', this)">
+          <span>פירוט</span>${icon('chevron-down', 14)}
+        </button>
       </div>
       <div class="task-detail" id="ca_detail_${t.id}">
         <div class="task-detail-inner">${t.detail}</div>
@@ -2990,18 +3138,21 @@ function ca_toggleTask(tid) {
   ca_states[tid] = !ca_states[tid];
   try { localStorage.setItem('checklist_after_state', JSON.stringify(ca_states)); } catch(e) {}
   const el = document.getElementById('ca_task_' + tid);
-  if (ca_states[tid]) el.classList.add('done');
-  else el.classList.remove('done');
+  const isDone = !!ca_states[tid];
+  el.classList.toggle('done', isDone);
+  document.getElementById('ca_cbx_' + tid).setAttribute('aria-checked', String(isDone));
   ca_updateProgress();
   ca_updateCategoryCount(tid);
 }
 
-function ca_toggleDetail(tid) {
-  document.getElementById('ca_detail_' + tid).classList.toggle('open');
+function ca_toggleDetail(tid, btn) {
+  const open = document.getElementById('ca_detail_' + tid).classList.toggle('open');
+  btn.setAttribute('aria-expanded', String(open));
 }
 
-function ca_toggleCategory(catId) {
-  document.getElementById('ca_cat_' + catId).classList.toggle('collapsed');
+function ca_toggleCategory(catId, btn) {
+  const collapsed = document.getElementById('ca_cat_' + catId).classList.toggle('collapsed');
+  btn.setAttribute('aria-expanded', String(!collapsed));
 }
 
 function ca_updateCategoryCount(tid) {
@@ -3028,6 +3179,7 @@ function ca_updateProgress() {
   const pct = total ? Math.round(done / total * 100) : 0;
   document.getElementById('ca_progressFill').style.width = pct + '%';
   document.getElementById('ca_progressPct').textContent = pct + '% הושלם';
+  document.getElementById('ca_progressBar').setAttribute('aria-valuenow', String(pct));
   const banner = document.getElementById('ca_doneBanner');
   if (done === total && total > 0) banner.classList.add('visible');
   else banner.classList.remove('visible');
