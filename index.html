@@ -8,7 +8,7 @@
 <title>מארז למ"פ · כלי ניהול הכשרה</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@300;400;500;600;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 /* ===========================================================
    מארז למ"פ - Design System
@@ -212,6 +212,8 @@ button{ cursor:pointer; background:none; border:none; }
   color:var(--color-foreground); direction:rtl;
 }
 .home-search-input::placeholder,.search-input::placeholder{ color:var(--color-muted-foreground); }
+.home-search-input::-webkit-search-cancel-button,
+.search-input::-webkit-search-cancel-button{ -webkit-appearance:none; appearance:none; }
 .home-search-clear,.search-clear{
   display:none; align-items:center; justify-content:center;
   width:44px; height:44px; margin-inline-end:calc(var(--space-2) * -1);
@@ -323,10 +325,22 @@ button{ cursor:pointer; background:none; border:none; }
 .module{ background:var(--color-background); min-height:100vh; }
 
 .module-head{
+  position:relative; overflow:hidden;
   background:var(--color-primary);
   color:var(--color-on-primary);
   padding:var(--space-5) var(--space-4) var(--space-7);
 }
+/* the same instrument grid the dashboard header carries */
+.module-head::before{
+  content:''; position:absolute; inset:0; pointer-events:none;
+  background-image:
+    linear-gradient(to left, rgba(255,255,255,.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,.07) 1px, transparent 1px);
+  background-size:28px 28px;
+  mask-image:linear-gradient(to bottom, rgba(0,0,0,.9), transparent 85%);
+  -webkit-mask-image:linear-gradient(to bottom, rgba(0,0,0,.9), transparent 85%);
+}
+.module-head-inner{ position:relative; }
 .module-head-inner{
   max-width:960px; margin:0 auto;
   display:flex; align-items:flex-end; justify-content:space-between;
@@ -779,86 +793,601 @@ button{ cursor:pointer; background:none; border:none; }
     transition-duration:.01ms !important; scroll-behavior:auto !important;
   }
 }
+
+/* ═══════════════════════════════════════════════════════
+   APP FRAME: splash, tab bar, dashboard, pickers, search
+   ═══════════════════════════════════════════════════════ */
+
+:root{
+  --mono:'Roboto Mono',ui-monospace,SFMono-Regular,monospace;
+  --tabbar-h:64px;
+  /* a faint instrument grid, used behind headers */
+  --grid-line:rgba(30,58,95,.055);
+}
+
+/* the sticky tab bar must never cover the last row of content */
+body.has-tabbar{ padding-bottom:calc(var(--tabbar-h) + env(safe-area-inset-bottom)); }
+
+.grid-bg{
+  position:absolute; inset:0; pointer-events:none;
+  background-image:
+    linear-gradient(to left, rgba(255,255,255,.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,.07) 1px, transparent 1px);
+  background-size:28px 28px;
+  mask-image:linear-gradient(to bottom, rgba(0,0,0,.9), transparent 85%);
+  -webkit-mask-image:linear-gradient(to bottom, rgba(0,0,0,.9), transparent 85%);
+}
+
+/* ── SPLASH ────────────────────────────────────────────── */
+#splash-screen{
+  position:fixed; inset:0; z-index:300;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:var(--space-5);
+  padding:var(--space-6) var(--space-5);
+  background:var(--color-primary);
+  color:var(--color-on-primary);
+  overflow:hidden;
+}
+#splash-screen.leaving{ animation:splashOut var(--dur-slow) var(--ease-out) forwards; }
+@keyframes splashOut{ to{ opacity:0; visibility:hidden; } }
+
+.splash-grid{
+  position:absolute; inset:-10%;
+  background-image:
+    linear-gradient(to left, rgba(255,255,255,.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,.06) 1px, transparent 1px);
+  background-size:36px 36px;
+  mask-image:radial-gradient(ellipse 70% 60% at 50% 45%, #000 20%, transparent 75%);
+  -webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 45%, #000 20%, transparent 75%);
+  animation:gridDrift 24s linear infinite;
+}
+@keyframes gridDrift{ to{ background-position:36px 36px; } }
+
+.splash-inner{ position:relative; width:100%; max-width:380px; text-align:center; }
+
+.splash-mark{
+  width:76px; height:76px; margin:0 auto var(--space-5);
+  display:flex; align-items:center; justify-content:center;
+  border:2px solid rgba(255,255,255,.28);
+  border-radius:var(--radius-lg);
+  font-family:var(--mono); font-size:26px; font-weight:600; letter-spacing:.04em;
+  color:#7FD1B0;
+  position:relative;
+  animation:markIn var(--dur-slow) var(--ease-out) both;
+}
+.splash-mark::after{
+  content:''; position:absolute; inset:-7px;
+  border:1px solid rgba(127,209,176,.24);
+  border-radius:calc(var(--radius-lg) + 5px);
+}
+@keyframes markIn{ from{opacity:0; transform:scale(.9)} to{opacity:1; transform:none} }
+
+.splash-title{
+  font-size:clamp(2rem,9vw,2.5rem); font-weight:700; letter-spacing:-.02em; line-height:1.1;
+  animation:rise var(--dur-slow) var(--ease-out) 80ms both;
+}
+.splash-title span{ color:#7FD1B0; }
+.splash-tagline{
+  margin-top:var(--space-3); font-size:14px; color:rgba(255,255,255,.62);
+  animation:rise var(--dur-slow) var(--ease-out) 140ms both;
+}
+
+.splash-form{
+  margin-top:var(--space-6); text-align:right;
+  animation:rise var(--dur-slow) var(--ease-out) 200ms both;
+}
+.splash-label{
+  display:block; font-size:12px; font-weight:600; letter-spacing:.1em;
+  color:rgba(255,255,255,.6); margin-bottom:var(--space-2);
+}
+.splash-input{
+  width:100%; min-height:52px;
+  padding:0 var(--space-4);
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.28);
+  border-radius:var(--radius);
+  color:var(--color-on-primary); font-size:16px;
+  transition:border-color var(--dur-fast), background var(--dur-fast);
+}
+.splash-input::placeholder{ color:rgba(255,255,255,.42); }
+.splash-input:focus{ outline:none; border-color:#7FD1B0; background:rgba(255,255,255,.13); }
+.splash-input:focus-visible{ outline:2px solid #7FD1B0; outline-offset:2px; }
+.splash-hint{ font-size:12px; color:rgba(255,255,255,.5); margin-top:var(--space-2); }
+
+.splash-btn{
+  width:100%; min-height:52px; margin-top:var(--space-4);
+  display:flex; align-items:center; justify-content:center; gap:var(--space-2);
+  background:#7FD1B0; color:#0B2F22;
+  border-radius:var(--radius);
+  font-size:16px; font-weight:700;
+  transition:background var(--dur-fast) var(--ease-out), transform var(--dur-instant);
+}
+.splash-btn:hover{ background:#96DCC0; }
+.splash-btn:active{ transform:scale(.99); }
+.splash-btn:focus-visible{ outline-color:#fff; }
+
+.splash-foot{
+  position:relative; margin-top:var(--space-6);
+  font-family:var(--mono); font-size:11px; letter-spacing:.06em;
+  color:rgba(255,255,255,.38);
+  animation:rise var(--dur-slow) var(--ease-out) 260ms both;
+}
+
+/* ── TAB BAR ───────────────────────────────────────────── */
+.tabbar{
+  position:fixed; inset-inline:0; bottom:0; z-index:150;
+  display:grid; grid-template-columns:repeat(4,1fr); gap:var(--space-1);
+  height:calc(var(--tabbar-h) + env(safe-area-inset-bottom));
+  padding:var(--space-1) var(--space-2) calc(var(--space-1) + env(safe-area-inset-bottom));
+  background:rgba(255,255,255,.92);
+  -webkit-backdrop-filter:saturate(1.5) blur(14px);
+  backdrop-filter:saturate(1.5) blur(14px);
+  border-top:1px solid var(--color-border);
+}
+.tabbar[hidden]{ display:none; }
+.tab{
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px;
+  min-height:48px; border-radius:var(--radius);
+  color:var(--color-muted-foreground);
+  transition:color var(--dur-fast), background var(--dur-fast);
+}
+.tab:hover{ background:var(--color-muted); }
+.tab[aria-current="page"]{ color:var(--color-primary); background:var(--color-muted); }
+.tab-label{ font-size:11px; font-weight:600; letter-spacing:.01em; }
+.tab-dot{
+  width:4px; height:4px; border-radius:var(--radius-pill);
+  background:transparent; margin-top:-2px;
+}
+.tab[aria-current="page"] .tab-dot{ background:var(--color-accent); }
+
+/* ── DASHBOARD ─────────────────────────────────────────── */
+.dash{ max-width:720px; margin:0 auto; padding:0 var(--space-4) var(--space-7); }
+
+.dash-head{
+  position:relative; overflow:hidden;
+  background:var(--color-primary); color:var(--color-on-primary);
+  padding:var(--space-6) var(--space-4) var(--space-7);
+  margin-bottom:var(--space-5);
+}
+.dash-head-inner{ position:relative; max-width:720px; margin:0 auto; }
+.dash-greet{ font-size:clamp(1.5rem,5.5vw,2rem); font-weight:700; letter-spacing:-.02em; line-height:1.2; }
+.dash-greet span{ color:#7FD1B0; }
+.dash-meta{
+  display:flex; flex-wrap:wrap; align-items:center; gap:var(--space-2) var(--space-4);
+  margin-top:var(--space-3);
+  font-family:var(--mono); font-size:12px; letter-spacing:.02em;
+  color:rgba(255,255,255,.66);
+}
+.dash-meta-item{ display:flex; align-items:center; gap:var(--space-2); }
+
+.dash-section{ margin-bottom:var(--space-6); }
+.dash-section-head{
+  display:flex; align-items:center; justify-content:space-between; gap:var(--space-3);
+  margin-bottom:var(--space-3);
+}
+.dash-section-title{
+  display:flex; align-items:center; gap:var(--space-2);
+  font-size:12px; font-weight:600; letter-spacing:.12em;
+  color:var(--color-muted-foreground);
+}
+.dash-section-action{
+  font-size:13px; font-weight:600; color:var(--color-primary);
+  display:inline-flex; align-items:center; gap:var(--space-1);
+  min-height:32px; padding:0 var(--space-1); border-radius:var(--radius-sm);
+}
+.dash-section-action:hover{ text-decoration:underline; }
+
+/* NOW / NEXT */
+.now-card{
+  position:relative; overflow:hidden;
+  background:var(--color-card);
+  border:1px solid var(--color-border);
+  border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-2);
+  margin-top:calc(var(--space-7) * -1);
+  margin-bottom:var(--space-6);
+}
+.now-row{
+  display:flex; align-items:center; gap:var(--space-3);
+  width:100%; padding:var(--space-4); text-align:right;
+  transition:background var(--dur-fast);
+}
+.now-row + .now-row{ border-top:1px solid var(--color-border); }
+.now-row:hover{ background:var(--color-muted); }
+.now-time{
+  font-family:var(--mono); font-size:19px; font-weight:600;
+  color:var(--color-primary); font-variant-numeric:tabular-nums;
+  min-width:62px; flex-shrink:0;
+}
+.now-row.is-next .now-time{ color:var(--color-muted-foreground); }
+.now-body{ flex:1; min-width:0; }
+.now-tag{
+  display:inline-flex; align-items:center; gap:var(--space-1);
+  font-size:11px; font-weight:600; letter-spacing:.1em;
+  color:var(--color-accent); margin-bottom:2px;
+}
+.now-row.is-next .now-tag{ color:var(--color-muted-foreground); }
+.now-live{
+  width:7px; height:7px; border-radius:var(--radius-pill);
+  background:var(--color-accent);
+  box-shadow:0 0 0 0 rgba(4,120,87,.5);
+  animation:livePulse 2.4s ease-out infinite;
+}
+@keyframes livePulse{ 70%{box-shadow:0 0 0 7px rgba(4,120,87,0)} 100%{box-shadow:0 0 0 0 rgba(4,120,87,0)} }
+.now-name{ display:block; font-size:16px; font-weight:600; line-height:1.3; }
+.now-countdown{
+  font-family:var(--mono); font-size:12px; color:var(--color-muted-foreground);
+  margin-top:2px; display:block; font-variant-numeric:tabular-nums;
+}
+.now-empty{ padding:var(--space-5) var(--space-4); text-align:center; font-size:14px; color:var(--color-muted-foreground); }
+
+/* CONTINUE */
+.continue-card{
+  display:flex; align-items:center; gap:var(--space-4);
+  width:100%; padding:var(--space-4); text-align:right;
+  background:var(--color-card); border:1px solid var(--color-border);
+  border-radius:var(--radius-lg); box-shadow:var(--shadow-1);
+  transition:background var(--dur-fast), border-color var(--dur-fast);
+}
+.continue-card:hover{ background:var(--color-muted); border-color:var(--color-control-border); }
+.continue-body{ flex:1; min-width:0; }
+.continue-label{
+  display:block; font-size:11px; font-weight:600; letter-spacing:.12em;
+  color:var(--color-muted-foreground); margin-bottom:3px;
+}
+.continue-name{ display:block; font-size:16px; font-weight:600; }
+
+/* PROGRESS RINGS */
+.rings{ display:grid; grid-template-columns:1fr 1fr; gap:var(--space-3); }
+.ring-card{
+  display:flex; align-items:center; gap:var(--space-3);
+  padding:var(--space-4); text-align:right;
+  background:var(--color-card); border:1px solid var(--color-border);
+  border-radius:var(--radius-lg); box-shadow:var(--shadow-1);
+  transition:background var(--dur-fast), border-color var(--dur-fast);
+}
+.ring-card:hover{ background:var(--color-muted); border-color:var(--color-control-border); }
+.ring{ position:relative; width:52px; height:52px; flex-shrink:0; }
+.ring svg{ transform:rotate(-90deg); display:block; }
+.ring-track{ stroke:var(--color-muted); }
+.ring-fill{
+  stroke:var(--ring-color,var(--color-accent));
+  stroke-linecap:round;
+  transition:stroke-dashoffset var(--dur-slow) var(--ease-out);
+}
+.ring-pct{
+  position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  font-family:var(--mono); font-size:13px; font-weight:600;
+  color:var(--ring-color,var(--color-accent)); font-variant-numeric:tabular-nums;
+}
+.ring-text{ min-width:0; }
+.ring-title{ display:block; font-size:14px; font-weight:600; line-height:1.3; }
+.ring-sub{ display:block; font-family:var(--mono); font-size:11.5px; color:var(--color-muted-foreground); margin-top:3px; }
+
+/* WEEK STEPPER */
+.week-bar{
+  display:flex; align-items:center; justify-content:space-between; gap:var(--space-3);
+  padding:var(--space-3) var(--space-4);
+  background:var(--color-card); border:1px solid var(--color-border);
+  border-radius:var(--radius-lg); margin-bottom:var(--space-3);
+}
+.week-step{
+  width:44px; height:44px; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  border:1px solid var(--color-control-border); border-radius:var(--radius);
+  color:var(--color-foreground);
+  transition:background var(--dur-fast);
+}
+.week-step:hover:not(:disabled){ background:var(--color-muted); }
+.week-step:disabled{ opacity:.35; cursor:not-allowed; }
+.week-now{ text-align:center; }
+.week-now-num{ font-family:var(--mono); font-size:20px; font-weight:600; color:var(--color-primary); font-variant-numeric:tabular-nums; }
+.week-now-label{ display:block; font-size:11.5px; color:var(--color-muted-foreground); margin-top:1px; }
+
+.week-list{ display:flex; flex-direction:column; gap:var(--space-2); }
+.week-empty{
+  padding:var(--space-5); text-align:center; font-size:14px;
+  color:var(--color-muted-foreground);
+  background:var(--color-card); border:1px dashed var(--color-control-border);
+  border-radius:var(--radius-lg);
+}
+
+/* QUICK GRID */
+.quick-grid{ display:grid; grid-template-columns:1fr 1fr; gap:var(--space-3); }
+.quick-tile{
+  display:flex; flex-direction:column; gap:var(--space-2);
+  padding:var(--space-3) var(--space-4) var(--space-4); text-align:right;
+  background:var(--color-card); border:1px solid var(--color-border);
+  border-radius:var(--radius-lg); box-shadow:var(--shadow-1);
+  transition:background var(--dur-fast), border-color var(--dur-fast);
+}
+.quick-tile:hover{ background:var(--color-muted); border-color:var(--tint,var(--color-control-border)); }
+.quick-ico{
+  width:38px; height:38px; border-radius:var(--radius-sm);
+  display:flex; align-items:center; justify-content:center;
+  background:var(--tint-bg,var(--color-muted)); color:var(--tint,var(--color-primary));
+}
+.quick-name{ font-size:14px; font-weight:600; line-height:1.3; }
+.quick-sub{ font-family:var(--mono); font-size:11px; color:var(--color-muted-foreground); }
+
+/* ── PICKER SCREENS ────────────────────────────────────── */
+.picker{ max-width:720px; margin:0 auto; padding:var(--space-5) var(--space-4) var(--space-7); }
+.picker-card{
+  display:flex; align-items:center; gap:var(--space-4);
+  width:100%; padding:var(--space-4); text-align:right;
+  background:var(--color-card); border:1px solid var(--color-border);
+  border-radius:var(--radius-lg); box-shadow:var(--shadow-1);
+  margin-bottom:var(--space-3);
+  transition:background var(--dur-fast), border-color var(--dur-fast);
+}
+.picker-card:hover{ background:var(--color-muted); border-color:var(--tint,var(--color-control-border)); }
+.picker-ico{
+  width:48px; height:48px; border-radius:var(--radius); flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  background:var(--tint-bg,var(--color-muted)); color:var(--tint,var(--color-primary));
+}
+.picker-body{ flex:1; min-width:0; }
+.picker-name{ display:block; font-size:16px; font-weight:600; line-height:1.3; }
+.picker-desc{ display:block; font-size:13px; color:var(--color-muted-foreground); margin-top:3px; line-height:1.45; }
+.picker-stat{ display:block; font-family:var(--mono); font-size:11.5px; color:var(--color-muted-foreground); margin-top:var(--space-2); }
+
+/* ── SEARCH SCREEN ─────────────────────────────────────── */
+.search-screen{ max-width:720px; margin:0 auto; padding:var(--space-5) var(--space-4) var(--space-7); }
+.search-scope{
+  display:flex; flex-wrap:wrap; gap:var(--space-2); margin:var(--space-4) 0;
+}
+.scope-chip{
+  min-height:36px; padding:0 var(--space-3);
+  display:inline-flex; align-items:center; gap:var(--space-2);
+  border:1px solid var(--color-control-border); border-radius:var(--radius-pill);
+  background:var(--color-card); color:var(--color-muted-foreground);
+  font-size:13px; font-weight:600;
+  transition:background var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast);
+}
+.scope-chip:hover{ background:var(--color-muted); }
+.scope-chip[aria-pressed="true"]{
+  background:var(--color-primary); border-color:var(--color-primary); color:var(--color-on-primary);
+}
+.search-count{ font-family:var(--mono); font-size:12px; color:var(--color-muted-foreground); margin-bottom:var(--space-3); }
+.search-hint{
+  padding:var(--space-6) var(--space-4); text-align:center;
+  color:var(--color-muted-foreground); font-size:14px; line-height:1.7;
+}
+.search-hint kbd{
+  display:inline-block; font-family:var(--mono); font-size:12px;
+  background:var(--color-muted); border:1px solid var(--color-border);
+  border-radius:var(--radius-sm); padding:2px var(--space-2); margin:0 2px;
+}
+
+@media (max-width:359px){
+  .rings,.quick-grid{ grid-template-columns:1fr; }
+}
 </style>
 </head>
 <body>
+
+<!-- ═══════════════ SPLASH ═══════════════ -->
+<div id="splash-screen">
+  <div class="splash-grid" aria-hidden="true"></div>
+  <div class="splash-inner">
+    <div class="splash-mark" aria-hidden="true">מ"פ</div>
+    <h1 class="splash-title">מארז <span>למ"פ</span></h1>
+    <p class="splash-tagline">מערכת ניהול הכשרה · לשימוש פנימי</p>
+
+    <form class="splash-form" id="splashForm" onsubmit="return enterApp(event)">
+      <label class="splash-label" for="splashName">שם המשתמש</label>
+      <input class="splash-input" id="splashName" type="text" autocomplete="name"
+             placeholder="למשל: אלון" maxlength="24" required>
+      <p class="splash-hint">נשמר במכשיר שלכם בלבד ומשמש רק לפנייה אישית.</p>
+      <button class="splash-btn" type="submit">
+        כניסה למערכת
+        <span data-icon="arrow-start" data-size="18"></span>
+      </button>
+    </form>
+
+    <p class="splash-foot" id="splashFoot">v3.0</p>
+  </div>
+</div>
+
 <div class="app-shell">
 
-<!-- ═══════════════ HOME ═══════════════ -->
+<!-- ═══════════════ HOME · DASHBOARD ═══════════════ -->
 <div id="home-screen" class="screen active">
 
-  <div class="home-masthead">
-    <div class="home-masthead-inner">
-      <span class="home-eyebrow">לשימוש פנימי</span>
-      <h1 class="home-title">מארז <span>למ"פ</span></h1>
-      <p class="home-subtitle">שעון תקה"ד, ציר משימות ההכשרה וצ׳ק ליסטים לפתיחה ולסגירת מחזור. הכול במקום אחד.</p>
+  <div class="dash-head">
+    <div class="grid-bg" aria-hidden="true"></div>
+    <div class="dash-head-inner">
+      <h1 class="dash-greet" id="dashGreet">שלום</h1>
+      <div class="dash-meta">
+        <span class="dash-meta-item"><span data-icon="calendar" data-size="14"></span><span id="dashDate"></span></span>
+        <span class="dash-meta-item"><span data-icon="target" data-size="14"></span><span id="dashCycle"></span></span>
+      </div>
     </div>
   </div>
 
-  <div class="home-search-wrap">
-    <div class="home-search-box">
-      <span class="home-search-icon" data-icon="search" data-size="20"></span>
-      <input class="home-search-input" id="homeSearchInput" type="search"
-             placeholder="חיפוש בכל הכלים" autocomplete="off" aria-label="חיפוש משימה בכל הכלים">
-      <button class="home-search-clear" id="homeSearchClear" onclick="clearHomeSearch()" type="button">
-        <span data-icon="close" data-size="18"></span><span class="sr-only">ניקוי החיפוש</span>
+  <div class="dash">
+
+    <!-- מה עכשיו -->
+    <section class="now-card" id="nowCard" aria-label="מה עכשיו בשעון תקה״ד"></section>
+
+    <!-- המשך מאיפה שהפסקת -->
+    <section class="dash-section" id="continueSection" hidden>
+      <div class="dash-section-head">
+        <h2 class="dash-section-title"><span data-icon="clock" data-size="14"></span>המשך מאיפה שהפסקת</h2>
+      </div>
+      <button class="continue-card" type="button" id="continueCard"></button>
+    </section>
+
+    <!-- צ׳קליסטים -->
+    <section class="dash-section">
+      <div class="dash-section-head">
+        <h2 class="dash-section-title"><span data-icon="check" data-size="14"></span>צ׳קליסטים</h2>
+        <button class="dash-section-action" type="button" onclick="go('checks')">
+          לכל הרשימות<span data-icon="chevron-start" data-size="14"></span>
+        </button>
+      </div>
+      <div class="rings" id="dashRings"></div>
+    </section>
+
+    <!-- משימות השבוע -->
+    <section class="dash-section">
+      <div class="dash-section-head">
+        <h2 class="dash-section-title"><span data-icon="calendar" data-size="14"></span>משימות השבוע</h2>
+        <button class="dash-section-action" type="button" onclick="go('module','tr')">
+          לציר המלא<span data-icon="chevron-start" data-size="14"></span>
+        </button>
+      </div>
+      <div class="week-bar">
+        <button class="week-step" type="button" id="weekPrev" onclick="setWeek(currentWeek-1)" aria-label="שבוע קודם">
+          <span data-icon="chevron-end" data-size="18"></span>
+        </button>
+        <div class="week-now">
+          <span class="week-now-num" id="weekNum">1</span>
+          <span class="week-now-label">שבוע במחזור</span>
+        </div>
+        <button class="week-step" type="button" id="weekNext" onclick="setWeek(currentWeek+1)" aria-label="שבוע הבא">
+          <span data-icon="chevron-start" data-size="18"></span>
+        </button>
+      </div>
+      <div class="week-list" id="weekList" aria-live="polite"></div>
+    </section>
+
+    <!-- כניסה מהירה -->
+    <section class="dash-section">
+      <div class="dash-section-head">
+        <h2 class="dash-section-title"><span data-icon="toolbox" data-size="14"></span>כניסה מהירה</h2>
+      </div>
+      <div class="quick-grid">
+        <button class="quick-tile" type="button" style="--tint:var(--tone-week);--tint-bg:var(--tone-week-bg)" onclick="go('module','tac')">
+          <span class="quick-ico" data-icon="clock" data-size="20"></span>
+          <span class="quick-name">שעון תקה"ד</span>
+          <span class="quick-sub" id="qsTac"></span>
+        </button>
+        <button class="quick-tile" type="button" style="--tint:var(--tone-daily);--tint-bg:var(--tone-daily-bg)" onclick="go('module','tr')">
+          <span class="quick-ico" data-icon="calendar" data-size="20"></span>
+          <span class="quick-name">ציר ההכשרה</span>
+          <span class="quick-sub" id="qsTr"></span>
+        </button>
+        <button class="quick-tile" type="button" style="--tint:var(--tone-month);--tint-bg:var(--tone-month-bg)" onclick="go('module','cb')">
+          <span class="quick-ico" data-icon="clipboard" data-size="20"></span>
+          <span class="quick-name">לפני הכשרה</span>
+          <span class="quick-sub" id="qsCb"></span>
+        </button>
+        <button class="quick-tile" type="button" style="--tint:var(--tone-third);--tint-bg:var(--tone-third-bg)" onclick="go('module','ca')">
+          <span class="quick-ico" data-icon="flag" data-size="20"></span>
+          <span class="quick-name">אחרי הכשרה</span>
+          <span class="quick-sub" id="qsCa"></span>
+        </button>
+      </div>
+    </section>
+
+    <p class="home-footer">לשימוש פנימי בלבד · הנתונים נשמרים במכשיר שלכם בלבד</p>
+  </div>
+</div>
+
+
+<!-- ═══════════════ PICKER · CLOCKS ═══════════════ -->
+<div id="screen-clocks" class="screen">
+  <div class="module-head">
+    <div class="grid-bg" aria-hidden="true"></div>
+    <div class="module-head-inner">
+      <div>
+        <h1>שעונים</h1>
+        <p class="module-sub">שני שעוני הפעילות של הפלוגה</p>
+      </div>
+    </div>
+  </div>
+  <div class="picker">
+    <button class="picker-card" type="button" style="--tint:var(--tone-week);--tint-bg:var(--tone-week-bg)" onclick="go('module','tac')">
+      <span class="picker-ico" data-icon="clock" data-size="24"></span>
+      <span class="picker-body">
+        <span class="picker-name">שעון תקה"ד</span>
+        <span class="picker-desc">כלים פיקודיים לאורך היום, מ"כ עד מ"פ</span>
+        <span class="picker-stat" id="pickTacStat"></span>
+      </span>
+      <span data-icon="chevron-start" data-size="18"></span>
+    </button>
+    <button class="picker-card" type="button" style="--tint:var(--tone-daily);--tint-bg:var(--tone-daily-bg)" onclick="go('module','tr')">
+      <span class="picker-ico" data-icon="calendar" data-size="24"></span>
+      <span class="picker-body">
+        <span class="picker-name">ציר משימות ההכשרה</span>
+        <span class="picker-desc">מה נדרש מהמ"פ בכל שלב של המחזור</span>
+        <span class="picker-stat" id="pickTrStat"></span>
+      </span>
+      <span data-icon="chevron-start" data-size="18"></span>
+    </button>
+  </div>
+</div>
+
+
+<!-- ═══════════════ PICKER · CHECKLISTS ═══════════════ -->
+<div id="screen-checks" class="screen">
+  <div class="module-head">
+    <div class="grid-bg" aria-hidden="true"></div>
+    <div class="module-head-inner">
+      <div>
+        <h1>צ׳קליסטים</h1>
+        <p class="module-sub">לפני ואחרי מחזור ההכשרה</p>
+      </div>
+    </div>
+  </div>
+  <div class="picker">
+    <button class="picker-card" type="button" style="--tint:var(--tone-month);--tint-bg:var(--tone-month-bg)" onclick="go('module','cb')">
+      <span class="picker-ico" data-icon="clipboard" data-size="24"></span>
+      <span class="picker-body">
+        <span class="picker-name">לפני הכשרה</span>
+        <span class="picker-desc">כל מה שצריך לסגור לפני פתיחת המחזור</span>
+        <span class="picker-stat" id="pickCbStat"></span>
+      </span>
+      <span data-icon="chevron-start" data-size="18"></span>
+    </button>
+    <button class="picker-card" type="button" style="--tint:var(--tone-third);--tint-bg:var(--tone-third-bg)" onclick="go('module','ca')">
+      <span class="picker-ico" data-icon="flag" data-size="24"></span>
+      <span class="picker-body">
+        <span class="picker-name">אחרי הכשרה</span>
+        <span class="picker-desc">סגירת מחזור: הערכות, ציוד ולקחים</span>
+        <span class="picker-stat" id="pickCaStat"></span>
+      </span>
+      <span data-icon="chevron-start" data-size="18"></span>
+    </button>
+  </div>
+</div>
+
+
+<!-- ═══════════════ SEARCH ═══════════════ -->
+<div id="screen-search" class="screen">
+  <div class="module-head">
+    <div class="grid-bg" aria-hidden="true"></div>
+    <div class="module-head-inner">
+      <div>
+        <h1>חיפוש</h1>
+        <p class="module-sub">חיפוש חוצה־מודולים בכל התוכן</p>
+      </div>
+    </div>
+  </div>
+  <div class="search-wrap">
+    <div class="search-box">
+      <span class="search-icon" data-icon="search" data-size="18"></span>
+      <input class="search-input" id="homeSearchInput" type="search"
+             placeholder="חיפוש משימה, נוהל או שלב" autocomplete="off" aria-label="חיפוש בכל הכלים">
+      <button class="search-clear" id="homeSearchClear" onclick="clearHomeSearch()" type="button">
+        <span data-icon="close" data-size="16"></span><span class="sr-only">ניקוי החיפוש</span>
       </button>
     </div>
   </div>
-  <div class="home-search-results" id="homeSearchResults" role="region" aria-live="polite" aria-label="תוצאות חיפוש"></div>
-
-  <div class="home-index">
-    <h2 class="section-label">הכלים</h2>
-    <div class="home-buttons">
-
-      <button class="home-btn" type="button" style="--tint:var(--tone-week);--tint-bg:var(--tone-week-bg)" onclick="showScreen('tactical')">
-        <span class="home-btn-icon" data-icon="clock" data-size="22"></span>
-        <span class="home-btn-text">
-          <span class="home-btn-title">שעון תקה"ד</span>
-          <span class="home-btn-desc">כלים פיקודיים לאורך היום, מ"כ עד מ"פ</span>
-        </span>
-        <span class="home-btn-chevron" data-icon="chevron-start" data-size="18"></span>
-      </button>
-
-      <button class="home-btn" type="button" style="--tint:var(--tone-daily);--tint-bg:var(--tone-daily-bg)" onclick="showScreen('training')">
-        <span class="home-btn-icon" data-icon="calendar" data-size="22"></span>
-        <span class="home-btn-text">
-          <span class="home-btn-title">ציר משימות ההכשרה</span>
-          <span class="home-btn-desc">מה נדרש מהמ"פ בכל שלב של המחזור</span>
-        </span>
-        <span class="home-btn-chevron" data-icon="chevron-start" data-size="18"></span>
-      </button>
-
-      <button class="home-btn" type="button" style="--tint:var(--tone-month);--tint-bg:var(--tone-month-bg)" onclick="showScreen('checklist_before')">
-        <span class="home-btn-icon" data-icon="clipboard" data-size="22"></span>
-        <span class="home-btn-text">
-          <span class="home-btn-title">צ׳ק ליסט לפני הכשרה</span>
-          <span class="home-btn-desc">כל מה שצריך לסגור לפני פתיחת המחזור</span>
-        </span>
-        <span class="home-btn-chevron" data-icon="chevron-start" data-size="18"></span>
-      </button>
-
-      <button class="home-btn" type="button" style="--tint:var(--tone-third);--tint-bg:var(--tone-third-bg)" onclick="showScreen('checklist_after')">
-        <span class="home-btn-icon" data-icon="flag" data-size="22"></span>
-        <span class="home-btn-text">
-          <span class="home-btn-title">צ׳ק ליסט אחרי הכשרה</span>
-          <span class="home-btn-desc">סגירת מחזור: הערכות, ציוד ולקחים</span>
-        </span>
-        <span class="home-btn-chevron" data-icon="chevron-start" data-size="18"></span>
-      </button>
-
-    </div>
+  <div class="search-screen">
+    <div class="search-scope" id="searchScope" role="group" aria-label="סינון לפי כלי"></div>
+    <p class="search-count" id="searchCount" aria-live="polite"></p>
+    <div id="homeSearchResults"></div>
   </div>
-
-  <p class="home-footer">לשימוש פנימי בלבד · סימוני הצ׳ק ליסט נשמרים במכשיר שלכם בלבד</p>
 </div>
 
 
 <!-- ═══════════════ TACTICAL ═══════════════ -->
 <div id="screen-tactical" class="screen">
   <div class="topbar">
-    <button class="topbar-back" type="button" onclick="showScreen('home')">
-      <span data-icon="chevron-end" data-size="18"></span>דף ראשי
+    <button class="topbar-back" type="button" onclick="go('clocks')">
+      <span data-icon="chevron-end" data-size="18"></span>שעונים
     </button>
     <span class="topbar-title">שעון תקה"ד</span>
   </div>
@@ -917,8 +1446,8 @@ button{ cursor:pointer; background:none; border:none; }
 <!-- ═══════════════ TRAINING ═══════════════ -->
 <div id="screen-training" class="screen">
   <div class="topbar">
-    <button class="topbar-back" type="button" onclick="showScreen('home')">
-      <span data-icon="chevron-end" data-size="18"></span>דף ראשי
+    <button class="topbar-back" type="button" onclick="go('clocks')">
+      <span data-icon="chevron-end" data-size="18"></span>שעונים
     </button>
     <span class="topbar-title">ציר משימות ההכשרה</span>
   </div>
@@ -971,8 +1500,8 @@ button{ cursor:pointer; background:none; border:none; }
 <!-- ═══════════════ CHECKLIST · BEFORE ═══════════════ -->
 <div id="screen-checklist_before" class="screen">
   <div class="topbar">
-    <button class="topbar-back" type="button" onclick="showScreen('home')">
-      <span data-icon="chevron-end" data-size="18"></span>דף ראשי
+    <button class="topbar-back" type="button" onclick="go('checks')">
+      <span data-icon="chevron-end" data-size="18"></span>צ׳קליסטים
     </button>
     <span class="topbar-title">לפני הכשרה</span>
   </div>
@@ -1017,8 +1546,8 @@ button{ cursor:pointer; background:none; border:none; }
 <!-- ═══════════════ CHECKLIST · AFTER ═══════════════ -->
 <div id="screen-checklist_after" class="screen">
   <div class="topbar">
-    <button class="topbar-back" type="button" onclick="showScreen('home')">
-      <span data-icon="chevron-end" data-size="18"></span>דף ראשי
+    <button class="topbar-back" type="button" onclick="go('checks')">
+      <span data-icon="chevron-end" data-size="18"></span>צ׳קליסטים
     </button>
     <span class="topbar-title">אחרי הכשרה</span>
   </div>
@@ -1059,8 +1588,33 @@ button{ cursor:pointer; background:none; border:none; }
   </div>
 </div>
 
+
 </div>
+
+<nav class="tabbar" id="tabbar" hidden aria-label="ניווט ראשי">
+  <button class="tab" type="button" data-tab="home" onclick="go('home')">
+    <span data-icon="home" data-size="20"></span>
+    <span class="tab-label">בית</span>
+    <span class="tab-dot" aria-hidden="true"></span>
+  </button>
+  <button class="tab" type="button" data-tab="clocks" onclick="go('clocks')">
+    <span data-icon="clock" data-size="20"></span>
+    <span class="tab-label">שעונים</span>
+    <span class="tab-dot" aria-hidden="true"></span>
+  </button>
+  <button class="tab" type="button" data-tab="checks" onclick="go('checks')">
+    <span data-icon="check" data-size="20"></span>
+    <span class="tab-label">צ׳קליסט</span>
+    <span class="tab-dot" aria-hidden="true"></span>
+  </button>
+  <button class="tab" type="button" data-tab="search" onclick="go('search')">
+    <span data-icon="search" data-size="20"></span>
+    <span class="tab-label">חיפוש</span>
+    <span class="tab-dot" aria-hidden="true"></span>
+  </button>
+</nav>
 <script>
+
 // ─── ICON SYSTEM ─────────────────────────────────────────────────────────────
 // Outline paths from Heroicons v2 (MIT, https://heroicons.com), 24x24 grid,
 // stroke 1.5, currentColor. Emoji are never used as icons: the data still
@@ -1155,29 +1709,305 @@ function hydrateIcons(root) {
 }
 
 
-// ─── NAVIGATION ──────────────────────────────────────────────────────────────
-const initialized = {};
+// ─── APP STATE ───────────────────────────────────────────────────────────────
+const MODULES = {
+  tac: {tab:'clocks', screen:'screen-tactical',         title:'שעון תקה"ד',        icon:'clock'},
+  tr:  {tab:'clocks', screen:'screen-training',         title:'ציר משימות ההכשרה', icon:'calendar'},
+  cb:  {tab:'checks', screen:'screen-checklist_before', title:'לפני הכשרה',        icon:'clipboard'},
+  ca:  {tab:'checks', screen:'screen-checklist_after',  title:'אחרי הכשרה',        icon:'flag'}
+};
+const TAB_SCREEN = {home:'home-screen', clocks:'screen-clocks', checks:'screen-checks', search:'screen-search'};
 
-function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  const target = id === 'home' ? 'home-screen' : 'screen-' + id;
-  const el = document.getElementById(target);
+const initialized = {};
+let userName   = '';
+let lastModule = null;
+let currentWeek = 1;
+
+function store(key, val) { try { localStorage.setItem(key, val); } catch(e) {} }
+function recall(key)     { try { return localStorage.getItem(key); } catch(e) { return null; } }
+
+
+// ─── SPLASH ──────────────────────────────────────────────────────────────────
+function enterApp(e) {
+  if (e) e.preventDefault();
+  const input = document.getElementById('splashName');
+  const name = input.value.trim();
+  if (!name) { input.focus(); return false; }
+  userName = name;
+  store('mp_user', name);
+  const splash = document.getElementById('splash-screen');
+  splash.classList.add('leaving');
+  setTimeout(() => { splash.remove(); }, 420);
+  document.body.classList.add('has-tabbar');
+  document.getElementById('tabbar').hidden = false;
+  go('home');
+  return false;
+}
+
+
+// ─── NAVIGATION ──────────────────────────────────────────────────────────────
+// go('home' | 'clocks' | 'checks' | 'search') or go('module', '<key>')
+function go(view, mod) {
+  document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+
+  let screenId, activeTab;
+  if (view === 'module') {
+    const M = MODULES[mod];
+    if (!M) return;
+    screenId  = M.screen;
+    activeTab = M.tab;
+    lastModule = mod;
+    store('mp_last', mod);
+    if (!initialized[mod]) {
+      initialized[mod] = true;
+      if (mod === 'tr')      tr_go(0);
+      else if (mod === 'tac') tac_renderAll();
+      else if (mod === 'cb')  cb_init();
+      else if (mod === 'ca')  ca_init();
+    }
+  } else {
+    screenId  = TAB_SCREEN[view] || TAB_SCREEN.home;
+    activeTab = TAB_SCREEN[view] ? view : 'home';
+    if (view === 'home')   renderDashboard();
+    if (view === 'clocks' || view === 'checks') renderPickerStats();
+    if (view === 'search') setTimeout(() => document.getElementById('homeSearchInput').focus(), 80);
+  }
+
+  const el = document.getElementById(screenId);
   if (el) {
     el.classList.add('active');
     window.scrollTo({top: 0, behavior: 'smooth'});
-    // screen-reader focus order follows the visual order: land on the new heading
     const heading = el.querySelector('h1');
     if (heading) { heading.setAttribute('tabindex', '-1'); heading.focus({preventScroll: true}); }
   }
-  
-  // Initialize module on first visit
-  if (id !== 'home' && !initialized[id]) {
-    initialized[id] = true;
-    if (id === 'training') { tr_go(0); }
-    else if (id === 'tactical') { tac_renderAll(); }
-    else if (id === 'checklist_before') { cb_init(); }
-    else if (id === 'checklist_after') { ca_init(); }
+
+  document.querySelectorAll('.tab').forEach(t => {
+    if (t.dataset.tab === activeTab) t.setAttribute('aria-current', 'page');
+    else t.removeAttribute('aria-current');
+  });
+}
+
+// kept so existing handlers inside the modules keep working
+function showScreen(id) {
+  if (id === 'home') return go('home');
+  const key = {tactical:'tac', training:'tr', checklist_before:'cb', checklist_after:'ca'}[id];
+  if (key) return go('module', key);
+  go('home');
+}
+
+
+// ─── DASHBOARD ───────────────────────────────────────────────────────────────
+const HE_DAYS = ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
+const HE_MONTHS = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
+
+function greetingFor(hour) {
+  if (hour < 5)  return 'לילה טוב';
+  if (hour < 12) return 'בוקר טוב';
+  if (hour < 17) return 'צהריים טובים';
+  if (hour < 21) return 'ערב טוב';
+  return 'לילה טוב';
+}
+
+function checkStats(prefix) {
+  const data   = prefix === 'cb' ? cb_DATA : ca_DATA;
+  const states = prefix === 'cb' ? cb_states : ca_states;
+  const all   = data.flatMap(c => c.tasks);
+  const done  = all.filter(t => states[t.id]).length;
+  return {done, total: all.length, left: all.length - done,
+          pct: all.length ? Math.round(done / all.length * 100) : 0};
+}
+
+// Daily tactical items that carry a real clock time, sorted by it.
+function dailySchedule() {
+  const phase = tac_phases[0];
+  if (!phase) return [];
+  return phase.tasks
+    .map((t, i) => {
+      const m = (t.sub || '').match(/^(\d{1,2}):(\d{2})/);
+      return m ? {task: t, idx: i, mins: (+m[1]) * 60 + (+m[2]), time: m[0]} : null;
+    })
+    .filter(Boolean)
+    .sort((a, b) => a.mins - b.mins);
+}
+
+function renderNowCard() {
+  const el = document.getElementById('nowCard');
+  const sched = dailySchedule();
+  if (!sched.length) { el.innerHTML = '<p class="now-empty">אין לוז יומי זמין</p>'; return; }
+
+  const now = new Date();
+  const mins = now.getHours() * 60 + now.getMinutes();
+
+  // the last item that already started, and the first still ahead
+  let current = null, next = null;
+  for (const item of sched) {
+    if (item.mins <= mins) current = item;
+    else { next = item; break; }
   }
+  if (!current) current = sched[sched.length - 1];   // before the first item: yesterday's last
+  if (!next)    next    = sched[0];                  // after the last: tomorrow's first
+
+  const gap = next.mins - mins;
+  const until = gap > 0
+    ? (gap >= 60 ? `בעוד ${Math.floor(gap / 60)} שע׳ ${gap % 60} דק׳` : `בעוד ${gap} דק׳`)
+    : 'מחר';
+
+  el.innerHTML = `
+    <button class="now-row" type="button" onclick="openTacTask(${current.idx})">
+      <span class="now-time">${current.time}</span>
+      <span class="now-body">
+        <span class="now-tag"><span class="now-live"></span>עכשיו</span>
+        <span class="now-name">${deEmoji(current.task.name)}</span>
+      </span>
+      ${icon('chevron-start', 18)}
+    </button>
+    <button class="now-row is-next" type="button" onclick="openTacTask(${next.idx})">
+      <span class="now-time">${next.time}</span>
+      <span class="now-body">
+        <span class="now-tag">הבא</span>
+        <span class="now-name">${deEmoji(next.task.name)}</span>
+        <span class="now-countdown">${until}</span>
+      </span>
+      ${icon('chevron-start', 18)}
+    </button>`;
+}
+
+function openTacTask(idx) {
+  go('module', 'tac');
+  setTimeout(() => tac_openModal(0, idx), 120);
+}
+
+function ringSvg(pct, color) {
+  const r = 22, c = 2 * Math.PI * r;
+  return `<div class="ring" style="--ring-color:${color}">
+    <svg width="52" height="52" viewBox="0 0 52 52" aria-hidden="true">
+      <circle class="ring-track" cx="26" cy="26" r="${r}" fill="none" stroke-width="5"/>
+      <circle class="ring-fill" cx="26" cy="26" r="${r}" fill="none" stroke-width="5"
+              stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${(c * (1 - pct / 100)).toFixed(1)}"/>
+    </svg>
+    <span class="ring-pct">${pct}%</span>
+  </div>`;
+}
+
+function renderRings() {
+  const cb = checkStats('cb'), ca = checkStats('ca');
+  document.getElementById('dashRings').innerHTML = `
+    <button class="ring-card" type="button" onclick="go('module','cb')">
+      ${ringSvg(cb.pct, 'var(--tone-month)')}
+      <span class="ring-text">
+        <span class="ring-title">לפני הכשרה</span>
+        <span class="ring-sub">${cb.done}/${cb.total} · נותרו ${cb.left}</span>
+      </span>
+    </button>
+    <button class="ring-card" type="button" onclick="go('module','ca')">
+      ${ringSvg(ca.pct, 'var(--tone-third)')}
+      <span class="ring-text">
+        <span class="ring-title">אחרי הכשרה</span>
+        <span class="ring-sub">${ca.done}/${ca.total} · נותרו ${ca.left}</span>
+      </span>
+    </button>`;
+}
+
+function setWeek(w) {
+  currentWeek = Math.min(Math.max(1, w), tr_totalWeeks);
+  store('mp_week', String(currentWeek));
+  renderWeek();
+}
+
+function renderWeek() {
+  document.getElementById('weekNum').textContent = currentWeek;
+  document.getElementById('weekPrev').disabled = currentWeek <= 1;
+  document.getElementById('weekNext').disabled = currentWeek >= tr_totalWeeks;
+
+  // a training task belongs to this week when its own weeksFn says so
+  const hits = [];
+  tr_phases.forEach((phase, pi) => phase.tasks.forEach((t, ti) => {
+    const weeks = t.weeksFn(tr_totalWeeks, tr_prepWeeks) || [];
+    const match = weeks.some(w => {
+      const m = String(w).match(/(\d+)/g);
+      if (!m) return false;
+      if (/עד שבוע/.test(w)) return currentWeek <= +m[0];
+      return m.map(Number).includes(currentWeek);
+    });
+    if (match) hits.push({t, pi, ti, phase});
+  }));
+
+  const list = document.getElementById('weekList');
+  if (!hits.length) {
+    list.innerHTML = '<p class="week-empty">אין משימות ייעודיות לשבוע הזה בציר ההכשרה</p>';
+    return;
+  }
+  list.innerHTML = hits.slice(0, 5).map(h => `
+    <button type="button" class="vtl-item" style="--dot-color:${h.t.dotColor};--dot-bg:${h.t.chipBg}"
+            onclick="openTrTask(${h.pi},${h.ti})">
+      <span class="vtl-row">
+        <span class="vtl-ico">${iconFor(h.t.icon, 20)}</span>
+        <span class="vtl-left">
+          <span class="vtl-name">${deEmoji(h.t.name)}</span>
+          <span class="vtl-sub">${icon('target', 14)} ${h.phase.title}</span>
+        </span>
+        <span class="badge ${h.t.badge}">${deEmoji(h.t.badgeText)}</span>
+      </span>
+    </button>`).join('');
+}
+
+function openTrTask(pi, ti) {
+  go('module', 'tr');
+  setTimeout(() => { tr_go(pi); tr_openModal(pi, ti); }, 120);
+}
+
+function renderContinue() {
+  const section = document.getElementById('continueSection');
+  if (!lastModule || !MODULES[lastModule]) { section.hidden = true; return; }
+  const M = MODULES[lastModule];
+  let stat = '';
+  if (lastModule === 'cb' || lastModule === 'ca') {
+    const st = checkStats(lastModule);
+    stat = `<span class="ring-sub">${st.pct}% הושלם · נותרו ${st.left}</span>`;
+  }
+  section.hidden = false;
+  document.getElementById('continueCard').innerHTML = `
+    <span class="quick-ico">${icon(M.icon, 20)}</span>
+    <span class="continue-body">
+      <span class="continue-label">המודול האחרון</span>
+      <span class="continue-name">${M.title}</span>
+      ${stat}
+    </span>
+    ${icon('chevron-start', 18)}`;
+  document.getElementById('continueCard').onclick = () => go('module', lastModule);
+}
+
+function renderDashboard() {
+  const now = new Date();
+  document.getElementById('dashGreet').innerHTML =
+    `${greetingFor(now.getHours())}<span>${userName ? ', ' + userName : ''}</span>`;
+  document.getElementById('dashDate').textContent =
+    `יום ${HE_DAYS[now.getDay()]} · ${now.getDate()} ב${HE_MONTHS[now.getMonth()]}`;
+  document.getElementById('dashCycle').textContent =
+    `מחזור ${tr_totalWeeks}+${tr_prepWeeks} · שבוע ${currentWeek}`;
+
+  renderNowCard();
+  renderContinue();
+  renderRings();
+  renderWeek();
+
+  const cb = checkStats('cb'), ca = checkStats('ca');
+  document.getElementById('qsTac').textContent = `${tac_phases.length} שלבים`;
+  document.getElementById('qsTr').textContent  = `${tr_phases.length} שלבים`;
+  document.getElementById('qsCb').textContent  = `${cb.done}/${cb.total}`;
+  document.getElementById('qsCa').textContent  = `${ca.done}/${ca.total}`;
+  hydrateIcons();
+}
+
+function renderPickerStats() {
+  const cb = checkStats('cb'), ca = checkStats('ca');
+  const tacCount = tac_phases.reduce((n, p) => n + p.tasks.length, 0);
+  const trCount  = tr_phases.reduce((n, p) => n + p.tasks.length, 0);
+  const set = (id, txt) => { const el = document.getElementById(id); if (el) el.textContent = txt; };
+  set('pickTacStat', `${tac_phases.length} שלבים · ${tacCount} משימות`);
+  set('pickTrStat',  `${tr_phases.length} שלבים · ${trCount} משימות · מחזור ${tr_totalWeeks}+${tr_prepWeeks}`);
+  set('pickCbStat',  `${cb.done}/${cb.total} הושלמו · ${cb.pct}%`);
+  set('pickCaStat',  `${ca.done}/${ca.total} הושלמו · ${ca.pct}%`);
 }
 
 
@@ -1270,8 +2100,12 @@ function doHomeSearch(query) {
   const clearBtn = document.getElementById('homeSearchClear');
   
   if (!q) {
-    resultsEl.classList.remove('show');
+    resultsEl.innerHTML = `<p class="search-hint">
+      חפשו משימה, נוהל או שלב.<br>למשל <kbd>מסדר בוקר</kbd> <kbd>סיכומי שבוע</kbd> <kbd>חניך מתקשה</kbd>
+    </p>`;
     clearBtn.classList.remove('show');
+    const countEl = document.getElementById('searchCount');
+    if (countEl) countEl.textContent = '';
     return;
   }
   
@@ -1307,11 +2141,15 @@ function doHomeSearch(query) {
     if ((q.includes('הכשרה') || q.includes('שבועי') || q.includes('חניך') || q.includes('מחזור')) && item.module === 'training') score += 10;
     
     return { ...item, score };
-  }).filter(r => r.score > 0).sort((a,b) => b.score - a.score).slice(0, 8);
+  }).filter(r => r.score > 0 && (searchScope === 'all' || r.module === searchScope))
+    .sort((a,b) => b.score - a.score);
+
+  const countEl = document.getElementById('searchCount');
+  if (countEl) countEl.textContent = results.length ? `${results.length} תוצאות` : '';
+  results.length = Math.min(results.length, 20);
   
   if (results.length === 0) {
-    resultsEl.innerHTML = '<div class="home-no-results">לא נמצאו תוצאות – נסה מילות מפתח אחרות</div>';
-    resultsEl.classList.add('show');
+    resultsEl.innerHTML = '<p class="home-no-results">לא נמצאו תוצאות. נסו מילות מפתח אחרות.</p>';
     return;
   }
   
@@ -1324,26 +2162,70 @@ function doHomeSearch(query) {
       </span>
     </button>
   `).join('');
-  resultsEl.classList.add('show');
+}
+
+// scope filter for the search tab
+let searchScope = 'all';
+const SCOPES = [
+  {id:'all',              label:'הכול'},
+  {id:'tactical',         label:'תקה"ד'},
+  {id:'training',         label:'הכשרה'},
+  {id:'checklist_before', label:'לפני'},
+  {id:'checklist_after',  label:'אחרי'}
+];
+
+function renderScopeChips() {
+  document.getElementById('searchScope').innerHTML = SCOPES.map(sc =>
+    `<button type="button" class="scope-chip" aria-pressed="${sc.id === searchScope}"
+             onclick="setSearchScope('${sc.id}')">${sc.label}</button>`).join('');
+}
+
+function setSearchScope(id) {
+  searchScope = id;
+  renderScopeChips();
+  doHomeSearch(document.getElementById('homeSearchInput').value);
 }
 
 function goToResult(moduleId) {
-  clearHomeSearch();
-  showScreen(moduleId);
+  const key = {tactical:'tac', training:'tr', checklist_before:'cb', checklist_after:'ca'}[moduleId];
+  if (key) go('module', key);
 }
 
 function clearHomeSearch() {
   document.getElementById('homeSearchInput').value = '';
-  document.getElementById('homeSearchResults').classList.remove('show');
   document.getElementById('homeSearchClear').classList.remove('show');
+  doHomeSearch('');
+  document.getElementById('homeSearchInput').focus();
 }
 
 document.getElementById('homeSearchInput').addEventListener('input', function() {
   doHomeSearch(this.value);
 });
 
-// Build index after a short delay (modules loaded)
-setTimeout(buildSearchIndex, 500);
+// ─── BOOT ────────────────────────────────────────────────────────────────────
+function boot() {
+  hydrateIcons();
+  buildSearchIndex();
+  renderScopeChips();
+  doHomeSearch('');
+
+  // every module is parsed up front so the dashboard can read their data
+  cb_init(); ca_init();
+  initialized.cb = true; initialized.ca = true;
+
+  const savedWeek = parseInt(recall('mp_week'), 10);
+  if (savedWeek) currentWeek = Math.min(Math.max(1, savedWeek), tr_totalWeeks);
+  lastModule = recall('mp_last');
+
+  const savedName = recall('mp_user');
+  if (savedName) {
+    // returning user: fill the field and let them straight in
+    userName = savedName;
+    document.getElementById('splashName').value = savedName;
+    document.getElementById('splashFoot').textContent = 'v3.0 · ברוך שובך';
+  }
+  document.getElementById('splashName').focus();
+}
 
 // ─── SHEETS ──────────────────────────────────────────────────────────────────
 // A sheet traps focus while open and hands it back to whatever opened it.
@@ -1648,6 +2530,7 @@ function tr_setDuration(t,p){
   tr_updateDurLabel();
   closeSheet('tr_modal-overlay');
   tr_renderContent();
+  if (currentWeek > tr_totalWeeks) setWeek(tr_totalWeeks);
 }
 
 // ─── TIMELINE ──────────────────────────────────────────────────────────
@@ -2685,6 +3568,7 @@ function cb_updateProgress() {
   document.getElementById('cb_progressFill').style.width = pct + '%';
   document.getElementById('cb_progressPct').textContent = pct + '% הושלם';
   document.getElementById('cb_progressBar').setAttribute('aria-valuenow', String(pct));
+  if (document.getElementById('home-screen').classList.contains('active')) renderDashboard();
   const banner = document.getElementById('cb_doneBanner');
   if (done === total && total > 0) banner.classList.add('visible');
   else banner.classList.remove('visible');
@@ -3180,6 +4064,7 @@ function ca_updateProgress() {
   document.getElementById('ca_progressFill').style.width = pct + '%';
   document.getElementById('ca_progressPct').textContent = pct + '% הושלם';
   document.getElementById('ca_progressBar').setAttribute('aria-valuenow', String(pct));
+  if (document.getElementById('home-screen').classList.contains('active')) renderDashboard();
   const banner = document.getElementById('ca_doneBanner');
   if (done === total && total > 0) banner.classList.add('visible');
   else banner.classList.remove('visible');
@@ -3192,6 +4077,10 @@ function ca_resetAll() {
   ca_init();
 }
 
+
+
+
+boot();
 
 </script>
 </body>
