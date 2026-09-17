@@ -1265,6 +1265,281 @@ body.has-tabbar{ padding-bottom:calc(var(--tabbar-h) + env(safe-area-inset-botto
 .sheet-date{ width:100%; text-align:right; }
 .sheet-field input:focus-visible,.sheet-date:focus-visible{ outline:2px solid var(--color-ring); outline-offset:2px; }
 .splash-input.invalid,.sheet-date.invalid{ border-color:#FFB4A8; }
+
+/* ═══════════════════════════════════════════════════════
+   MY TAB: personal tasks + weekly board
+   ═══════════════════════════════════════════════════════ */
+
+.tabbar{ grid-template-columns:repeat(5,1fr); }
+
+.mine{ max-width:860px; margin:0 auto; padding:0 var(--space-4) var(--space-7); }
+
+/* segmented switch between the two views */
+.seg{
+  display:grid; grid-template-columns:1fr 1fr; gap:var(--space-1);
+  background:var(--color-muted);
+  border:1px solid var(--color-border);
+  border-radius:var(--radius);
+  padding:var(--space-1);
+  margin:calc(var(--space-6) * -1) 0 var(--space-5);
+  position:relative; z-index:10;
+  box-shadow:var(--shadow-2);
+}
+.seg-btn{
+  min-height:42px; border-radius:var(--radius-sm);
+  display:flex; align-items:center; justify-content:center; gap:var(--space-2);
+  font-size:14px; font-weight:600; color:var(--color-muted-foreground);
+  transition:background var(--dur-fast), color var(--dur-fast);
+}
+.seg-btn:hover{ color:var(--color-foreground); }
+.seg-btn[aria-selected="true"]{
+  background:var(--color-card); color:var(--color-primary);
+  box-shadow:var(--shadow-1);
+}
+
+.mine-view[hidden]{ display:none; }
+
+/* ── ADD BUTTON ────────────────────────────────────────── */
+.add-btn{
+  width:100%; min-height:52px; margin-bottom:var(--space-4);
+  display:flex; align-items:center; justify-content:center; gap:var(--space-2);
+  background:var(--color-primary); color:var(--color-on-primary);
+  border-radius:var(--radius);
+  font-size:15px; font-weight:600;
+  transition:background var(--dur-fast) var(--ease-out), transform var(--dur-instant);
+}
+.add-btn:hover{ background:var(--color-primary-hover); }
+.add-btn:active{ transform:scale(.995); }
+
+/* ── TASK ROWS ─────────────────────────────────────────── */
+.mine-group{ margin-bottom:var(--space-5); }
+.mine-group-title{
+  display:flex; align-items:center; gap:var(--space-2);
+  font-size:12px; font-weight:600; letter-spacing:.12em;
+  color:var(--color-muted-foreground); margin-bottom:var(--space-3);
+}
+.mine-group-count{
+  font-family:var(--mono); font-size:11px;
+  background:var(--color-muted); color:var(--color-muted-foreground);
+  border-radius:var(--radius-sm); padding:1px var(--space-2);
+}
+
+.mine-task{
+  display:flex; align-items:flex-start; gap:var(--space-3);
+  background:var(--color-card);
+  border:1px solid var(--color-border);
+  border-inline-start:3px solid var(--kind-color,var(--color-control-border));
+  border-radius:var(--radius);
+  padding:var(--space-3);
+  margin-bottom:var(--space-2);
+  transition:background var(--dur-fast);
+  animation:rise var(--dur-base) var(--ease-out) both;
+}
+.mine-task.done{ background:var(--color-muted); }
+.mine-check{
+  flex-shrink:0; width:24px; height:24px; margin-top:2px;
+  border:2px solid var(--color-control-border); border-radius:var(--radius-sm);
+  background:var(--color-card); color:#fff;
+  display:flex; align-items:center; justify-content:center;
+  transition:background var(--dur-fast), border-color var(--dur-fast);
+}
+.mine-task.done .mine-check{ background:var(--color-accent); border-color:var(--color-accent); }
+.mine-check .check-icon{ opacity:0; transition:opacity var(--dur-fast); display:flex; }
+.mine-task.done .mine-check .check-icon{ opacity:1; }
+
+.mine-body{ flex:1; min-width:0; text-align:right; }
+.mine-title{ display:block; font-size:15px; font-weight:600; line-height:1.4; }
+.mine-task.done .mine-title{ color:var(--color-muted-foreground); text-decoration:line-through; text-decoration-thickness:1px; }
+.mine-note{ display:block; font-size:13px; color:var(--color-muted-foreground); margin-top:3px; line-height:1.5; }
+.mine-meta{
+  display:flex; flex-wrap:wrap; align-items:center; gap:var(--space-1) var(--space-3);
+  margin-top:var(--space-2);
+  font-family:var(--mono); font-size:11.5px; color:var(--color-muted-foreground);
+}
+.mine-meta-item{ display:flex; align-items:center; gap:4px; }
+.mine-meta-item.overdue{ color:var(--color-destructive); font-weight:600; }
+.mine-actions{ display:flex; gap:var(--space-1); flex-shrink:0; }
+.mine-icon-btn{
+  width:36px; height:36px; border-radius:var(--radius-sm);
+  display:flex; align-items:center; justify-content:center;
+  color:var(--color-muted-foreground);
+  transition:background var(--dur-fast), color var(--dur-fast);
+}
+.mine-icon-btn:hover{ background:var(--color-muted); color:var(--color-foreground); }
+.mine-icon-btn.danger:hover{ background:#FDECEC; color:var(--color-destructive); }
+
+.mine-empty{
+  padding:var(--space-7) var(--space-4); text-align:center;
+  background:var(--color-card); border:1px dashed var(--color-control-border);
+  border-radius:var(--radius-lg);
+}
+.mine-empty-ico{
+  width:48px; height:48px; margin:0 auto var(--space-3);
+  border-radius:var(--radius); background:var(--color-muted);
+  display:flex; align-items:center; justify-content:center;
+  color:var(--color-muted-foreground);
+}
+.mine-empty-title{ font-size:15px; font-weight:600; margin-bottom:var(--space-1); }
+.mine-empty-text{ font-size:13.5px; color:var(--color-muted-foreground); line-height:1.6; }
+
+/* ── FORM SHEET ────────────────────────────────────────── */
+.form-field{ margin-bottom:var(--space-4); }
+.form-label{
+  display:block; font-size:12px; font-weight:600; letter-spacing:.08em;
+  color:var(--color-muted-foreground); margin-bottom:var(--space-2);
+}
+.form-input,.form-area,.form-select{
+  width:100%; min-height:48px; padding:var(--space-2) var(--space-3);
+  background:var(--color-card);
+  border:1px solid var(--color-control-border);
+  border-radius:var(--radius);
+  color:var(--color-foreground); font-size:16px;
+  font-family:inherit;
+}
+.form-area{ min-height:84px; resize:vertical; line-height:1.6; }
+.form-input:focus-visible,.form-area:focus-visible,.form-select:focus-visible{
+  outline:2px solid var(--color-ring); outline-offset:2px;
+}
+.form-input[type="date"],.form-input[type="time"],.form-input[type="number"]{ font-family:var(--mono); }
+.form-row{ display:grid; grid-template-columns:1fr 1fr; gap:var(--space-3); }
+.form-chips{ display:flex; flex-wrap:wrap; gap:var(--space-2); }
+.form-chip{
+  min-height:40px; padding:0 var(--space-3);
+  display:inline-flex; align-items:center; gap:var(--space-2);
+  border:1px solid var(--color-control-border); border-radius:var(--radius-pill);
+  background:var(--color-card); color:var(--color-muted-foreground);
+  font-size:13.5px; font-weight:600;
+  transition:background var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast);
+}
+.form-chip:hover{ background:var(--color-muted); }
+.form-chip[aria-pressed="true"]{
+  background:var(--chip-on,var(--color-primary)); border-color:var(--chip-on,var(--color-primary));
+  color:var(--color-on-primary);
+}
+.form-error{ font-size:13px; font-weight:600; color:var(--color-destructive); margin-top:var(--space-2); }
+.form-error[hidden]{ display:none; }
+.form-actions{ display:grid; grid-template-columns:1fr auto; gap:var(--space-3); margin-top:var(--space-5); }
+
+/* ── WEEKLY BOARD ──────────────────────────────────────── */
+.board-bar{
+  display:flex; align-items:center; justify-content:space-between; gap:var(--space-3);
+  padding:var(--space-3) var(--space-4);
+  background:var(--color-card); border:1px solid var(--color-border);
+  border-radius:var(--radius-lg); margin-bottom:var(--space-3);
+}
+.board-week{ text-align:center; }
+.board-week-num{ font-family:var(--mono); font-size:19px; font-weight:600; color:var(--color-primary); }
+.board-week-label{ display:block; font-size:11.5px; color:var(--color-muted-foreground); margin-top:1px; }
+
+/* the day strip is the mobile day switcher */
+.day-strip{
+  display:grid; grid-template-columns:repeat(7,1fr); gap:var(--space-1);
+  margin-bottom:var(--space-4);
+}
+.day-chip{
+  min-height:56px; border-radius:var(--radius);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px;
+  background:var(--color-card); border:1px solid var(--color-border);
+  color:var(--color-muted-foreground);
+  transition:background var(--dur-fast), border-color var(--dur-fast), color var(--dur-fast);
+}
+.day-chip:hover{ background:var(--color-muted); }
+.day-chip[aria-pressed="true"]{
+  background:var(--color-primary); border-color:var(--color-primary); color:var(--color-on-primary);
+}
+.day-chip-name{ font-size:12px; font-weight:600; }
+.day-chip-count{
+  font-family:var(--mono); font-size:10.5px; opacity:.75;
+  min-height:13px;
+}
+.day-chip.is-today{ border-color:var(--color-accent); border-width:2px; }
+
+.board-day{ margin-bottom:var(--space-5); }
+.board-day-head{
+  display:flex; align-items:center; justify-content:space-between; gap:var(--space-3);
+  margin-bottom:var(--space-3);
+}
+.board-day-title{ font-size:16px; font-weight:700; letter-spacing:-.01em; }
+.board-day-title span{ font-family:var(--mono); font-size:12px; font-weight:500; color:var(--color-muted-foreground); margin-inline-start:var(--space-2); }
+.board-add{
+  min-height:40px; padding:0 var(--space-3);
+  display:inline-flex; align-items:center; gap:var(--space-2);
+  border:1px solid var(--color-control-border); border-radius:var(--radius);
+  background:var(--color-card); color:var(--color-foreground);
+  font-size:13.5px; font-weight:600;
+  transition:background var(--dur-fast);
+}
+.board-add:hover{ background:var(--color-muted); }
+
+.board-list{ display:flex; flex-direction:column; gap:var(--space-2); }
+.board-item{
+  display:flex; align-items:flex-start; gap:var(--space-3);
+  background:var(--color-card);
+  border:1px solid var(--color-border);
+  border-inline-start:3px solid var(--kind-color,var(--color-control-border));
+  border-radius:var(--radius);
+  padding:var(--space-3);
+  animation:rise var(--dur-base) var(--ease-out) both;
+}
+.board-time{
+  font-family:var(--mono); font-size:15px; font-weight:600;
+  color:var(--color-primary); font-variant-numeric:tabular-nums;
+  min-width:52px; flex-shrink:0; padding-top:1px;
+}
+.board-item-body{ flex:1; min-width:0; }
+.board-item-title{ display:block; font-size:15px; font-weight:600; line-height:1.35; }
+.board-item-meta{
+  display:flex; flex-wrap:wrap; gap:var(--space-1) var(--space-3); margin-top:3px;
+  font-family:var(--mono); font-size:11.5px; color:var(--color-muted-foreground);
+}
+.board-empty{
+  padding:var(--space-5); text-align:center; font-size:13.5px;
+  color:var(--color-muted-foreground);
+  background:var(--color-card); border:1px dashed var(--color-control-border);
+  border-radius:var(--radius);
+}
+
+/* suggestions pulled from the axis and from personal tasks */
+.suggest{ margin-top:var(--space-5); }
+.suggest-title{
+  display:flex; align-items:center; gap:var(--space-2);
+  font-size:12px; font-weight:600; letter-spacing:.12em;
+  color:var(--color-muted-foreground); margin-bottom:var(--space-3);
+}
+.suggest-item{
+  display:flex; align-items:center; gap:var(--space-3);
+  background:var(--color-muted); border:1px solid var(--color-border);
+  border-radius:var(--radius); padding:var(--space-2) var(--space-3);
+  margin-bottom:var(--space-2);
+}
+.suggest-body{ flex:1; min-width:0; }
+.suggest-name{ display:block; font-size:14px; font-weight:600; line-height:1.35; }
+.suggest-src{ display:block; font-family:var(--mono); font-size:11px; color:var(--color-muted-foreground); margin-top:2px; }
+.suggest-add{
+  min-height:36px; padding:0 var(--space-3); flex-shrink:0;
+  display:inline-flex; align-items:center; gap:var(--space-1);
+  border:1px solid var(--color-control-border); border-radius:var(--radius-pill);
+  background:var(--color-card); color:var(--color-foreground);
+  font-size:12.5px; font-weight:600;
+  transition:background var(--dur-fast);
+}
+.suggest-add:hover{ background:var(--color-card); border-color:var(--color-primary); color:var(--color-primary); }
+
+/* desktop shows the whole week at once */
+@media (min-width:900px){
+  .day-strip{ display:none; }
+  .board-grid{ display:grid; grid-template-columns:repeat(7,1fr); gap:var(--space-2); align-items:start; }
+  .board-day{ margin-bottom:0; }
+  .board-day-head{ flex-direction:column; align-items:stretch; gap:var(--space-2); }
+  .board-day-title{ font-size:14px; text-align:center; }
+  .board-day-title span{ display:block; margin:2px 0 0; }
+  .board-add{ justify-content:center; font-size:12.5px; }
+  .board-item{ flex-direction:column; gap:var(--space-1); padding:var(--space-2); }
+  .board-time{ min-width:0; font-size:13px; }
+  .board-item-title{ font-size:13px; }
+  .board-item-meta{ font-size:10.5px; }
+}
+.vtl-sub.overdue{ color:var(--color-destructive); font-weight:600; }
 </style>
 </head>
 <body>
@@ -1349,6 +1624,17 @@ body.has-tabbar{ padding-bottom:calc(var(--tabbar-h) + env(safe-area-inset-botto
 
     <!-- מה עכשיו -->
     <section class="now-card" id="nowCard" aria-label="מה עכשיו בשעון תקה״ד"></section>
+
+    <!-- המשימות שלי להיום -->
+    <section class="dash-section" id="myTodaySection" hidden>
+      <div class="dash-section-head">
+        <h2 class="dash-section-title"><span data-icon="user" data-size="14"></span>המשימות שלי להיום</h2>
+        <button class="dash-section-action" type="button" onclick="go('mine')">
+          לכל המשימות<span data-icon="chevron-start" data-size="14"></span>
+        </button>
+      </div>
+      <div class="week-list" id="myTodayList"></div>
+    </section>
 
     <!-- המשך מאיפה שהפסקת -->
     <section class="dash-section" id="continueSection" hidden>
@@ -1493,6 +1779,42 @@ body.has-tabbar{ padding-bottom:calc(var(--tabbar-h) + env(safe-area-inset-botto
       </span>
       <span data-icon="chevron-start" data-size="18"></span>
     </button>
+  </div>
+</div>
+
+
+<!-- ═══════════════ MINE ═══════════════ -->
+<div id="screen-mine" class="screen">
+  <div class="module-head">
+    <div class="grid-bg" aria-hidden="true"></div>
+    <div class="module-head-inner">
+      <div>
+        <h1>שלי</h1>
+        <p class="module-sub">המשימות והלוז האישיים שלכם</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="mine">
+    <div class="seg" role="tablist" aria-label="תצוגות">
+      <button class="seg-btn" type="button" role="tab" id="segTasks" aria-selected="true"
+              aria-controls="mineTasks" onclick="setMineView('tasks')">
+        <span data-icon="check" data-size="16"></span>משימות
+      </button>
+      <button class="seg-btn" type="button" role="tab" id="segBoard" aria-selected="false"
+              aria-controls="mineBoard" onclick="setMineView('board')">
+        <span data-icon="calendar" data-size="16"></span>לוח שבועי
+      </button>
+    </div>
+
+    <div class="mine-view" id="mineTasks" role="tabpanel" aria-labelledby="segTasks">
+      <button class="add-btn" type="button" onclick="openTaskForm()">
+        <span data-icon="plus" data-size="18"></span>משימה חדשה
+      </button>
+      <div id="mineTaskList"></div>
+    </div>
+
+    <div class="mine-view" id="mineBoard" role="tabpanel" aria-labelledby="segBoard" hidden></div>
   </div>
 </div>
 
@@ -1732,6 +2054,14 @@ body.has-tabbar{ padding-bottom:calc(var(--tabbar-h) + env(safe-area-inset-botto
 </div>
 
 
+<!-- app-level form sheet for personal tasks and board items -->
+<div class="modal-overlay" id="form-modal-overlay" onclick="closeFormSheet(event)">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="form-modal-title">
+    <div class="modal-handle"></div>
+    <div id="form-modal-content"></div>
+  </div>
+</div>
+
 <!-- app-level sheet: openable from any screen, so it cannot sit inside one -->
 <div class="modal-overlay" id="cycle-modal-overlay" onclick="closeCycleSheet(event)">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="cycle-modal-title">
@@ -1757,6 +2087,11 @@ body.has-tabbar{ padding-bottom:calc(var(--tabbar-h) + env(safe-area-inset-botto
   <button class="tab" type="button" data-tab="checks" onclick="go('checks')">
     <span data-icon="check" data-size="20"></span>
     <span class="tab-label">צ׳קליסט</span>
+    <span class="tab-dot" aria-hidden="true"></span>
+  </button>
+  <button class="tab" type="button" data-tab="mine" onclick="go('mine')">
+    <span data-icon="user" data-size="20"></span>
+    <span class="tab-label">שלי</span>
     <span class="tab-dot" aria-hidden="true"></span>
   </button>
   <button class="tab" type="button" data-tab="search" onclick="go('search')">
@@ -1851,6 +2186,13 @@ ICON_PATHS['check-thick']   = '<path d="m4.5 12.75 6 6 9-13.5" stroke-width="2.5
 ICON_PATHS['arrow-start']   = '<path d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"/>';
 ICON_PATHS['arrow-end']     = '<path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/>';
 
+ICON_PATHS['plus']    = '<path d="M12 4.5v15m7.5-7.5h-15"/>';
+ICON_PATHS['user']    = '<path d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.5 20.25a7.5 7.5 0 0 1 15 0"/>';
+ICON_PATHS['pencil2'] = '<path d="M16.862 4.487a1.875 1.875 0 1 1 2.652 2.652L7.5 19.152l-3.75.75.75-3.75L16.862 4.487Z"/>';
+ICON_PATHS['trash']   = '<path d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.11 48.11 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/>';
+ICON_PATHS['repeat']  = '<path d="M16.023 9.348h4.992V4.356M2.985 19.644v-4.992h4.992M3.51 9.348a8.25 8.25 0 0 1 13.803-3.7L21 9.348M21 14.652a8.25 8.25 0 0 1-13.803 3.7L3 14.652"/>';
+ICON_PATHS['sunrise2']= '<path d="M12 3v3m6.364-.364-1.591 1.591M21 12h-3m-3.636 6.364 1.591-1.591M12 21v-3m-6.364.364 1.591-1.591M3 12h3m.636-6.364 1.591 1.591"/>';
+
 // Hydrate every <span data-icon="name"> in the static markup.
 function hydrateIcons(root) {
   (root || document).querySelectorAll('[data-icon]').forEach(el => {
@@ -1868,7 +2210,8 @@ const MODULES = {
   cb:  {tab:'checks', screen:'screen-checklist_before', title:'לפני הכשרה',        icon:'clipboard'},
   ca:  {tab:'checks', screen:'screen-checklist_after',  title:'אחרי הכשרה',        icon:'flag'}
 };
-const TAB_SCREEN = {home:'home-screen', clocks:'screen-clocks', checks:'screen-checks', search:'screen-search'};
+const TAB_SCREEN = {home:'home-screen', clocks:'screen-clocks', checks:'screen-checks',
+                    mine:'screen-mine', search:'screen-search'};
 
 const initialized = {};
 let userName    = '';
@@ -2045,6 +2388,7 @@ function go(view, mod) {
     activeTab = TAB_SCREEN[view] ? view : 'home';
     if (view === 'home')   renderDashboard();
     if (view === 'clocks' || view === 'checks') renderPickerStats();
+    if (view === 'mine')   setMineView(mineView);
     if (view === 'search') setTimeout(() => document.getElementById('homeSearchInput').focus(), 80);
   }
 
@@ -2266,6 +2610,36 @@ function renderContinue() {
   document.getElementById('continueCard').onclick = () => go('module', lastModule);
 }
 
+function myTasksToday() {
+  const today = todayISO();
+  return myTasks.filter(t => !t.done && (
+    t.due === today ||
+    (t.due && new Date(t.due + 'T00:00:00') < new Date(new Date().setHours(0,0,0,0))) ||
+    t.repeat === 'daily'
+  ));
+}
+
+function renderMyToday() {
+  const section = document.getElementById('myTodaySection');
+  const list = myTasksToday();
+  if (!list.length) { section.hidden = true; return; }
+  section.hidden = false;
+  document.getElementById('myTodayList').innerHTML = list.slice(0, 4).map(t => {
+    const kind = KINDS[t.kind] || KINDS.personal;
+    const due = formatDue(t.due);
+    return `<button type="button" class="vtl-item" style="--dot-color:${kind.color}"
+        onclick="go('mine')">
+      <span class="vtl-row">
+        <span class="vtl-ico" style="background:var(--color-muted)">${icon(kind.icon, 20)}</span>
+        <span class="vtl-left">
+          <span class="vtl-name">${escapeHtml(t.title)}</span>
+          <span class="vtl-sub${isOverdue(t) ? ' overdue' : ''}">${icon('calendar', 14)} ${due || REPEATS[t.repeat]}</span>
+        </span>
+      </span>
+    </button>`;
+  }).join('');
+}
+
 function renderDashboard() {
   const now = new Date();
   document.getElementById('dashGreet').innerHTML =
@@ -2279,6 +2653,7 @@ function renderDashboard() {
   document.getElementById('dashCycle').textContent = cycleText;
 
   renderNowCard();
+  renderMyToday();
   renderContinue();
   renderRings();
   renderWeek();
@@ -2365,6 +2740,22 @@ function buildSearchIndex() {
     });
   }
   
+  // Personal tasks
+  if (typeof myTasks !== 'undefined') {
+    myTasks.forEach(t => {
+      SEARCH_INDEX.push({
+        name: t.title,
+        desc: t.note || '',
+        module: 'mine',
+        moduleName: 'שלי',
+        color: '#5B21B6',
+        phase: t.done ? 'הושלמה' : 'פתוחה',
+        badge: (KINDS[t.kind] || {}).label || '',
+        keywords: [t.title, t.note || '', (KINDS[t.kind] || {}).label || ''].join(' ')
+      });
+    });
+  }
+
   // Checklist after
   const caModuleName = 'צ׳ק ליסט אחרי הכשרה';
   if (typeof ca_DATA !== 'undefined') {
@@ -2463,7 +2854,8 @@ const SCOPES = [
   {id:'tactical',         label:'תקה"ד'},
   {id:'training',         label:'הכשרה'},
   {id:'checklist_before', label:'לפני'},
-  {id:'checklist_after',  label:'אחרי'}
+  {id:'checklist_after',  label:'אחרי'},
+  {id:'mine',             label:'שלי'}
 ];
 
 function renderScopeChips() {
@@ -2479,8 +2871,15 @@ function setSearchScope(id) {
 }
 
 function goToResult(moduleId) {
+  if (moduleId === 'mine') { go('mine'); setMineView('tasks'); return; }
   const key = {tactical:'tac', training:'tr', checklist_before:'cb', checklist_after:'ca'}[moduleId];
   if (key) go('module', key);
+}
+
+// the index is a snapshot, so rebuild it whenever personal tasks change
+function refreshSearchIndex() {
+  SEARCH_INDEX.length = 0;
+  buildSearchIndex();
 }
 
 function clearHomeSearch() {
@@ -2497,6 +2896,8 @@ document.getElementById('homeSearchInput').addEventListener('input', function() 
 // ─── BOOT ────────────────────────────────────────────────────────────────────
 function boot() {
   hydrateIcons();
+  loadMine();
+  mineView = recall('mp_mineview') === 'board' ? 'board' : 'tasks';
   buildSearchIndex();
   renderScopeChips();
   doHomeSearch('');
@@ -4451,6 +4852,556 @@ function ca_resetAll() {
 }
 
 
+
+
+
+
+// ═══════════════ PERSONAL TASKS ═══════════════
+
+const KINDS = {
+  activity: {label:'פעילות', color:'var(--tone-daily)',  icon:'target'},
+  drill:    {label:'תרגיל',  color:'var(--tone-month)',  icon:'bolt'},
+  meeting:  {label:'ישיבה',  color:'var(--tone-week)',   icon:'users'},
+  personal: {label:'אישי',   color:'var(--tone-third)',  icon:'user'}
+};
+const REPEATS = {
+  once:    'חד־פעמי',
+  daily:   'כל יום',
+  weekly:  'כל שבוע',
+  monthly: 'כל חודש'
+};
+
+let myTasks  = [];
+let mineView = 'tasks';
+let editingTaskId = null;
+
+function loadMine() {
+  try { myTasks  = JSON.parse(recall('mp_tasks')  || '[]'); } catch(e) { myTasks  = []; }
+  try { myEvents = JSON.parse(recall('mp_events') || '[]'); } catch(e) { myEvents = []; }
+}
+function saveTasks()  { store('mp_tasks',  JSON.stringify(myTasks)); }
+function saveEvents() { store('mp_events', JSON.stringify(myEvents)); }
+
+function newId() { return 'x' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+
+function todayISO() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function formatDue(iso) {
+  if (!iso) return '';
+  const d = new Date(iso + 'T00:00:00');
+  if (isNaN(d)) return '';
+  const today = new Date(); today.setHours(0,0,0,0);
+  const days = Math.round((d - today) / 86400000);
+  if (days === 0)  return 'היום';
+  if (days === 1)  return 'מחר';
+  if (days === -1) return 'אתמול';
+  if (days < 0)    return `באיחור ${-days} ימים`;
+  if (days <= 7)   return `בעוד ${days} ימים`;
+  return `${d.getDate()}/${d.getMonth()+1}`;
+}
+function isOverdue(t) {
+  return !t.done && t.due && new Date(t.due + 'T00:00:00') < new Date(new Date().setHours(0,0,0,0));
+}
+
+function setMineView(view) {
+  mineView = view;
+  document.getElementById('segTasks').setAttribute('aria-selected', String(view === 'tasks'));
+  document.getElementById('segBoard').setAttribute('aria-selected', String(view === 'board'));
+  document.getElementById('mineTasks').hidden = view !== 'tasks';
+  document.getElementById('mineBoard').hidden = view !== 'board';
+  store('mp_mineview', view);
+  // render both: the hidden one must be current when it is revealed
+  renderMyTasks();
+  renderBoard();
+}
+
+function renderMyTasks() {
+  const open = myTasks.filter(t => !t.done);
+  const done = myTasks.filter(t => t.done);
+  const root = document.getElementById('mineTaskList');
+
+  if (!myTasks.length) {
+    root.innerHTML = `<div class="mine-empty">
+      <div class="mine-empty-ico">${icon('check', 24)}</div>
+      <p class="mine-empty-title">אין עדיין משימות</p>
+      <p class="mine-empty-text">כאן נכנסות המשימות שאתם מוסיפים לעצמכם,<br>לצד מה שמגיע מהנהלים.</p>
+    </div>`;
+    return;
+  }
+
+  // overdue first, then by due date, then the undated
+  const order = a => a.due ? new Date(a.due + 'T00:00:00').getTime() : Infinity;
+  open.sort((a, b) => order(a) - order(b));
+
+  root.innerHTML =
+    (open.length ? group('פתוחות', open) : '') +
+    (done.length ? group('הושלמו', done) : '');
+
+  function group(title, items) {
+    return `<section class="mine-group">
+      <h3 class="mine-group-title">${title}<span class="mine-group-count">${items.length}</span></h3>
+      ${items.map(taskRow).join('')}
+    </section>`;
+  }
+}
+
+function taskRow(t) {
+  const kind = KINDS[t.kind] || KINDS.personal;
+  const due  = formatDue(t.due);
+  const meta = [];
+  if (due) meta.push(`<span class="mine-meta-item${isOverdue(t) ? ' overdue' : ''}">${icon('calendar',13)}${due}</span>`);
+  if (t.repeat && t.repeat !== 'once') meta.push(`<span class="mine-meta-item">${icon('repeat',13)}${REPEATS[t.repeat]}</span>`);
+  if (t.week) meta.push(`<span class="mine-meta-item">${icon('target',13)}שבוע ${t.week}</span>`);
+  meta.push(`<span class="mine-meta-item">${kind.label}</span>`);
+
+  return `<article class="mine-task${t.done ? ' done' : ''}" style="--kind-color:${kind.color}">
+    <button type="button" class="mine-check" role="checkbox" aria-checked="${!!t.done}"
+            onclick="toggleMyTask('${t.id}')">
+      <span class="check-icon">${icon('check-thick', 14)}</span>
+      <span class="sr-only">${t.done ? 'בטלו סימון' : 'סמנו כבוצע'}: ${escapeHtml(t.title)}</span>
+    </button>
+    <div class="mine-body">
+      <span class="mine-title">${escapeHtml(t.title)}</span>
+      ${t.note ? `<span class="mine-note">${escapeHtml(t.note)}</span>` : ''}
+      <div class="mine-meta">${meta.join('')}</div>
+    </div>
+    <div class="mine-actions">
+      <button type="button" class="mine-icon-btn" onclick="openTaskForm('${t.id}')">
+        ${icon('pencil2',16)}<span class="sr-only">עריכת ${escapeHtml(t.title)}</span>
+      </button>
+      <button type="button" class="mine-icon-btn danger" onclick="deleteMyTask('${t.id}')">
+        ${icon('trash',16)}<span class="sr-only">מחיקת ${escapeHtml(t.title)}</span>
+      </button>
+    </div>
+  </article>`;
+}
+
+function escapeHtml(str) {
+  return String(str == null ? '' : str)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function toggleMyTask(id) {
+  const t = myTasks.find(x => x.id === id);
+  if (!t) return;
+  t.done = !t.done;
+  saveTasks();
+  renderMyTasks();
+  refreshSearchIndex();
+}
+
+function deleteMyTask(id) {
+  const t = myTasks.find(x => x.id === id);
+  if (!t) return;
+  if (!confirm(`למחוק את "${t.title}"?`)) return;
+  myTasks = myTasks.filter(x => x.id !== id);
+  saveTasks();
+  renderMyTasks();
+  refreshSearchIndex();
+}
+
+// ─── TASK FORM ───────────────────────────────────────────────────────────────
+let formKind = 'personal', formRepeat = 'once';
+
+function openTaskForm(id) {
+  const t = id ? myTasks.find(x => x.id === id) : null;
+  editingTaskId = t ? t.id : null;
+  formKind   = t ? (t.kind || 'personal') : 'personal';
+  formRepeat = t ? (t.repeat || 'once') : 'once';
+
+  document.getElementById('form-modal-content').innerHTML = `
+    <div class="modal-header">
+      <span class="modal-icon">${icon(t ? 'pencil2' : 'plus', 22)}</span>
+      <div>
+        <h2 class="modal-title" id="form-modal-title">${t ? 'עריכת משימה' : 'משימה חדשה'}</h2>
+        <p class="modal-freq">נשמרת במכשיר שלכם בלבד</p>
+      </div>
+    </div>
+    <div class="modal-divider"></div>
+
+    <div class="form-field">
+      <label class="form-label" for="tfTitle">שם המשימה</label>
+      <input class="form-input" id="tfTitle" type="text" maxlength="80"
+             value="${escapeHtml(t ? t.title : '')}" placeholder="למשל: לסגור תיק משימה לתרגיל">
+      <p class="form-error" id="tfError" hidden>נא להזין שם למשימה</p>
+    </div>
+
+    <div class="form-field">
+      <label class="form-label" for="tfNote">פירוט</label>
+      <textarea class="form-area" id="tfNote" maxlength="400"
+                placeholder="לא חובה">${escapeHtml(t ? t.note : '')}</textarea>
+    </div>
+
+    <div class="form-row">
+      <div class="form-field">
+        <label class="form-label" for="tfDue">תאריך יעד</label>
+        <input class="form-input" id="tfDue" type="date" value="${t && t.due ? t.due : ''}">
+      </div>
+      <div class="form-field">
+        <label class="form-label" for="tfWeek">שבוע במחזור</label>
+        <input class="form-input" id="tfWeek" type="number" min="1" max="${tr_totalWeeks}"
+               inputmode="numeric" value="${t && t.week ? t.week : ''}" placeholder="לא חובה">
+      </div>
+    </div>
+
+    <div class="form-field">
+      <span class="form-label">סוג</span>
+      <div class="form-chips" id="tfKinds">
+        ${Object.entries(KINDS).map(([k, v]) =>
+          `<button type="button" class="form-chip" style="--chip-on:${v.color}"
+             aria-pressed="${k === formKind}" onclick="pickKind('${k}')">${v.label}</button>`).join('')}
+      </div>
+    </div>
+
+    <div class="form-field">
+      <span class="form-label">חזרתיות</span>
+      <div class="form-chips" id="tfRepeats">
+        ${Object.entries(REPEATS).map(([k, v]) =>
+          `<button type="button" class="form-chip" aria-pressed="${k === formRepeat}"
+             onclick="pickRepeat('${k}')">${v}</button>`).join('')}
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button class="nav-btn primary" type="button" style="justify-content:center"
+              onclick="saveMyTask()">${t ? 'שמירה' : 'הוספה'}</button>
+      <button class="nav-btn" type="button" onclick="closeSheet('form-modal-overlay')">ביטול</button>
+    </div>`;
+
+  openSheet('form-modal-overlay');
+  setTimeout(() => document.getElementById('tfTitle').focus(), 60);
+}
+
+function pickKind(k) {
+  formKind = k;
+  document.querySelectorAll('#tfKinds .form-chip').forEach((b, i) =>
+    b.setAttribute('aria-pressed', String(Object.keys(KINDS)[i] === k)));
+}
+function pickRepeat(k) {
+  formRepeat = k;
+  document.querySelectorAll('#tfRepeats .form-chip').forEach((b, i) =>
+    b.setAttribute('aria-pressed', String(Object.keys(REPEATS)[i] === k)));
+}
+
+function saveMyTask() {
+  const title = document.getElementById('tfTitle').value.trim();
+  if (!title) {
+    document.getElementById('tfError').hidden = false;
+    document.getElementById('tfTitle').focus();
+    return;
+  }
+  const weekRaw = parseInt(document.getElementById('tfWeek').value, 10);
+  const task = {
+    title,
+    note:   document.getElementById('tfNote').value.trim(),
+    due:    document.getElementById('tfDue').value || '',
+    week:   weekRaw >= 1 ? Math.min(weekRaw, tr_totalWeeks) : null,
+    kind:   formKind,
+    repeat: formRepeat
+  };
+
+  if (editingTaskId) {
+    const t = myTasks.find(x => x.id === editingTaskId);
+    Object.assign(t, task);
+  } else {
+    myTasks.push(Object.assign({id: newId(), done: false, created: Date.now()}, task));
+  }
+  saveTasks();
+  closeSheet('form-modal-overlay');
+  renderMyTasks();
+  refreshSearchIndex();
+  if (document.getElementById('home-screen').classList.contains('active')) renderDashboard();
+}
+
+function closeFormSheet(e) {
+  if (!e || e.target === document.getElementById('form-modal-overlay')) closeSheet('form-modal-overlay');
+}
+
+
+
+
+// ═══════════════ WEEKLY BOARD ═══════════════
+
+let myEvents  = [];
+let boardWeek = null;     // null means "follow the dashboard week"
+let boardDay  = new Date().getDay();
+let editingEventId = null;
+let formEventKind = 'activity';
+
+function currentBoardWeek() { return boardWeek == null ? currentWeek : boardWeek; }
+
+// The calendar date of a given day in a given cycle week, when an opening
+// date is known. Weeks run Sunday to Saturday from the opening week.
+function dateForSlot(week, day) {
+  if (!cycleStart) return null;
+  const start = new Date(cycleStart + 'T00:00:00');
+  if (isNaN(start)) return null;
+  const weekStart = new Date(start);
+  weekStart.setDate(start.getDate() - start.getDay() + (week - 1) * 7);
+  const d = new Date(weekStart);
+  d.setDate(weekStart.getDate() + day);
+  return d;
+}
+
+function eventsFor(week, day) {
+  return myEvents
+    .filter(e => e.week === week && e.day === day)
+    .sort((a, b) => (a.time || '').localeCompare(b.time || ''));
+}
+
+function setBoardWeek(w) {
+  const week = Math.min(Math.max(1, w), tr_totalWeeks);
+  boardWeek = week === currentWeek ? null : week;
+  renderBoard();
+}
+function setBoardDay(d) { boardDay = d; renderBoard(); }
+
+function renderBoard() {
+  const week = currentBoardWeek();
+  const root = document.getElementById('mineBoard');
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+
+  const strip = HE_DAYS.map((name, i) => {
+    const n = eventsFor(week, i).length;
+    const date = dateForSlot(week, i);
+    const isToday = date && date.getTime() === today.getTime();
+    return `<button type="button" class="day-chip${isToday ? ' is-today' : ''}"
+        aria-pressed="${i === boardDay}" onclick="setBoardDay(${i})">
+        <span class="day-chip-name">${name.slice(0, 3)}</span>
+        <span class="day-chip-count">${n ? n : ''}</span>
+      </button>`;
+  }).join('');
+
+  root.innerHTML = `
+    <div class="board-bar">
+      <button class="week-step" type="button" onclick="setBoardWeek(${week - 1})"
+              ${week <= 1 ? 'disabled' : ''} aria-label="שבוע קודם">${icon('chevron-end', 18)}</button>
+      <div class="board-week">
+        <span class="board-week-num">שבוע ${week}</span>
+        <span class="board-week-label">מתוך ${tr_totalWeeks}</span>
+      </div>
+      <button class="week-step" type="button" onclick="setBoardWeek(${week + 1})"
+              ${week >= tr_totalWeeks ? 'disabled' : ''} aria-label="שבוע הבא">${icon('chevron-start', 18)}</button>
+    </div>
+
+    <div class="day-strip" role="group" aria-label="בחירת יום">${strip}</div>
+
+    <div class="board-grid">
+      ${HE_DAYS.map((name, i) => dayColumn(week, i, name)).join('')}
+    </div>
+
+    ${suggestionsBlock(week)}`;
+}
+
+function dayColumn(week, day, name) {
+  // on phones only the selected day is rendered; the desktop grid shows all
+  const wide = window.matchMedia('(min-width:900px)').matches;
+  if (!wide && day !== boardDay) return '';
+
+  const items = eventsFor(week, day);
+  const date  = dateForSlot(week, day);
+  const dateLabel = date ? `${date.getDate()}/${date.getMonth() + 1}` : '';
+
+  return `<section class="board-day">
+    <div class="board-day-head">
+      <h3 class="board-day-title">יום ${name}${dateLabel ? `<span>${dateLabel}</span>` : ''}</h3>
+      <button class="board-add" type="button" onclick="openEventForm(null,${week},${day})">
+        ${icon('plus', 15)}הוספה
+      </button>
+    </div>
+    <div class="board-list">
+      ${items.length
+        ? items.map(eventRow).join('')
+        : '<p class="board-empty">אין פריטים ליום הזה</p>'}
+    </div>
+  </section>`;
+}
+
+function eventRow(e) {
+  const kind = KINDS[e.kind] || KINDS.activity;
+  const meta = [kind.label];
+  if (e.dur) meta.push(`${e.dur} דק׳`);
+  return `<article class="board-item" style="--kind-color:${kind.color}">
+    <span class="board-time">${e.time || '--:--'}</span>
+    <div class="board-item-body">
+      <span class="board-item-title">${escapeHtml(e.title)}</span>
+      <div class="board-item-meta">${meta.map(m => `<span>${m}</span>`).join('')}</div>
+    </div>
+    <div class="mine-actions">
+      <button type="button" class="mine-icon-btn" onclick="openEventForm('${e.id}')">
+        ${icon('pencil2', 15)}<span class="sr-only">עריכת ${escapeHtml(e.title)}</span>
+      </button>
+      <button type="button" class="mine-icon-btn danger" onclick="deleteEvent('${e.id}')">
+        ${icon('trash', 15)}<span class="sr-only">מחיקת ${escapeHtml(e.title)}</span>
+      </button>
+    </div>
+  </article>`;
+}
+
+// What the axis and the personal list already say belongs in this week.
+function suggestionsFor(week) {
+  const out = [];
+  tr_phases.forEach(phase => phase.tasks.forEach(t => {
+    const weeks = t.weeksFn(tr_totalWeeks, tr_prepWeeks) || [];
+    const match = weeks.some(w => {
+      const m = String(w).match(/(\d+)/g);
+      if (!m) return false;
+      if (/עד שבוע/.test(w)) return week <= +m[0];
+      return m.map(Number).includes(week);
+    });
+    if (match) out.push({title: deEmoji(t.name), src: phase.title, kind: 'activity'});
+  }));
+  myTasks.filter(t => !t.done && t.week === week)
+         .forEach(t => out.push({title: t.title, src: 'המשימות שלי', kind: t.kind || 'personal'}));
+
+  // anything already on the board this week is no longer a suggestion
+  const placed = new Set(myEvents.filter(e => e.week === week).map(e => e.title));
+  return out.filter(o => !placed.has(o.title)).slice(0, 6);
+}
+
+function suggestionsBlock(week) {
+  const list = suggestionsFor(week);
+  if (!list.length) return '';
+  return `<section class="suggest">
+    <h3 class="suggest-title">${icon('bulb', 14)}מוצע לשבוע ${week}</h3>
+    ${list.map((o, i) => `<div class="suggest-item">
+      <div class="suggest-body">
+        <span class="suggest-name">${escapeHtml(o.title)}</span>
+        <span class="suggest-src">${escapeHtml(o.src)}</span>
+      </div>
+      <button class="suggest-add" type="button" onclick="addSuggestion(${i},${week})">
+        ${icon('plus', 14)}הוספה ליום
+      </button>
+    </div>`).join('')}
+  </section>`;
+}
+
+function addSuggestion(i, week) {
+  const o = suggestionsFor(week)[i];
+  if (!o) return;
+  openEventForm(null, week, boardDay, {title: o.title, kind: o.kind});
+}
+
+// ─── EVENT FORM ──────────────────────────────────────────────────────────────
+function openEventForm(id, week, day, preset) {
+  const e = id ? myEvents.find(x => x.id === id) : null;
+  editingEventId = e ? e.id : null;
+  const w = e ? e.week : (week != null ? week : currentBoardWeek());
+  const d = e ? e.day  : (day  != null ? day  : boardDay);
+  formEventKind = e ? (e.kind || 'activity') : (preset && preset.kind ? preset.kind : 'activity');
+
+  document.getElementById('form-modal-content').innerHTML = `
+    <div class="modal-header">
+      <span class="modal-icon">${icon(e ? 'pencil2' : 'plus', 22)}</span>
+      <div>
+        <h2 class="modal-title" id="form-modal-title">${e ? 'עריכת פריט' : 'פריט חדש בלוח'}</h2>
+        <p class="modal-freq">שבוע ${w} · יום ${HE_DAYS[d]}</p>
+      </div>
+    </div>
+    <div class="modal-divider"></div>
+
+    <div class="form-field">
+      <label class="form-label" for="efTitle">מה מתרחש</label>
+      <input class="form-input" id="efTitle" type="text" maxlength="80"
+             value="${escapeHtml(e ? e.title : (preset ? preset.title : ''))}"
+             placeholder="למשל: סיכום שבוע עם המ״מים">
+      <p class="form-error" id="efError" hidden>נא להזין שם לפריט</p>
+    </div>
+
+    <div class="form-row">
+      <div class="form-field">
+        <label class="form-label" for="efTime">שעה</label>
+        <input class="form-input" id="efTime" type="time" value="${e && e.time ? e.time : '08:00'}">
+      </div>
+      <div class="form-field">
+        <label class="form-label" for="efDur">משך בדקות</label>
+        <input class="form-input" id="efDur" type="number" min="0" max="1440" step="15"
+               inputmode="numeric" value="${e && e.dur ? e.dur : ''}" placeholder="לא חובה">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-field">
+        <label class="form-label" for="efDay">יום</label>
+        <select class="form-select" id="efDay">
+          ${HE_DAYS.map((n, i) => `<option value="${i}" ${i === d ? 'selected' : ''}>יום ${n}</option>`).join('')}
+        </select>
+      </div>
+      <div class="form-field">
+        <label class="form-label" for="efWeek">שבוע</label>
+        <input class="form-input" id="efWeek" type="number" min="1" max="${tr_totalWeeks}"
+               inputmode="numeric" value="${w}">
+      </div>
+    </div>
+
+    <div class="form-field">
+      <span class="form-label">סוג</span>
+      <div class="form-chips" id="efKinds">
+        ${Object.entries(KINDS).map(([k, v]) =>
+          `<button type="button" class="form-chip" style="--chip-on:${v.color}"
+             aria-pressed="${k === formEventKind}" onclick="pickEventKind('${k}')">${v.label}</button>`).join('')}
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button class="nav-btn primary" type="button" style="justify-content:center"
+              onclick="saveEvent()">${e ? 'שמירה' : 'הוספה'}</button>
+      <button class="nav-btn" type="button" onclick="closeSheet('form-modal-overlay')">ביטול</button>
+    </div>`;
+
+  openSheet('form-modal-overlay');
+  setTimeout(() => document.getElementById('efTitle').focus(), 60);
+}
+
+function pickEventKind(k) {
+  formEventKind = k;
+  document.querySelectorAll('#efKinds .form-chip').forEach((b, i) =>
+    b.setAttribute('aria-pressed', String(Object.keys(KINDS)[i] === k)));
+}
+
+function saveEvent() {
+  const title = document.getElementById('efTitle').value.trim();
+  if (!title) {
+    document.getElementById('efError').hidden = false;
+    document.getElementById('efTitle').focus();
+    return;
+  }
+  const durRaw = parseInt(document.getElementById('efDur').value, 10);
+  const item = {
+    title,
+    time: document.getElementById('efTime').value || '',
+    dur:  durRaw > 0 ? durRaw : null,
+    day:  parseInt(document.getElementById('efDay').value, 10),
+    week: Math.min(Math.max(parseInt(document.getElementById('efWeek').value, 10) || 1, 1), tr_totalWeeks),
+    kind: formEventKind
+  };
+  if (editingEventId) Object.assign(myEvents.find(x => x.id === editingEventId), item);
+  else myEvents.push(Object.assign({id: newId()}, item));
+
+  saveEvents();
+  closeSheet('form-modal-overlay');
+  boardDay = item.day;
+  if (item.week !== currentBoardWeek()) boardWeek = item.week;
+  renderBoard();
+}
+
+function deleteEvent(id) {
+  const e = myEvents.find(x => x.id === id);
+  if (!e) return;
+  if (!confirm(`למחוק את "${e.title}"?`)) return;
+  myEvents = myEvents.filter(x => x.id !== id);
+  saveEvents();
+  renderBoard();
+}
+
+// the board switches between one-day and seven-day layouts on resize
+window.addEventListener('resize', () => {
+  if (mineView === 'board' && document.getElementById('screen-mine').classList.contains('active')) renderBoard();
+});
 
 
 boot();
