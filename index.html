@@ -1433,21 +1433,24 @@ body.has-tabbar{ padding-bottom:calc(var(--tabbar-h) + env(safe-area-inset-botto
 
 /* the day strip is the mobile day switcher */
 .day-strip{
-  display:grid; grid-template-columns:repeat(7,1fr); gap:var(--space-1);
+  display:grid; grid-template-columns:repeat(7,1fr); gap:3px;
   margin-bottom:var(--space-4);
 }
 .day-chip{
-  min-height:56px; border-radius:var(--radius);
+  min-height:56px; padding:0 2px; border-radius:var(--radius);
   display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px;
   background:var(--color-card); border:1px solid var(--color-border);
-  color:var(--color-muted-foreground);
+  color:var(--color-muted-foreground); overflow:hidden;
   transition:background var(--dur-fast), border-color var(--dur-fast), color var(--dur-fast);
 }
 .day-chip:hover{ background:var(--color-muted); }
 .day-chip[aria-pressed="true"]{
   background:var(--color-primary); border-color:var(--color-primary); color:var(--color-on-primary);
 }
-.day-chip-name{ font-size:12px; font-weight:600; }
+.day-chip-name{
+  font-size:11px; font-weight:600; letter-spacing:-.03em;
+  white-space:nowrap;   /* the full name, never a cut word */
+}
 .day-chip-count{
   font-family:var(--mono); font-size:10.5px; opacity:.75;
   min-height:13px;
@@ -1540,6 +1543,12 @@ body.has-tabbar{ padding-bottom:calc(var(--tabbar-h) + env(safe-area-inset-botto
   .board-item-meta{ font-size:10.5px; }
 }
 .vtl-sub.overdue{ color:var(--color-destructive); font-weight:600; }
+
+.nav-btn.danger{
+  background:var(--color-destructive); color:var(--color-on-destructive);
+  border-color:var(--color-destructive);
+}
+.nav-btn.danger:hover{ filter:brightness(1.07); }
 </style>
 </head>
 <body>
@@ -1597,7 +1606,7 @@ body.has-tabbar{ padding-bottom:calc(var(--tabbar-h) + env(safe-area-inset-botto
       <button class="splash-skip" type="button" onclick="splashBack()">חזרה</button>
     </div>
 
-    <p class="splash-foot" id="splashFoot">v3.1</p>
+    <p class="splash-foot" id="splashFoot">v3.2</p>
   </div>
 </div>
 
@@ -1689,12 +1698,12 @@ body.has-tabbar{ padding-bottom:calc(var(--tabbar-h) + env(safe-area-inset-botto
       <div class="quick-grid">
         <button class="quick-tile" type="button" style="--tint:var(--tone-daily);--tint-bg:var(--tone-daily-bg)" onclick="go('module','tr')">
           <span class="quick-ico" data-icon="calendar" data-size="20"></span>
-          <span class="quick-name">ציר ההכשרה</span>
+          <span class="quick-name">שעון תקה"ד</span>
           <span class="quick-sub" id="qsTr"></span>
         </button>
         <button class="quick-tile" type="button" style="--tint:var(--tone-week);--tint-bg:var(--tone-week-bg)" onclick="go('module','tac')">
           <span class="quick-ico" data-icon="clock" data-size="20"></span>
-          <span class="quick-name">שעון תקה"ד</span>
+          <span class="quick-name">ציר ההכשרה</span>
           <span class="quick-sub" id="qsTac"></span>
         </button>
         <button class="quick-tile" type="button" style="--tint:var(--tone-month);--tint-bg:var(--tone-month-bg)" onclick="go('module','cb')">
@@ -1730,8 +1739,8 @@ body.has-tabbar{ padding-bottom:calc(var(--tabbar-h) + env(safe-area-inset-botto
     <button class="picker-card" type="button" style="--tint:var(--tone-daily);--tint-bg:var(--tone-daily-bg)" onclick="go('module','tr')">
       <span class="picker-ico" data-icon="calendar" data-size="24"></span>
       <span class="picker-body">
-        <span class="picker-name">ציר משימות ההכשרה</span>
-        <span class="picker-desc">מה נדרש מהמ"פ בכל שלב של המחזור</span>
+        <span class="picker-name">שעון תקה"ד</span>
+        <span class="picker-desc">כלים פיקודיים לאורך היום, מ"כ עד מ"פ</span>
         <span class="picker-stat" id="pickTrStat"></span>
       </span>
       <span data-icon="chevron-start" data-size="18"></span>
@@ -1739,8 +1748,8 @@ body.has-tabbar{ padding-bottom:calc(var(--tabbar-h) + env(safe-area-inset-botto
     <button class="picker-card" type="button" style="--tint:var(--tone-week);--tint-bg:var(--tone-week-bg)" onclick="go('module','tac')">
       <span class="picker-ico" data-icon="clock" data-size="24"></span>
       <span class="picker-body">
-        <span class="picker-name">שעון תקה"ד</span>
-        <span class="picker-desc">כלים פיקודיים לאורך היום, מ"כ עד מ"פ</span>
+        <span class="picker-name">ציר משימות ההכשרה</span>
+        <span class="picker-desc">מה נדרש מהמ"פ בכל שלב של המחזור</span>
         <span class="picker-stat" id="pickTacStat"></span>
       </span>
       <span data-icon="chevron-start" data-size="18"></span>
@@ -1854,15 +1863,15 @@ body.has-tabbar{ padding-bottom:calc(var(--tabbar-h) + env(safe-area-inset-botto
     <button class="topbar-back" type="button" onclick="go('clocks')">
       <span data-icon="chevron-end" data-size="18"></span>שעונים
     </button>
-    <span class="topbar-title">שעון תקה"ד</span>
+    <span class="topbar-title">ציר משימות ההכשרה</span>
   </div>
 
   <div class="module mod-tac">
     <div class="module-head">
       <div class="module-head-inner">
         <div>
-          <h1>שעון <span>תקה"ד</span></h1>
-          <p class="module-sub">מ"כ עד מ"פ · הוראת מפקד זרוע היבשה 02.01.02</p>
+          <h1>ציר משימות <span>ההכשרה</span></h1>
+          <p class="module-sub">מה נדרש מהמ"פ בכל שלב של המחזור</p>
         </div>
       </div>
     </div>
@@ -1914,15 +1923,15 @@ body.has-tabbar{ padding-bottom:calc(var(--tabbar-h) + env(safe-area-inset-botto
     <button class="topbar-back" type="button" onclick="go('clocks')">
       <span data-icon="chevron-end" data-size="18"></span>שעונים
     </button>
-    <span class="topbar-title">ציר משימות ההכשרה</span>
+    <span class="topbar-title">שעון תקה"ד</span>
   </div>
 
   <div class="module mod-tr" id="tr_app">
     <div class="module-head">
       <div class="module-head-inner">
         <div>
-          <h1>ציר משימות <span>מ"פ</span></h1>
-          <p class="module-sub">מה נדרש בכל שלב, מהכנ"ס ועד סיום המחזור</p>
+          <h1>שעון <span>תקה"ד</span></h1>
+          <p class="module-sub">כלים פיקודיים לאורך היום, מ"כ עד מ"פ</p>
         </div>
         <button class="duration-badge" id="tr_dur-badge" type="button" onclick="openCycleSheet()">
           <span data-icon="gear" data-size="16"></span>
@@ -2205,8 +2214,8 @@ function hydrateIcons(root) {
 
 // ─── APP STATE ───────────────────────────────────────────────────────────────
 const MODULES = {
-  tr:  {tab:'clocks', screen:'screen-training',         title:'ציר משימות ההכשרה', icon:'calendar'},
-  tac: {tab:'clocks', screen:'screen-tactical',         title:'שעון תקה"ד',        icon:'clock'},
+  tr:  {tab:'clocks', screen:'screen-training',         title:'שעון תקה"ד',        icon:'clock'},
+  tac: {tab:'clocks', screen:'screen-tactical',         title:'ציר משימות ההכשרה', icon:'calendar'},
   cb:  {tab:'checks', screen:'screen-checklist_before', title:'לפני הכשרה',        icon:'clipboard'},
   ca:  {tab:'checks', screen:'screen-checklist_after',  title:'אחרי הכשרה',        icon:'flag'}
 };
@@ -2684,7 +2693,7 @@ const SEARCH_INDEX = [];
 
 function buildSearchIndex() {
   // Training module tasks
-  const trModuleName = 'שעון שבועי ויומי';
+  const trModuleName = 'שעון תקה"ד';
   if (typeof tr_phases !== 'undefined') {
     tr_phases.forEach(phase => {
       phase.tasks.forEach(task => {
@@ -2703,7 +2712,7 @@ function buildSearchIndex() {
   }
   
   // Tactical module tasks
-  const tacModuleName = 'שעון תקה"ד';
+  const tacModuleName = 'ציר משימות ההכשרה';
   if (typeof tac_phases !== 'undefined') {
     tac_phases.forEach(phase => {
       phase.tasks.forEach(task => {
@@ -2851,8 +2860,8 @@ function doHomeSearch(query) {
 let searchScope = 'all';
 const SCOPES = [
   {id:'all',              label:'הכול'},
-  {id:'tactical',         label:'תקה"ד'},
-  {id:'training',         label:'הכשרה'},
+  {id:'tactical',         label:'הכשרה'},
+  {id:'training',         label:'תקה"ד'},
   {id:'checklist_before', label:'לפני'},
   {id:'checklist_after',  label:'אחרי'},
   {id:'mine',             label:'שלי'}
@@ -2924,7 +2933,7 @@ function boot() {
   if (savedName) {
     userName = savedName;
     document.getElementById('splashName').value = savedName;
-    document.getElementById('splashFoot').textContent = 'v3.1 · ברוך שובך';
+    document.getElementById('splashFoot').textContent = 'v3.2 · ברוך שובך';
     if (savedCycle && savedCycle.t) document.getElementById('splashSkip').hidden = false;
   }
   cyclePick = {t: tr_totalWeeks, p: tr_prepWeeks,
@@ -4349,7 +4358,10 @@ function cb_updateProgress() {
 }
 
 function cb_resetAll() {
-  if (!confirm('לאפס את כל המשימות?')) return;
+  askConfirm('איפוס הרשימה', 'כל הסימונים ברשימת "לפני הכשרה" יימחקו.', 'איפוס', () => cb_doReset());
+}
+
+function cb_doReset() {
   cb_states = {};
   try { localStorage.removeItem('checklist_before_state'); } catch(e) {}
   cb_init();
@@ -4845,7 +4857,10 @@ function ca_updateProgress() {
 }
 
 function ca_resetAll() {
-  if (!confirm('לאפס את כל המשימות?')) return;
+  askConfirm('איפוס הרשימה', 'כל הסימונים ברשימת "אחרי הכשרה" יימחקו.', 'איפוס', () => ca_doReset());
+}
+
+function ca_doReset() {
   ca_states = {};
   try { localStorage.removeItem('checklist_after_state'); } catch(e) {}
   ca_init();
@@ -4997,11 +5012,13 @@ function toggleMyTask(id) {
 function deleteMyTask(id) {
   const t = myTasks.find(x => x.id === id);
   if (!t) return;
-  if (!confirm(`למחוק את "${t.title}"?`)) return;
-  myTasks = myTasks.filter(x => x.id !== id);
-  saveTasks();
-  renderMyTasks();
-  refreshSearchIndex();
+  askConfirm('מחיקת משימה', `"${t.title}" תימחק מהרשימה שלכם.`, 'מחיקה', () => {
+    myTasks = myTasks.filter(x => x.id !== id);
+    saveTasks();
+    renderMyTasks();
+    refreshSearchIndex();
+    if (document.getElementById('home-screen').classList.contains('active')) renderDashboard();
+  });
 }
 
 // ─── TASK FORM ───────────────────────────────────────────────────────────────
@@ -5117,6 +5134,37 @@ function saveMyTask() {
   if (document.getElementById('home-screen').classList.contains('active')) renderDashboard();
 }
 
+// The browser's confirm() is ignored when the page is sandboxed without
+// allow-modals, so every destructive step asks inside the app instead.
+let confirmAction = null;
+
+function askConfirm(title, text, confirmLabel, onYes) {
+  confirmAction = onYes;
+  document.getElementById('form-modal-content').innerHTML = `
+    <div class="modal-header">
+      <span class="modal-icon" style="--icon-bg:#FDECEC;--icon-fg:var(--color-destructive)">
+        ${icon('warning', 22)}
+      </span>
+      <div>
+        <h2 class="modal-title" id="form-modal-title">${escapeHtml(title)}</h2>
+      </div>
+    </div>
+    <p class="modal-body" style="margin-top:var(--space-2)">${escapeHtml(text)}</p>
+    <div class="form-actions">
+      <button class="nav-btn danger" type="button" style="justify-content:center"
+              onclick="runConfirm()">${escapeHtml(confirmLabel)}</button>
+      <button class="nav-btn" type="button" onclick="closeSheet('form-modal-overlay')">ביטול</button>
+    </div>`;
+  openSheet('form-modal-overlay');
+}
+
+function runConfirm() {
+  const fn = confirmAction;
+  confirmAction = null;
+  closeSheet('form-modal-overlay');
+  if (fn) fn();
+}
+
 function closeFormSheet(e) {
   if (!e || e.target === document.getElementById('form-modal-overlay')) closeSheet('form-modal-overlay');
 }
@@ -5171,7 +5219,7 @@ function renderBoard() {
     const isToday = date && date.getTime() === today.getTime();
     return `<button type="button" class="day-chip${isToday ? ' is-today' : ''}"
         aria-pressed="${i === boardDay}" onclick="setBoardDay(${i})">
-        <span class="day-chip-name">${name.slice(0, 3)}</span>
+        <span class="day-chip-name">${name}</span>
         <span class="day-chip-count">${n ? n : ''}</span>
       </button>`;
   }).join('');
@@ -5392,10 +5440,11 @@ function saveEvent() {
 function deleteEvent(id) {
   const e = myEvents.find(x => x.id === id);
   if (!e) return;
-  if (!confirm(`למחוק את "${e.title}"?`)) return;
-  myEvents = myEvents.filter(x => x.id !== id);
-  saveEvents();
-  renderBoard();
+  askConfirm('מחיקת פריט', `"${e.title}" יימחק מהלוח השבועי.`, 'מחיקה', () => {
+    myEvents = myEvents.filter(x => x.id !== id);
+    saveEvents();
+    renderBoard();
+  });
 }
 
 // the board switches between one-day and seven-day layouts on resize
