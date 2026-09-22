@@ -195,7 +195,6 @@ tbody tr:hover{background:var(--brand-050)}
   display:inline-block;padding:3px 11px;border-radius:999px;font-size:13px;font-weight:600;
   border:1px solid var(--brand-100);background:var(--brand-050);color:var(--brand)}
 .tag.alt{border-color:#d7e3d9;background:#f1f7f3;color:var(--ok)}
-.tag.mix{border-color:#e6ded0;background:#faf6ef;color:var(--warn)}
 .empty{padding:46px 20px;text-align:center;color:var(--ink-mute)}
 .count-note{font-size:13.5px;color:var(--ink-mute);margin:10px 2px 0}
 
@@ -256,8 +255,9 @@ var CONFIG = {
   /* אופציונלי: כתובת POST שאליה יישלח כל משיב (למשל Google Apps Script).
      השאירו ריק כדי לעבוד מול אחסון מקומי בלבד. */
   webhookUrl: '',
-  /* פער מינימלי (בנקודות, מתוך 100) הנדרש להכרעה בין שני הפרופילים */
-  decisionGap: 8
+  /* הסיווג תמיד חד-משמעי: קה״ד או קצין צפה, ללא תוצאת ביניים.
+     הסף הזה משמש אך ורק לתיוג רמת הביטחון של ההכרעה. */
+  lowConfidenceGap: 8
 };
 
 /* ---------- 36 השאלות (נוסח מקורי, ללא שינוי) ---------- */
@@ -325,7 +325,6 @@ var SCALE = [
 
 var ROLE_KAHAD = 'קה״ד';
 var ROLE_TZAFA = 'קצין צפה';
-var ROLE_MIX   = 'שילוב מאפיינים';
 
 /* ---------- עזרי תשתית ---------- */
 function el(id){ return document.getElementById(id); }
@@ -393,7 +392,21 @@ function sendToWebhook(rec){
    ציון לכל פרופיל = הממוצע המשוקלל של התשובות, מנורמל ל-0..100.
    כל תשובה מתורגמת ל-0..1 (1=0, 5=1) ומוכפלת במשקל השאלה לאותו פרופיל.
    הנרמול לפי סכום המשקלים מבטיח שקילות בין שני הפרופילים
-   גם כאשר מספר השאלות הרלוונטיות לכל אחד מהם אינו זהה.                */
+   גם כאשר מספר השאלות הרלוונטיות לכל אחד מהם אינו זהה.
+
+   ההכרעה תמיד חד-משמעית — קה״ד או קצין צפה. כאשר שני הציונים זהים או
+   קרובים מאוד, מופעל שובר שוויון מדורג שנשען על השאלות המבחינות ביותר,
+   וגודל הפער מדווח כרמת ביטחון כדי שהמנהל יידע עד כמה ההכרעה מובהקת.  */
+
+/* ממוצע התשובות על תת-קבוצת שאלות הנבחרת לפי תנאי על זוג המשקלים */
+function meanWhere(answers, test){
+  var sum=0, n=0, i;
+  for (i=0; i<QUESTIONS.length; i++){
+    if (test(WEIGHTS[i][0], WEIGHTS[i][1])){ sum += Number(answers[i]); n++; }
+  }
+  return n ? sum/n : 0;
+}
+
 function scoreOf(answers){
   var kNum=0, kDen=0, tNum=0, tDen=0, i, norm, w;
   for (i=0; i<QUESTIONS.length; i++){
@@ -406,13 +419,36 @@ function scoreOf(answers){
   var tzafa = tDen ? (tNum/tDen)*100 : 0;
   var gap = Math.abs(kahad - tzafa);
   var result, confidence;
-  if (gap < CONFIG.decisionGap){
-    result = ROLE_MIX;
-    confidence = 'נמוכה — פרופיל מעורב';
-  } else {
+
+  if (gap >= 0.05){
+    /* הכרעה רגילה לפי הציון הגבוה */
     result = kahad > tzafa ? ROLE_KAHAD : ROLE_TZAFA;
-    confidence = gap >= 20 ? 'גבוהה' : (gap >= 13 ? 'בינונית' : 'נמוכה');
+  } else {
+    /* שובר שוויון א': השאלות הבלעדיות — כאלה שמשקלן לפרופיל האחר הוא 0 */
+    var exK = meanWhere(answers, function(k,t){ return t === 0 && k > 0; });
+    var exT = meanWhere(answers, function(k,t){ return k === 0 && t > 0; });
+    if (Math.abs(exK - exT) >= 0.001){
+      result = exK > exT ? ROLE_KAHAD : ROLE_TZAFA;
+    } else {
+      /* שובר שוויון ב': השאלות המבחינות ביותר (הפרש משקלים של 2 ומעלה) */
+      var dK = meanWhere(answers, function(k,t){ return k - t >= 2; });
+      var dT = meanWhere(answers, function(k,t){ return t - k >= 2; });
+      if (Math.abs(dK - dT) >= 0.001){
+        result = dK > dT ? ROLE_KAHAD : ROLE_TZAFA;
+      } else {
+        /* פרופיל אחיד לחלוטין — הכרעה דטרמיניסטית לטובת קה״ד,
+           והמנהל מקבל התראה מפורשת ברמת הביטחון. */
+        result = ROLE_KAHAD;
+      }
+    }
   }
+
+  if (gap >= 20)                            confidence = 'גבוהה';
+  else if (gap >= 13)                       confidence = 'בינונית';
+  else if (gap >= CONFIG.lowConfidenceGap)  confidence = 'נמוכה';
+  else if (gap >= 0.05)                     confidence = 'נמוכה מאוד — פער זניח';
+  else                                      confidence = 'נמוכה מאוד — הוכרע בשובר שוויון';
+
   return {
     kahad: Math.round(kahad*10)/10,
     tzafa: Math.round(tzafa*10)/10,
@@ -644,9 +680,7 @@ function renderLogin(){
 var adminFilters = { name:'', unit:'', result:'' };
 
 function tagClass(result){
-  if (result === ROLE_KAHAD) return 'tag';
-  if (result === ROLE_TZAFA) return 'tag alt';
-  return 'tag mix';
+  return result === ROLE_KAHAD ? 'tag' : 'tag alt';
 }
 
 function enriched(){
@@ -700,7 +734,6 @@ function renderAdmin(){
           '<option value="">כל התוצאות</option>' +
           '<option value="' + ROLE_KAHAD + '">' + ROLE_KAHAD + '</option>' +
           '<option value="' + ROLE_TZAFA + '">' + ROLE_TZAFA + '</option>' +
-          '<option value="' + ROLE_MIX + '">' + ROLE_MIX + '</option>' +
         '</select></div>' +
       '<div class="tool"><label>&nbsp;</label>' +
         '<button class="btn btn-quiet btn-sm" id="s-clear">ניקוי סינון</button></div>' +
