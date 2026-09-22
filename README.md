@@ -124,7 +124,8 @@ printf '%s' 'הסיסמה-החדשה' | sha256sum
 מוסיפים אפליקציית Web ומפעילים **Build ← Firestore Database**.
 
 ### 2. הזנת המפתחות
-ב-`index.html`, בתוך `<script type="module">`, ממלאים את `firebaseConfig`
+**המפתחות כבר מוזנים בקובץ** ומחוברים לפרויקט `atkui-b377b`.
+להחלפת הפרויקט מעדכנים את `firebaseConfig` שב-`index.html`, בתוך `<script type="module">`,
 בערכים מ־Project settings ← General ← Your apps ← SDK setup and configuration:
 
 ```js
