@@ -233,11 +233,139 @@ tbody tr:hover{background:var(--brand-050)}
 /* ---------- login ---------- */
 .login{max-width:430px;margin:0 auto}
 .hint{font-size:13px;color:var(--ink-mute)}
+.chip{display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:999px;
+  font-size:13px;font-weight:600;border:1px solid var(--line);background:#fff;color:var(--ink-soft)}
+.chip .led{width:8px;height:8px;border-radius:50%;background:var(--ink-mute);flex:0 0 auto}
+.chip.cloud{border-color:#d7e3d9;background:#f1f7f3;color:var(--ok)}
+.chip.cloud .led{background:var(--ok)}
+.chip.local{border-color:#e6ded0;background:#faf6ef;color:var(--warn)}
+.chip.local .led{background:var(--warn)}
 @media(max-width:640px){.hint{display:none}}
 </style>
 </head>
 <body>
 <div id="app"></div>
+
+<!-- =====================================================================
+     שכבת Firebase (Cloud Firestore)
+     גשר קטן בין מודול ה-SDK (ES6) לבין קוד האפליקציה הקלאסי שמתחתיו.
+     הסקריפט הזה רץ ראשון ויוצר את ההבטחה שהאפליקציה ממתינה לה.
+     ===================================================================== -->
+<script>
+window.__fbResolve = null;
+window.__fbReady = new Promise(function(res){ window.__fbResolve = res; });
+window.__fbSettle = function(store){
+  if (window.FirebaseStore) return;
+  window.FirebaseStore = store;
+  if (window.__fbResolve) window.__fbResolve(store);
+};
+/* אם ה-SDK אינו נטען (אין רשת, חסימה, קובץ מקומי) — ממשיכים במצב מקומי בלבד */
+setTimeout(function(){
+  window.__fbSettle({ enabled:false, reason:'טעינת ה-SDK של Firebase נכשלה' });
+}, 8000);
+</script>
+
+<script type="module" onerror="window.__fbSettle({ enabled:false, reason:'טעינת ה-SDK של Firebase נכשלה' })">
+/* ---------------------------------------------------------------------
+   Firebase Web SDK v12 — מודולרי (ES6), נטען ישירות מה-CDN של Google.
+   --------------------------------------------------------------------- */
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js';
+import {
+  getFirestore, collection, doc, setDoc, getDocs, deleteDoc,
+  query, orderBy, serverTimestamp
+} from 'https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js';
+import {
+  getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged
+} from 'https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js';
+
+/* =====================================================================
+   כאן מזינים את מפתחות הפרויקט מ-Firebase Console:
+   Project settings ← General ← Your apps ← Web app ← SDK setup and configuration
+   כל עוד השדות ריקים, האפליקציה עובדת באחסון מקומי בלבד.
+   ===================================================================== */
+const firebaseConfig = {
+  apiKey:            '',
+  authDomain:        '',
+  projectId:         '',
+  storageBucket:     '',
+  messagingSenderId: '',
+  appId:             ''
+};
+
+/* שם האוסף (Collection) שבו נשמרות תשובות השאלון */
+const COLLECTION = 'questionnaireResponses';
+
+/* האם הכניסה לאזור המנהל תתבצע מול Firebase Authentication.
+   true  — כניסה באימייל וסיסמה של משתמש Firebase (מומלץ: מאפשר חוקי אבטחה הדוקים)
+   false — כניסה בסיסמה המקומית שמוגדרת ב-CONFIG.adminHash                      */
+const USE_FIREBASE_AUTH = false;
+
+if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
+  window.__fbSettle({ enabled:false, reason:'לא הוזנו מפתחות Firebase' });
+} else {
+  try {
+    const app  = initializeApp(firebaseConfig);
+    const db   = getFirestore(app);
+    const auth = getAuth(app);
+    const col  = collection(db, COLLECTION);
+
+    let user = null;
+    onAuthStateChanged(auth, function(u){ user = u; });
+
+    window.__fbSettle({
+      enabled: true,
+      useAuth: USE_FIREBASE_AUTH,
+      collection: COLLECTION,
+      projectId: firebaseConfig.projectId,
+
+      /* שמירת משיב יחיד. מזהה המסמך זהה למזהה המקומי — כך השמירה
+         אידמפוטנטית וניתן לסנכרן שוב רשומה שכשלה בלי ליצור כפילות. */
+      save: function(rec){
+        return setDoc(doc(db, COLLECTION, rec.id), {
+          id:          rec.id,
+          name:        rec.name,
+          unit:        rec.unit,
+          startedAt:   rec.startedAt,
+          submittedAt: rec.submittedAt,
+          answers:     rec.answers,
+          createdAt:   serverTimestamp()
+        });
+      },
+
+      /* שליפת כל המשיבים מהענן */
+      fetchAll: function(){
+        return getDocs(query(col, orderBy('submittedAt', 'desc'))).then(function(snap){
+          const out = [];
+          snap.forEach(function(d){
+            const v = d.data();
+            if (v && Array.isArray(v.answers)) {
+              out.push({
+                id:          v.id || d.id,
+                name:        v.name || '',
+                unit:        v.unit || '',
+                startedAt:   v.startedAt || null,
+                submittedAt: v.submittedAt || null,
+                answers:     v.answers,
+                synced:      true
+              });
+            }
+          });
+          return out;
+        });
+      },
+
+      remove: function(id){ return deleteDoc(doc(db, COLLECTION, id)); },
+
+      signIn:  function(email, pw){ return signInWithEmailAndPassword(auth, email, pw); },
+      signOut: function(){ return signOut(auth); },
+      user:    function(){ return user; }
+    });
+  } catch (e) {
+    window.__fbSettle({ enabled:false, reason:'אתחול Firebase נכשל: ' + e.message });
+  }
+}
+</script>
+
 <script>
 'use strict';
 /* =====================================================================
@@ -374,7 +502,109 @@ var Store = {
   remove: function(id){
     this.save(this.all().filter(function(r){ return r.id !== id; }));
   },
-  clear: function(){ this.save([]); }
+  clear: function(){ this.save([]); },
+  /* סימון רשומה כמסונכרנת מול הענן */
+  markSynced: function(id){
+    var list = this.all(), i;
+    for (i=0; i<list.length; i++){ if (list[i].id === id) list[i].synced = true; }
+    this.save(list);
+  },
+  /* מיזוג רשומות מהענן לאחסון המקומי, ללא כפילויות */
+  merge: function(incoming){
+    var list = this.all(), seen = {}, added = 0;
+    list.forEach(function(r){ seen[r.id] = true; });
+    incoming.forEach(function(r){
+      if (r && r.id && !seen[r.id] && Array.isArray(r.answers)){
+        list.push(r); seen[r.id] = true; added++;
+      }
+    });
+    this.save(list);
+    return added;
+  },
+  pending: function(){
+    return this.all().filter(function(r){ return !r.synced; });
+  }
+};
+
+/* =====================================================================
+   שכבת הסנכרון מול Cloud Firestore
+   האחסון המקומי נשאר מקור האמת של הממשק, וה-Firestore הוא שכבת הענן
+   שמעליו. כך השאלון ממשיך לפעול במלואו גם ללא רשת או ללא Firebase,
+   וכל רשומה שלא נשלחה מסומנת וממתינה לסנכרון הבא.
+   ===================================================================== */
+var Cloud = {
+  store: function(){ return window.FirebaseStore || null; },
+  ready: function(){
+    return window.__fbReady || Promise.resolve({enabled:false});
+  },
+  enabled: function(){
+    var st = this.store();
+    return !!(st && st.enabled);
+  },
+  status: function(){
+    var st = this.store();
+    if (!st) return { state:'checking', text:'בודק חיבור לענן…' };
+    if (!st.enabled) return { state:'local', text:'מצב מקומי בלבד — ' + (st.reason || 'Firebase אינו מוגדר') };
+    return { state:'cloud', text:'מחובר ל-Firestore · ' + st.projectId };
+  },
+
+  /* שמירת משיב בענן. אינה חוסמת את המשיב: כישלון מותיר את הרשומה
+     מסומנת כלא-מסונכרנת, והיא תישלח בסנכרון הבא מאזור המנהל. */
+  push: function(rec){
+    return this.ready().then(function(st){
+      if (!st || !st.enabled) return false;
+      return st.save(rec).then(function(){
+        Store.markSynced(rec.id);
+        return true;
+      });
+    })['catch'](function(e){
+      if (window.console) console.warn('Firestore save failed:', e && e.message);
+      return false;
+    });
+  },
+
+  /* שליחה חוזרת של כל הרשומות שטרם הועלו */
+  flush: function(){
+    var pend = Store.pending();
+    if (!pend.length || !this.enabled()) return Promise.resolve(0);
+    var ok = 0;
+    return pend.reduce(function(chain, rec){
+      return chain.then(function(){
+        return Cloud.store().save(rec).then(function(){
+          Store.markSynced(rec.id); ok++;
+        })['catch'](function(){ /* נשארת ממתינה */ });
+      });
+    }, Promise.resolve()).then(function(){ return ok; });
+  },
+
+  /* משיכת כל המשיבים מהענן ומיזוגם לאחסון המקומי */
+  pull: function(){
+    if (!this.enabled()) return Promise.resolve(0);
+    return this.store().fetchAll().then(function(list){
+      return Store.merge(list);
+    })['catch'](function(e){
+      if (window.console) console.warn('Firestore fetch failed:', e && e.message);
+      return 0;
+    });
+  },
+
+  /* סנכרון דו-כיווני: קודם מעלים את הממתינות, אחר כך מושכים */
+  sync: function(){
+    var self = this;
+    return this.ready().then(function(){
+      return self.flush();
+    }).then(function(up){
+      return self.pull().then(function(down){ return {up:up, down:down}; });
+    });
+  },
+
+  remove: function(id){
+    if (!this.enabled()) return Promise.resolve(false);
+    return this.store().remove(id).then(function(){ return true; })['catch'](function(e){
+      if (window.console) console.warn('Firestore delete failed:', e && e.message);
+      return false;
+    });
+  }
 };
 
 function sendToWebhook(rec){
@@ -612,8 +842,11 @@ function submit(){
     submittedAt: new Date().toISOString(),
     answers: state.answers.slice()
   };
+  rec.synced = false;
   Store.add(rec);
   sendToWebhook(rec);
+  /* שליחה לענן ברקע — המשיב אינו ממתין לה ואינו מושפע מתוצאתה */
+  Cloud.push(rec);
   /* איפוס מלא — לא נשאר במסך שום נתון של המשיב */
   state.name = ''; state.unit = '';
   state.answers = new Array(QUESTIONS.length).fill(null);
@@ -639,45 +872,77 @@ function renderDone(){
 
 /* ===================== כניסת מנהל ===================== */
 function renderLogin(){
+  var st = Cloud.store();
+  /* כאשר USE_FIREBASE_AUTH פעיל, הכניסה מתבצעת מול Firebase Authentication
+     ולא מול הסיסמה המקומית — כך אפשר להדק את חוקי האבטחה ב-Firestore. */
+  var byFirebase = !!(st && st.enabled && st.useAuth);
+
   APP.innerHTML = topbar('אזור מנהל') +
   '<div class="wrap"><div class="card login">' +
     '<div class="eyebrow">אזור מנהל</div>' +
     '<h2 class="title" style="margin-top:6px">כניסה מאובטחת</h2>' +
     '<p class="lead">אזור זה מיועד לגורם המנהל בלבד ומציג את תשובות המשיבים ותוצאות הסיווג.</p>' +
+    (byFirebase ?
+      '<div class="field">' +
+        '<label for="p-mail">כתובת אימייל</label>' +
+        '<input id="p-mail" type="email" autocomplete="username" placeholder="admin@example.com">' +
+      '</div>' : '') +
     '<div class="field">' +
-      '<label for="p">סיסמת מנהל</label>' +
+      '<label for="p">' + (byFirebase ? 'סיסמה' : 'סיסמת מנהל') + '</label>' +
       '<input id="p" type="password" autocomplete="current-password" placeholder="הזינו סיסמה">' +
     '</div>' +
-    '<div class="err" id="p-err">סיסמה שגויה. נסו שוב.</div>' +
+    '<div class="err" id="p-err">פרטי הכניסה שגויים. נסו שוב.</div>' +
     '<div style="margin-top:24px;display:flex;gap:10px">' +
       '<button class="btn btn-primary" id="p-go">כניסה</button>' +
       '<button class="btn btn-quiet" id="p-back">חזרה לשאלון</button>' +
     '</div>' +
   '</div></div>';
 
+  function fail(msg){
+    var box = el('p-err');
+    if (msg) box.textContent = msg;
+    box.classList.add('show');
+    el('p').classList.add('invalid');
+  }
+  function ok(){ state.admin = true; state.screen = 'admin'; render(); }
+
   function tryLogin(){
-    var val = el('p').value;
-    sha256(val).then(function(h){
-      if (h === CONFIG.adminHash){
-        state.admin = true; state.screen = 'admin'; render();
-      } else {
-        el('p-err').classList.add('show');
-        el('p').classList.add('invalid');
-      }
+    if (byFirebase){
+      var mail = el('p-mail').value.trim();
+      if (!mail) { fail('יש להזין כתובת אימייל.'); return; }
+      st.signIn(mail, el('p').value).then(ok)['catch'](function(){
+        fail('פרטי הכניסה שגויים. נסו שוב.');
+      });
+      return;
+    }
+    sha256(el('p').value).then(function(h){
+      if (h === CONFIG.adminHash) ok();
+      else fail('סיסמה שגויה. נסו שוב.');
     });
   }
+
   el('p-go').addEventListener('click', tryLogin);
   el('p').addEventListener('keydown', function(e){ if (e.key === 'Enter') tryLogin(); });
+  if (el('p-mail')) el('p-mail').addEventListener('keydown', function(e){ if (e.key === 'Enter') tryLogin(); });
   el('p').addEventListener('input', function(){
     this.classList.remove('invalid'); el('p-err').classList.remove('show');
   });
   el('p-back').addEventListener('click', function(){
     location.hash = ''; state.screen = 'intro'; render();
   });
+
+  /* מסך הכניסה מוצג מיד; אם ה-SDK עדיין נטען, מרעננים כשהוא מוכן
+     כדי להציג את שדה האימייל במידת הצורך. */
+  if (!st){
+    Cloud.ready().then(function(){
+      if (state.screen === 'login' && !state.admin) renderLogin();
+    });
+  }
 }
 
 /* ===================== טבלת המנהל ===================== */
 var adminFilters = { name:'', unit:'', result:'' };
+var adminSynced = false;   /* סנכרון אוטומטי אחד בכל כניסה לאזור המנהל */
 
 function tagClass(result){
   return result === ROLE_KAHAD ? 'tag' : 'tag alt';
@@ -710,12 +975,18 @@ function filtered(){
 function renderAdmin(){
   var rows = filtered();
   var totalAll = Store.all().length;
+  var pendingCount = Store.pending().length;
+  var st = Cloud.status();
   var html = topbar('אזור מנהל') +
   '<div class="wrap wide">' +
     '<div class="admin-bar">' +
       '<div><h2>ניהול משיבים</h2>' +
-      '<div class="count-note">סה״כ ' + totalAll + ' משיבים במערכת</div></div>' +
+      '<div class="count-note">סה״כ ' + totalAll + ' משיבים במערכת' +
+        (Cloud.enabled() && pendingCount ? ' · ' + pendingCount + ' ממתינים לסנכרון' : '') + '</div>' +
+      '<div style="margin-top:10px"><span class="chip ' + st.state + '" id="a-status">' +
+        '<span class="led"></span>' + esc(st.text) + '</span></div></div>' +
       '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
+        '<button class="btn btn-ghost btn-sm" id="a-sync">סנכרון עם הענן</button>' +
         '<button class="btn btn-ghost btn-sm" id="a-csv">ייצוא ל־Excel / CSV</button>' +
         '<button class="btn btn-ghost btn-sm" id="a-json">גיבוי JSON</button>' +
         '<label class="btn btn-ghost btn-sm" style="cursor:pointer">ייבוא גיבוי' +
@@ -786,7 +1057,36 @@ function renderAdmin(){
     adminFilters = {name:'',unit:'',result:''}; renderAdmin();
   });
   el('a-out').addEventListener('click', function(){
-    state.admin = false; state.screen = 'intro'; location.hash = ''; render();
+    var st2 = Cloud.store();
+    if (st2 && st2.enabled && st2.useAuth) st2.signOut();
+    state.admin = false; adminSynced = false;
+    state.screen = 'intro'; location.hash = ''; render();
+  });
+
+  /* עדכון שבב מצב הענן וסנכרון ראשוני ברגע שה-SDK מוכן */
+  if (!adminSynced){
+    adminSynced = true;
+    Cloud.ready().then(function(){
+      return Cloud.enabled() ? Cloud.sync() : null;
+    }).then(function(){
+      if (state.screen === 'admin') renderAdmin();
+    });
+  } else if (st.state === 'checking'){
+    Cloud.ready().then(function(){
+      if (state.screen === 'admin') renderAdmin();
+    });
+  }
+  el('a-sync').addEventListener('click', function(){
+    var btn = this;
+    btn.disabled = true; btn.textContent = 'מסנכרן…';
+    Cloud.sync().then(function(r){
+      if (!Cloud.enabled()){
+        alert('הסנכרון אינו זמין: ' + Cloud.status().text);
+      } else {
+        alert('הסנכרון הושלם.\nהועלו לענן: ' + r.up + '\nהתקבלו מהענן: ' + r.down);
+      }
+      renderAdmin();
+    });
   });
   el('a-csv').addEventListener('click', exportCsv);
   el('a-json').addEventListener('click', exportJson);
@@ -798,8 +1098,10 @@ function renderAdmin(){
   Array.prototype.forEach.call(document.querySelectorAll('[data-del]'), function(b){
     b.addEventListener('click', function(){
       var id = b.getAttribute('data-del');
-      if (confirm('למחוק את רשומת המשיב? הפעולה אינה הפיכה.')){
-        Store.remove(id); renderAdmin();
+      if (confirm('למחוק את רשומת המשיב? הפעולה אינה הפיכה, והרשומה תימחק גם מהענן.')){
+        Store.remove(id);
+        Cloud.remove(id);
+        renderAdmin();
       }
     });
   });
@@ -918,6 +1220,7 @@ function routeFromHash(){
     state.screen = state.admin ? 'admin' : 'login';
   } else if (state.screen === 'login' || state.screen === 'admin'){
     state.admin = false;
+    adminSynced = false;
     state.screen = 'intro';
   }
   render();
