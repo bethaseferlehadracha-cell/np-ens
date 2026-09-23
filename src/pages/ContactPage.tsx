@@ -2,6 +2,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Phone, Mail, Instagram, Navigation } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import type { ReactNode } from "react";
 
 type Person = { name: string; role: string; phone: string };
 
@@ -45,7 +46,7 @@ const TreeLine = ({ className = "h-3.5" }: { className?: string }) => (
 );
 
 /* ---------- Label (.label) ---------- */
-const Label = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => (
+const Label = ({ children, className = "" }: { children: ReactNode; className?: string }) => (
   <div className={`py-0.5 text-sm font-bold ${className}`}>{children}</div>
 );
 
