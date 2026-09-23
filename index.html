@@ -240,6 +240,8 @@ tbody tr:hover{background:var(--brand-050)}
 .chip.cloud .led{background:var(--ok)}
 .chip.local{border-color:#e6ded0;background:#faf6ef;color:var(--warn)}
 .chip.local .led{background:var(--warn)}
+.chip{max-width:100%}
+@media(max-width:640px){.chip{white-space:normal;text-align:right;line-height:1.5}}
 @media(max-width:640px){.hint{display:none}}
 </style>
 </head>
@@ -542,10 +544,35 @@ var Cloud = {
     var st = this.store();
     return !!(st && st.enabled);
   },
+  lastError: null,
+
+  /* תרגום קודי שגיאה של Firestore להסבר מעשי בעברית */
+  explain: function(e){
+    var code = (e && (e.code || '')) + '';
+    var msg  = (e && e.message) || 'שגיאה לא ידועה';
+    if (code.indexOf('permission-denied') !== -1)
+      return 'חוקי האבטחה ב-Firestore חוסמים את הפעולה (permission-denied). יש לעדכן את ה-Rules בקונסולה.';
+    if (code.indexOf('unauthenticated') !== -1)
+      return 'נדרשת התחברות כדי לגשת לנתונים (unauthenticated).';
+    if (code.indexOf('not-found') !== -1)
+      return 'מסד הנתונים Firestore לא נוצר בפרויקט (not-found). יש ליצור אותו בקונסולה.';
+    if (code.indexOf('unavailable') !== -1 || code.indexOf('failed-precondition') !== -1)
+      return 'אין כרגע גישה ל-Firestore (בעיית רשת או חסימה).';
+    return msg;
+  },
+
+  /* האם הדף נפתח כקובץ מקומי — מצב שבו טעינת מודולים מה-CDN חסומה */
+  isFile: function(){ return location.protocol === 'file:'; },
+
   status: function(){
     var st = this.store();
+    if (this.lastError) return { state:'local', text:'שגיאת ענן — ' + this.lastError };
     if (!st) return { state:'checking', text:'בודק חיבור לענן…' };
-    if (!st.enabled) return { state:'local', text:'מצב מקומי בלבד — ' + (st.reason || 'Firebase אינו מוגדר') };
+    if (!st.enabled){
+      if (this.isFile())
+        return { state:'local', text:'הדף נפתח כקובץ מקומי (file://) — חיבור לענן אינו אפשרי. יש לפתוח אותו מכתובת https' };
+      return { state:'local', text:'מצב מקומי בלבד — ' + (st.reason || 'Firebase אינו מוגדר') };
+    }
     return { state:'cloud', text:'מחובר ל-Firestore · ' + st.projectId };
   },
 
@@ -559,7 +586,8 @@ var Cloud = {
         return true;
       });
     })['catch'](function(e){
-      if (window.console) console.warn('Firestore save failed:', e && e.message);
+      Cloud.lastError = Cloud.explain(e);
+      if (window.console) console.warn('Firestore save failed:', e);
       return false;
     });
   },
@@ -573,7 +601,10 @@ var Cloud = {
       return chain.then(function(){
         return Cloud.store().save(rec).then(function(){
           Store.markSynced(rec.id); ok++;
-        })['catch'](function(){ /* נשארת ממתינה */ });
+        })['catch'](function(e){
+          Cloud.lastError = Cloud.explain(e);   /* נשארת ממתינה */
+          if (window.console) console.warn('Firestore save failed:', e);
+        });
       });
     }, Promise.resolve()).then(function(){ return ok; });
   },
@@ -584,7 +615,8 @@ var Cloud = {
     return this.store().fetchAll().then(function(list){
       return Store.merge(list);
     })['catch'](function(e){
-      if (window.console) console.warn('Firestore fetch failed:', e && e.message);
+      Cloud.lastError = Cloud.explain(e);
+      if (window.console) console.warn('Firestore fetch failed:', e);
       return 0;
     });
   },
@@ -592,6 +624,7 @@ var Cloud = {
   /* סנכרון דו-כיווני: קודם מעלים את הממתינות, אחר כך מושכים */
   sync: function(){
     var self = this;
+    this.lastError = null;
     return this.ready().then(function(){
       return self.flush();
     }).then(function(up){
@@ -602,7 +635,8 @@ var Cloud = {
   remove: function(id){
     if (!this.enabled()) return Promise.resolve(false);
     return this.store().remove(id).then(function(){ return true; })['catch'](function(e){
-      if (window.console) console.warn('Firestore delete failed:', e && e.message);
+      Cloud.lastError = Cloud.explain(e);
+      if (window.console) console.warn('Firestore delete failed:', e);
       return false;
     });
   }
@@ -1082,7 +1116,9 @@ function renderAdmin(){
     btn.disabled = true; btn.textContent = 'מסנכרן…';
     Cloud.sync().then(function(r){
       if (!Cloud.enabled()){
-        alert('הסנכרון אינו זמין: ' + Cloud.status().text);
+        alert('הסנכרון אינו זמין.\n\n' + Cloud.status().text);
+      } else if (Cloud.lastError){
+        alert('הסנכרון נכשל.\n\n' + Cloud.lastError);
       } else {
         alert('הסנכרון הושלם.\nהועלו לענן: ' + r.up + '\nהתקבלו מהענן: ' + r.down);
       }
